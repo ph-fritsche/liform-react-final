@@ -21,7 +21,10 @@
     "type": "git",
     "url": "https://github.com/ph-fritsche/liform-react-final.git"
   },
-  "author": "Nacho Martin",
+  "contributors": [
+    "Nacho Martin",
+    "Philipp Fritsche"
+  ],
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.7.5",
