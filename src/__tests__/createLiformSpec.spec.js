@@ -1,14 +1,8 @@
-import expect from "expect";
 import React from "react";
-import TestUtils from "react-dom/test-utils";
 import Liform, { DefaultTheme } from "../";
-import { Provider } from "react-redux";
-import { createStore, combineReducers } from "redux";
-import { reducer as formReducer } from "redux-form";
-import { shallow, mount, render } from "enzyme";
 
 import { FormFrame } from "./test-utils";
-import { Field } from "redux-form";
+import { Field } from "react-final-form";
 
 
 

@@ -1,4 +1,3 @@
-import expect from "expect";
 import buildSyncValidation, { setError } from "../buildSyncValidation.js";
 import Ajv from "ajv";
 

@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { Field } from "redux-form";
+import { Field } from "react-final-form";
 
-const renderInput = field => {
+const renderInput = (field) => {
   const className = classNames([
     "form-group",
     { "has-error": field.meta.touched && field.meta.error }
@@ -15,7 +15,7 @@ const renderInput = field => {
       </label>
       <input
         {...field.input}
-        type={field.type}
+        type={field.input.type}
         required={field.required}
         className="form-control"
         placeholder={field.placeholder}
@@ -42,6 +42,7 @@ const BaseInputWidget = props => {
       placeholder={props.schema.default}
       description={props.schema.description}
       type={props.type}
+      foo={props.type}
       normalize={props.normalizer}
     />
   );

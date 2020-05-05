@@ -1,50 +1,46 @@
-import StringWidget from "./StringWidget";
-import TextareaWidget from "./TextareaWidget";
-import EmailWidget from "./EmailWidget";
-import NumberWidget from "./NumberWidget";
-import MoneyWidget from "./MoneyWidget";
-import PercentWidget from "./PercentWidget";
-import ArrayWidget from "./ArrayWidget";
-import CheckboxWidget from "./CheckboxWidget";
-import ObjectWidget from "./ObjectWidget";
-import PasswordWidget from "./PasswordWidget";
-import SearchWidget from "./SearchWidget";
-import UrlWidget from "./UrlWidget";
 import ColorWidget from "./ColorWidget";
+import CheckboxWidget from "./CheckboxWidget";
 import ChoiceWidget from "./ChoiceWidget";
 import ChoiceExpandedWidget from "./ChoiceExpandedWidget";
 import ChoiceMultipleExpandedWidget from "./ChoiceMultipleExpandedWidget";
-import DateWidget from "./DateWidget";
-import TimeWidget from "./TimeWidget";
-import DateTimeWidget from "./DateTimeWidget";
-import CompatibleDateWidget from "./CompatibleDateWidget";
 import CompatibleDateTimeWidget from "./CompatibleDateTimeWidget";
+import CompatibleDateWidget from "./CompatibleDateWidget";
+import DateTimeWidget from "./DateTimeWidget";
+import DateWidget from "./DateWidget";
+import EmailWidget from "./EmailWidget";
 import FileWidget from "./FileWidget";
-import OneOfChoiceWidget from "./oneOfChoiceWidget";
+import MoneyWidget from "./MoneyWidget";
+import NumberWidget from "./NumberWidget";
+import ObjectWidget from "./ObjectWidget";
+import PasswordWidget from "./PasswordWidget";
+import PercentWidget from "./PercentWidget";
+import SearchWidget from "./SearchWidget";
+import StringWidget from "./StringWidget";
+import TextareaWidget from "./TextareaWidget";
+import TimeWidget from "./TimeWidget";
+import UrlWidget from "./UrlWidget";
 
 export default {
-  object: ObjectWidget,
-  string: StringWidget,
-  textarea: TextareaWidget,
-  email: EmailWidget,
-  integer: NumberWidget,
-  number: NumberWidget,
-  money: MoneyWidget,
-  percent: PercentWidget,
-  array: ArrayWidget,
   boolean: CheckboxWidget,
-  password: PasswordWidget,
-  search: SearchWidget,
-  url: UrlWidget,
-  color: ColorWidget,
   choice: ChoiceWidget,
   "choice-expanded": ChoiceExpandedWidget,
   "choice-multiple-expanded": ChoiceMultipleExpandedWidget,
-  date: DateWidget,
-  datetime: DateTimeWidget,
-  time: TimeWidget,
+  color: ColorWidget,
   "compatible-date": CompatibleDateWidget,
   "compatible-datetime": CompatibleDateTimeWidget,
+  date: DateWidget,
+  datetime: DateTimeWidget,
+  email: EmailWidget,
   file: FileWidget,
-  oneOf: OneOfChoiceWidget
+  integer: NumberWidget,
+  money: MoneyWidget,
+  number: NumberWidget,
+  object: ObjectWidget,
+  password: PasswordWidget,
+  percent: PercentWidget,
+  search: SearchWidget,
+  string: StringWidget,
+  textarea: TextareaWidget,
+  time: TimeWidget,
+  url: UrlWidget,
 };

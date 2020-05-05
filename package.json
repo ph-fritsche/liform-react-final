@@ -1,7 +1,7 @@
 {
-  "name": "liform-react",
+  "name": "liform-react-final",
   "version": "0.9.0",
-  "description": "Generate forms from json-schema to use with React (and redux-form)",
+  "description": "Generate forms from json-schema to use with React and Final Form",
   "main": "./lib/index.js",
   "scripts": {
     "build": "npm run build:lib",
@@ -14,11 +14,12 @@
     "react",
     "json-schema",
     "form",
-    "redux-form"
+    "final-form",
+    "react-final-form"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/limenius/liform-react.git"
+    "url": "https://github.com/ph-fritsche/liform-react-final.git"
   },
   "author": "Nacho Martin",
   "license": "MIT",
@@ -56,12 +57,13 @@
     "ajv": "^5.2.2",
     "classnames": "^2.2.5",
     "deepmerge": "^2.0.1",
-    "prop-types": "^15.5.10",
+    "prop-types": "^15.5.10"
+  },
+  "peerDependencies": {
+    "final-form": "4.19.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-redux": "^5.0.6",
-    "redux": "^3.5.2",
-    "redux-form": "^7.2.0"
+    "react-final-form": "^6.4.0"
   },
   "jest": {
     "verbose": true,

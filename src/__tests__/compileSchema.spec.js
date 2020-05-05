@@ -1,4 +1,3 @@
-import expect from "expect";
 import compileSchema from "../compileSchema";
 
 describe("createLiform", () => {

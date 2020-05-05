@@ -1,8 +1,6 @@
-import expect from "expect";
 import React from "react";
 import Liform from "../";
 import { FormFrame } from "./test-utils";
-import { shallow, mount, render } from "enzyme";
 
 describe("NumberWidget", () => {
   it("should render a form with a number input", () => {

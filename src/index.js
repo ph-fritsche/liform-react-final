@@ -1,21 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
 import DefaultTheme from "./themes/bootstrap3";
-import { reduxForm } from "redux-form";
+import { Form as FinalForm } from "react-final-form";
 import renderFields from "./renderFields";
 import renderField from "./renderField";
-import processSubmitErrors from "./processSubmitErrors";
 import buildSyncValidation from "./buildSyncValidation";
 import { setError } from "./buildSyncValidation";
 import compileSchema from "./compileSchema";
 
 const BaseForm = props => {
-  const { schema, handleSubmit, theme, error, submitting, context } = props;
   return (
-    <form onSubmit={handleSubmit}>
-      {renderField(schema, null, theme || DefaultTheme, "", context)}
-      <div>{error && <strong>{error}</strong>}</div>
-      <button className="btn btn-primary" type="submit" disabled={submitting}>
+    <form onSubmit={props.handleSubmit}>
+      {renderFields(
+        props.schema || {},
+        props.theme || DefaultTheme,
+        props.prefix || "",
+        props.context
+      )}
+      <div className='error'>{props.error && <strong>{props.error}</strong>}</div>
+      <button className="btn btn-primary" type="submit" disabled={props.submitting || false}>
         Submit
       </button>
     </form>
@@ -23,21 +26,35 @@ const BaseForm = props => {
 };
 
 const Liform = props => {
-  props.schema.showLabel = false;
+//  props.schema.showLabel = false;
+
   const schema = compileSchema(props.schema);
+  const theme = props.theme || DefaultTheme;
+  const onSubmit = props.handleSubmit || (() => {});
+
+  const component = props.baseForm || BaseForm;
+
+  /*
   const formName = props.formKey || props.schema.title || "form";
-  const FinalForm = reduxForm({
-    form: props.formKey || props.schema.title || "form",
-    validate: props.syncValidation || buildSyncValidation(schema, props.ajv),
+  const Form = FinalForm({
+    onSubmit: props.onSubmit || (() => {}),
+    render: renderFields.bind(this),
+//    form: props.formKey || props.schema.title || "form",
+//    validate: props.syncValidation || buildSyncValidation(schema, props.ajv),
     initialValues: props.initialValues,
     context: { ...props.context, formName }
   })(props.baseForm || BaseForm);
+*/
+
   return (
     <FinalForm
-      renderFields={renderField.bind(this)}
+      onSubmit={onSubmit}
       {...props}
       schema={schema}
-    />
+      theme={theme}
+    >
+      {props => component(props)}
+    </FinalForm>
   );
 };
 
@@ -68,7 +85,6 @@ export default Liform;
 export {
   renderFields,
   renderField,
-  processSubmitErrors,
   DefaultTheme,
   setError,
   EmbeddedLiform,

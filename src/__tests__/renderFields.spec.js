@@ -1,4 +1,3 @@
-import expect from "expect";
 import renderFields from "../renderFields";
 import DefaultTheme from "../themes/bootstrap3";
 

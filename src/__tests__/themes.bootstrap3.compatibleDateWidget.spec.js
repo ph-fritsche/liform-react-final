@@ -1,9 +1,7 @@
-import expect from "expect";
 import { extractDateToken } from "../themes/bootstrap3/CompatibleDateWidget.js";
 import React from "react";
 import Liform from "../";
 import { FormFrame } from "./test-utils";
-import { shallow, mount, render } from "enzyme";
 
 describe("CompatibleDateWidget", () => {
   it("on null extracted value is empty", () => {
