@@ -11,7 +11,7 @@ class Liform extends React.Component {
     super(props)
     this.schema = compileSchema(props.schema)
     this.theme = props.theme || Liform.defaultTheme
-    this.rootName = props.name || this.schema.name || this.schema.title || ''
+    this.rootName = props.name || this.schema.name || ''
   }
 
   render() {
@@ -68,7 +68,7 @@ class Liform extends React.Component {
       debug: props.debug,
       decorators: props.decorators,
       form: props.form,
-      initialValues: props.initialValues || {...props.value, BirthdayType: 123},
+      initialValues: props.initialValues || (this.rootName != '' ? {[this.rootName]: props.value} : props.value),
       initialValuesEquals: props.initialValuesEquals,
       keepDirtyOnReinitialize: props.keepDirtyOnReinitialize,
       mutators: props.mutators,
