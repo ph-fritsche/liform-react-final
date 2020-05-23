@@ -2,7 +2,7 @@ function isObject(thing) {
   return typeof thing === "object" && thing !== null && !Array.isArray(thing);
 }
 
-function compileSchema(schema, root) {
+export const compileSchema = (schema, root) => {
   if (!root) {
     root = schema;
   }
@@ -40,5 +40,3 @@ function resolveRef(uri, schema) {
 
   return tip;
 }
-
-export default compileSchema;
