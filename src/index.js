@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import arrayMutators from "final-form-arrays"
 import { Form as FinalForm } from "react-final-form";
 import { buildFlatValidatorExpander, buildFlatValidatorStack, buildFlatAjvValidate } from "./validate";
 import { compileSchema } from "./schema";
@@ -71,7 +72,7 @@ class Liform extends React.Component {
       initialValues: props.initialValues || (this.rootName != '' ? {[this.rootName]: props.value} : props.value),
       initialValuesEquals: props.initialValuesEquals,
       keepDirtyOnReinitialize: props.keepDirtyOnReinitialize,
-      mutators: props.mutators,
+      mutators: { ...arrayMutators, ...props.mutators },
       onSubmit: props.onSubmit || (() => {}),
       subscription: props.subscription,
       validate: props.validate || buildFlatValidatorExpander(this.rootName, buildFlatValidatorStack(

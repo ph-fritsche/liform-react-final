@@ -1,12 +1,27 @@
 import React from "react";
+import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
 import { mapProperties } from "../../properties";
 
 export const ArrayWidget = ({name, schema, ...props}) => {
-    return <FieldArray name={name} render={(props) => {
+    return <FinalFieldArray name={name} render={({fields, meta}) => (
         <fieldset className='liform-field liform-array'>
             { schema.title && <legend>{ schema.title }</legend> }
+            { fields.map((name, index) => (
+                <div key={name} className='liform-array-item'>
+                    { props.renderField({ ...props,
+                        name: `${name}`,
+                        schema: Array.isArray(schema.items) ?
+                            (index <= schema.items.length ? schema.items[index] : schema.additionalItems) : 
+                            schema.items,
+                    })}
+                    { (schema.allowDelete || Array.isArray(meta.initial) && index >= meta.initial.length) &&
+                        <button type='button' onClick={() => fields.remove(index)}>❌</button>
+                    }
+                </div>
+            )) }
+            { schema.allowAdd && <button type='button' onClick={() => fields.push()}>➕</button> }
         </fieldset>
-    }}/>
+    )}/>
 }
 
 export const ButtonWidget = ({name, schema, ...props}) => {
@@ -53,7 +68,7 @@ export const choiceRender = ({schema, input, ...props}) => {
 
 export default {
     // type
-    array: (() => null),
+    array: ArrayWidget,
     boolean: {
         'render': inputRender,
         'type': 'checkbox',
