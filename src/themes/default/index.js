@@ -43,7 +43,13 @@ export const ObjectWidget = ({name, schema, ...props}) => {
     </fieldset>
 }
 
-export const inputRender = ({schema, input, ...props}) => {
+export const inputRender = ({schema, input: inputget, ...props}) => {
+    const {...input} = inputget
+
+    if (input.type === 'color' && input.value === '') {
+        input.value = '#000000'
+    }
+
     return <div className='liform-field liform-string'>
         <label>
             { schema && schema.title }
