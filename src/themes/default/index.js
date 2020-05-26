@@ -1,6 +1,7 @@
 import React from "react";
 import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
 import { mapProperties } from "../../properties";
+import Lifield from "../../field";
 
 export const ArrayWidget = ({name, schema, ...props}) => {
     return <FinalFieldArray name={name} render={({fields, meta}) => (
@@ -8,12 +9,14 @@ export const ArrayWidget = ({name, schema, ...props}) => {
             { schema.title && <legend>{ schema.title }</legend> }
             { fields.map((name, index) => (
                 <div key={name} className='liform-array-item'>
-                    { props.renderField({ ...props,
-                        name: `${name}`,
-                        schema: Array.isArray(schema.items) ?
-                            (index <= schema.items.length ? schema.items[index] : schema.additionalItems) : 
-                            schema.items,
-                    })}
+                    <Lifield {...props}
+                        name={`${name}`}
+                        schema={
+                            Array.isArray(schema.items) ?
+                                (index <= schema.items.length ? schema.items[index] : schema.additionalItems) : 
+                                schema.items
+                        }
+                    />
                     { (schema.allowDelete || Array.isArray(meta.initial) && index >= meta.initial.length) &&
                         <button type='button' onClick={() => fields.remove(index)}>❌</button>
                     }
@@ -25,25 +28,32 @@ export const ArrayWidget = ({name, schema, ...props}) => {
 }
 
 export const ButtonWidget = ({name, schema, ...props}) => {
-    return <button name={name} type='button' className='liform-field liform-button'>{schema.title}</button>
+
+    const types = ['submit', 'reset', 'button']
+    let type
+    if (typeof(schema.widget) === 'string') {
+        type = types[types.indexOf(schema.widget)]
+    } else if (Array.isArray(schema.widget)) {
+        type = types.filter(t => schema.widget.indexOf(t) >= 0)[0]
+    }
+
+    return <button name={name} type={type || 'button'} className='liform-field liform-button'>{schema.title}</button>
 }
 
 export const ObjectWidget = ({name, schema, ...props}) => {
     return <fieldset className='liform-field liform-object'>
         { schema.title && <legend>{ schema.title }</legend> }
         { mapProperties(schema.properties || {}, (propSchema, key) => (
-            <React.Fragment key={key}>
-                {props.renderField({ ...props,
-                    name: (name || '') + ((name && String(name).slice(-1) !== ']') ? '.' : '') + key,
-                    schema: propSchema,
-                    required: Array.isArray(schema.required) && schema.required.indexOf(key) >= 0,
-                })}
-            </React.Fragment>
+            <Lifield key={key} {...props}
+                name={ (name || '') + ((name && String(name).slice(-1) !== ']') ? '.' : '') + key }
+                schema={ propSchema }
+                required={ Array.isArray(schema.required) && schema.required.indexOf(key) >= 0 }
+            />
         )) }
     </fieldset>
 }
 
-export const inputRender = ({schema, input: inputget, ...props}) => {
+export const inputRender = ({schema, input: inputget}) => {
     const {...input} = inputget
 
     if (input.type === 'color' && input.value === '') {
@@ -61,12 +71,22 @@ export const inputRender = ({schema, input: inputget, ...props}) => {
     </div>
 }
 
-export const choiceRender = ({schema, input, ...props}) => {
+class PureOptions extends React.PureComponent {
+    render() {
+        return this.props.values && this.props.values.map((v,i) =>
+            <option key={v} value={v}>
+                { this.props.labels && this.props.labels[i] || v }
+            </option>
+        )
+    }
+}
+
+export const choiceRender = ({schema, input}) => {
     return <div className='liform-field liform-choice'>
         <label>
             { schema && schema.title }
             <select {...input}>
-                { schema.enum && schema.enum.map((v,i) => <option key={v} value={v}>{ schema.enumTitles && schema.enumTitles[i] || v }</option>) }
+                <PureOptions values={schema.enum} labels={schema.enumTitles}/>
             </select>
         </label>
     </div>
@@ -92,10 +112,8 @@ export default {
         'render': inputRender,
     },
 
-    // extra
-    button: ButtonWidget,
-
     // block
+    button: ButtonWidget,
     choice: {
         'render': choiceRender,
     },
@@ -121,7 +139,7 @@ export default {
         'type': 'radio',
     },
     textarea: {
-        'render': inputRender,
+        'component': 'textarea',
         'type': 'textarea',
     },
     time: {

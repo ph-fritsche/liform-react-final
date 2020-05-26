@@ -57,7 +57,8 @@ export const compileFinalFieldProps = (props) => {
   }
 }
 
-export const renderField = (theme, props) => {
+export const renderField = (props) => {
+  const theme = props.theme || props.liform.theme
   const Widget = props.widget || theme[guessWidget(props.schema, theme)]
 
   if (Widget instanceof Function) {
@@ -75,6 +76,14 @@ export const renderField = (theme, props) => {
   return <FinalField {...fieldProps}/>
 }
 
-export const buildRenderField = (theme) => {
-  return renderField.bind(undefined, theme)
+export default class Lifield extends React.PureComponent {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    const { render, ...rest } = this.props
+
+    return (render || this.props.liform.renderField)(rest)
+  }
 }
