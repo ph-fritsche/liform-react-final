@@ -56,6 +56,8 @@ export const ObjectWidget = ({name, schema, ...props}) => {
 export const inputRender = ({schema, input: inputget}) => {
     const {...input} = inputget
 
+    input.name = htmlizeName(input.name)
+
     if (input.type === 'color' && input.value === '') {
         input.value = '#000000'
     }
@@ -63,10 +65,7 @@ export const inputRender = ({schema, input: inputget}) => {
     return <div className='liform-field liform-string'>
         <label>
             { schema && schema.title }
-            { input.type === 'textarea' ?
-                <textarea {...input}/>:
-                <input {...input} value={ input.value == '' ? undefined : input.value }/>
-            }
+            { input.type === 'textarea' ? <textarea {...input}/> : <input {...input}/> }
         </label>
     </div>
 }
@@ -85,7 +84,7 @@ export const choiceRender = ({schema, input}) => {
     return <div className='liform-field liform-choice'>
         <label>
             { schema && schema.title }
-            <select {...input}>
+            <select {...input} name={htmlizeName(input.name)}>
                 <PureOptions values={schema.enum} labels={schema.enumTitles}/>
             </select>
         </label>

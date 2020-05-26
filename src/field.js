@@ -1,6 +1,15 @@
 import React from 'react';
 import { Field as FinalField } from "react-final-form";
 
+export const htmlizeName = (name) => {
+  if (name === undefined) {
+      return ''
+  }
+
+  let i = 0
+  return name.replace('.', () => { i++; return i>1 ? '][' : '[' }) + ( i>0 ? ']' : '')
+}
+
 export const guessWidget = (fieldSchema, theme) => {
   let guesses = []
 
