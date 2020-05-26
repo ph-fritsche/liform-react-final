@@ -4,7 +4,7 @@ import arrayMutators from "final-form-arrays"
 import { Form as FinalForm } from "react-final-form";
 import { buildFlatValidatorExpander, buildFlatValidatorStack, buildFlatAjvValidate } from "./validate";
 import { compileSchema } from "./schema";
-import { renderField } from "./field"
+import Lifield, { renderField } from "./field"
 import DefaultTheme from "./themes/default";
 
 const compileFinalFormProps = (rootName, props) => {
@@ -104,13 +104,13 @@ class Liform extends React.Component {
     { props.renderErrors === 'header' && Liform.renderErrors(props) }
   </>}
 
-  renderForm(props) {
-    return props.liform.renderField({
-      liform: props.liform,
-      name: props.liform.rootName,
-      schema: props.liform.schema
-    })
-  }
+  renderForm(props) { return (
+    <Lifield
+      liform={props.liform}
+      name={props.liform.rootName}
+      schema={props.liform.schema}
+    />
+  ) }
 
   renderFooter(props) { return <>
     { props.renderErrors === 'footer' && Liform.renderErrors(props) }
