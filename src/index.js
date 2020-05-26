@@ -56,6 +56,8 @@ class Liform extends React.Component {
     this.renderContainer = props.render || this.renderContainer
     this.renderField = props.renderField || renderField
     this.finalFormProps = compileFinalFormProps(this.rootName, this.props)
+    this.renderReset = props.renderReset || this.renderReset
+    this.renderSubmit = props.renderSubmit || this.renderSubmit
   }
 
   render() { return (
@@ -85,7 +87,7 @@ class Liform extends React.Component {
     header: this.renderHeader,
     form: this.renderForm.bind(this),
     footer: this.renderFooter,
-//    submit: this.renderSubmit
+    action: this.renderAction.bind(this),
   }}
 
   renderContainer(props) { return (
@@ -114,15 +116,29 @@ class Liform extends React.Component {
     { props.renderErrors === 'footer' && Liform.renderErrors(props) }
   </>}
 
+  renderAction(props) { return <div className='liform-action'>
+    { this.renderReset && this.renderReset(props) }
+    { this.renderSubmit && this.renderSubmit(props) }
+  </div> }
+
+  renderReset(props) {
+    return props.liform.renderField({
+      liform: props.liform,
+      'schema': {
+        'widget':['reset','button'],
+        title: 'Reset',
+      },
+    })
+  }
+
   renderSubmit(props) {
-    return props.renderField(
-      {'widget':['submit','button'], },
-      'Submit',
-      props.theme,
-      props.prefix,
-      props.context,
-      false
-    )
+    return props.liform.renderField({
+      liform: props.liform,
+      'schema': {
+        'widget':['submit','button'],
+        title: 'Submit',
+      },
+    })
   }
 
   renderErrors(props) {
