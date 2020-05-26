@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
 import { mapProperties } from "../../properties";
-import Lifield from "../../field";
+import Lifield, { htmlizeName } from "../../field";
 
 export const ArrayWidget = ({name, schema, ...props}) => {
     return <FinalFieldArray name={name} render={({fields, meta}) => (
@@ -53,7 +53,7 @@ export const ObjectWidget = ({name, schema, ...props}) => {
     </fieldset>
 }
 
-export const inputRender = ({schema, input: inputget}) => {
+export const inputRender = ({schema, input: inputget, placeholder}) => {
     const {...input} = inputget
 
     input.name = htmlizeName(input.name)
@@ -61,6 +61,8 @@ export const inputRender = ({schema, input: inputget}) => {
     if (input.type === 'color' && input.value === '') {
         input.value = '#000000'
     }
+
+    input.placeholder = placeholder
 
     return <div className='liform-field liform-string'>
         <label>
@@ -80,11 +82,12 @@ class PureOptions extends React.PureComponent {
     }
 }
 
-export const choiceRender = ({schema, input}) => {
+export const choiceRender = ({schema, input, placeholder}) => {
     return <div className='liform-field liform-choice'>
         <label>
             { schema && schema.title }
             <select {...input} name={htmlizeName(input.name)}>
+                { placeholder && <option value=''>{placeholder}</option> }
                 <PureOptions values={schema.enum} labels={schema.enumTitles}/>
             </select>
         </label>
@@ -132,13 +135,16 @@ export default {
         'render': inputRender,
         'type': 'date-time',
     },
-    hidden: 'input',
+    hidden: {
+        component: 'input',
+        type: 'hidden',
+    },
     radio: {
         'render': inputRender,
         'type': 'radio',
     },
     textarea: {
-        'component': 'textarea',
+        'component': inputRender,
         'type': 'textarea',
     },
     time: {
