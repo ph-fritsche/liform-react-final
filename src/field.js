@@ -7,7 +7,7 @@ export const htmlizeName = (name) => {
   }
 
   let i = 0
-  return name.replace('.', () => { i++; return i>1 ? '][' : '[' }) + ( i>0 ? ']' : '')
+  return (name.replace(/[.[]/g, () => { i++; return i>1 ? '][' : '[' }) + ( i>0 ? ']' : '')).replace(/]]+/, ']')
 }
 
 export const guessWidget = (fieldSchema, theme) => {
