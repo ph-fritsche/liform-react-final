@@ -93,6 +93,7 @@ class Liform extends React.Component {
   renderContainer(props) { return (
     <form
       onSubmit={props.handleSubmit}
+      onReset={() => {props.liform.form.reset()}}
       method={props.method || props.liform.schema.method || 'POST'}
       action={props.action || props.liform.schema.action}
       >
