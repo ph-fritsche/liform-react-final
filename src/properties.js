@@ -1,7 +1,7 @@
 export const sortPropertyKeys = (properties) => {
     return Object.keys(properties).sort((keyA, keyB) => {
-        const posA = properties[keyA].propertyOrder || 1000
-        const posB = properties[keyB].propertyOrder || 1000
+        const posA = Number.isFinite(properties[keyA].propertyOrder) ? properties[keyA].propertyOrder : 1000
+        const posB = Number.isFinite(properties[keyB].propertyOrder) ? properties[keyB].propertyOrder : 1000
         return posA === posB ? 0 : posA < posB ? -1 : 1
     })
 }
