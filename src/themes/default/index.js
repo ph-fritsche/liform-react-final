@@ -53,10 +53,8 @@ export const ObjectWidget = ({name, schema, ...props}) => {
     </fieldset>
 }
 
-export const inputRender = ({liform, schema, input: inputget, placeholder, meta}) => {
-    const {...input} = inputget
-
-    input.name = htmlizeName(input.name, liform.rootName)
+export const inputRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
+    input.name = htmlizeName(name, liform.rootName)
 
     if (input.type === 'color' && input.value === '') {
         input.value = '#000000'
@@ -83,11 +81,13 @@ class PureOptions extends React.PureComponent {
     }
 }
 
-export const choiceRender = ({liform, schema, input, placeholder, meta}) => {
+export const choiceRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
+    input.name = htmlizeName(name, liform.rootName)
+
     return <div className='liform-field liform-choice'>
         <label>
             { schema && schema.title }
-            <select {...input} name={htmlizeName(input.name, liform.rootName)}>
+            <select {...input}>
                 { placeholder && <option value=''>{placeholder}</option> }
                 <PureOptions values={schema.enum} labels={schema.enumTitles}/>
             </select>
@@ -110,6 +110,22 @@ const renderErrors = ({errors, title}) => (
         { errors.map((e,i) => <div key={i} className='error'>{e}</div>) }
     </div>
 )
+
+const hiddenRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
+    const element = <input type='hidden' name={htmlizeName(name, liform.rootName)} value={input.value}/>
+    const errors = renderFieldError(liform, name, meta)
+    if (errors) {
+        return <div className='liform-field liform-hidden'>
+            { element }
+            <label>
+                { schema && schema.title }
+                { errors }
+            </label>
+        </div>
+    } else {
+        return element
+    }
+}
 
 export default {
     errors: renderErrors,
@@ -155,15 +171,14 @@ export default {
             'type': 'date-time',
         },
         hidden: {
-            component: 'input',
-            type: 'hidden',
+            render: hiddenRender,
         },
         radio: {
             'render': inputRender,
             'type': 'radio',
         },
         textarea: {
-            'component': inputRender,
+            'render': inputRender,
             'type': 'textarea',
         },
         time: {
