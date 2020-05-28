@@ -84,12 +84,16 @@ class PureOptions extends React.PureComponent {
 export const choiceRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
     input.name = htmlizeName(name, liform.rootName)
 
+    if (schema.type === 'array' && !Array.isArray(input.value)) {
+        input.value = []
+    }
+
     return <div className='liform-field liform-choice'>
         <label>
             { schema && schema.title }
-            <select {...input}>
-                { placeholder && <option value=''>{placeholder}</option> }
-                <PureOptions values={schema.enum} labels={schema.enumTitles}/>
+            <select {...input} multiple={schema.type === 'array'}>
+                { schema.type !== 'array' && placeholder && <option value=''>{placeholder}</option> }
+                { (schema.enum || schema.items.enum) && <PureOptions values={schema.enum || schema.items.enum} labels={schema.enumTitles || schema.items.enumTitles}/> }
             </select>
             { renderFieldError(liform, name, meta) }
         </label>
