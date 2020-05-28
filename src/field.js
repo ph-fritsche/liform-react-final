@@ -1,13 +1,13 @@
 import React from 'react';
 import { Field as FinalField } from "react-final-form";
+import { buildFieldValidator } from './validate';
 
-export const htmlizeName = (name) => {
-  if (name === undefined) {
-      return ''
-  }
-
+export const htmlizeName = (name, rootName) => {
   let i = 0
-  return (name.replace(/[.[]/g, () => { i++; return i>1 ? '][' : '[' }) + ( i>0 ? ']' : '')).replace(/]]+/, ']')
+  return (((rootName ? rootName + '.' : '') + name || '')
+    .replace(/[.[]/g, () => { i++; return i>1 ? '][' : '[' })
+    + ( i>0 ? ']' : '')
+  ).replace(/]]+/, ']')
 }
 
 export const guessWidget = (fieldSchema, theme) => {
@@ -15,7 +15,7 @@ export const guessWidget = (fieldSchema, theme) => {
 
   if (fieldSchema.widget) {
       for (const propGuess of Array.isArray(fieldSchema.widget)? fieldSchema.widget : [fieldSchema.widget]) {
-          if (theme[propGuess]) {
+          if (theme.field[propGuess]) {
               return propGuess
           }
           guesses.push(propGuess)
@@ -27,7 +27,7 @@ export const guessWidget = (fieldSchema, theme) => {
       typeGuess = 'choice'
   } else if (fieldSchema.hasOwnProperty('oneOf')) {
       typeGuess = 'oneOf'
-  } else if (theme[fieldSchema.format]) {
+  } else if (theme.field[fieldSchema.format]) {
       typeGuess = fieldSchema.format
   } else {
       typeGuess = fieldSchema.type || null
@@ -36,7 +36,7 @@ export const guessWidget = (fieldSchema, theme) => {
       guesses.push(typeGuess)
   }
 
-  if (!typeGuess || !theme[typeGuess]) {
+  if (!typeGuess || !theme.field[typeGuess]) {
       throw new Error('Liform: No widget defined for ' + guesses + '\n' + JSON.stringify(fieldSchema))
   }
 
@@ -58,7 +58,7 @@ export const compileFinalFieldProps = (props) => {
     parse: props.parse,
     ref: props.ref,
     subscription: props.subscription,
-    validate: props.validate,
+    validate: props.validate || buildFieldValidator(props.liform, props.name),
     validateFields: props.validateFields,
     value: props.value,
 
@@ -68,7 +68,7 @@ export const compileFinalFieldProps = (props) => {
 
 export const renderField = (props) => {
   const theme = props.theme || props.liform.theme
-  const Widget = props.widget || theme[guessWidget(props.schema, theme)]
+  const Widget = props.widget || theme.field[guessWidget(props.schema, theme)]
 
   if (Widget instanceof Function) {
     return <Widget {...props}/>

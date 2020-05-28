@@ -53,10 +53,10 @@ export const ObjectWidget = ({name, schema, ...props}) => {
     </fieldset>
 }
 
-export const inputRender = ({schema, input: inputget, placeholder}) => {
+export const inputRender = ({liform, schema, input: inputget, placeholder, meta}) => {
     const {...input} = inputget
 
-    input.name = htmlizeName(input.name)
+    input.name = htmlizeName(input.name, liform.rootName)
 
     if (input.type === 'color' && input.value === '') {
         input.value = '#000000'
@@ -69,6 +69,7 @@ export const inputRender = ({schema, input: inputget, placeholder}) => {
             { schema && schema.title }
             { input.type === 'textarea' ? <textarea {...input}/> : <input {...input}/> }
         </label>
+        { renderFieldError(liform, name, meta) }
     </div>
 }
 
@@ -82,77 +83,96 @@ class PureOptions extends React.PureComponent {
     }
 }
 
-export const choiceRender = ({schema, input, placeholder}) => {
+export const choiceRender = ({liform, schema, input, placeholder, meta}) => {
     return <div className='liform-field liform-choice'>
         <label>
             { schema && schema.title }
-            <select {...input} name={htmlizeName(input.name)}>
+            <select {...input} name={htmlizeName(input.name, liform.rootName)}>
                 { placeholder && <option value=''>{placeholder}</option> }
                 <PureOptions values={schema.enum} labels={schema.enumTitles}/>
             </select>
+            { renderFieldError(liform, name, meta) }
         </label>
     </div>
 }
 
-export default {
-    // type
-    array: ArrayWidget,
-    boolean: {
-        'render': inputRender,
-        'type': 'checkbox',
-    },
-    integer: {
-        'render': inputRender,
-        'type': 'integer',
-    },
-    number: {
-        'render': inputRender,
-        'type': 'number',
-    },
-    object: ObjectWidget,
-    string: {
-        'render': inputRender,
-    },
+const renderFieldError = (liform, name, meta) => {
+    return (meta.touched || meta.dirty) && meta.error && meta.error.map(e =>
+        <div key={e} className='liform-error liform-validate'>{e}</div>
+    ) || meta.pristine && liform.meta.errors && liform.meta.errors[name] && liform.meta.errors[name].map(e =>
+        <div key={e} className='liform-error liform-meta'>{e}</div>
+    )
+}
 
-    // block
-    button: ButtonWidget,
-    choice: {
-        'render': choiceRender,
-    },
-    color: {
-        'render': inputRender,
-        'type': 'color',
-    },
-    date: {
-        'render': inputRender,
-        'type': 'date',
-    },
-    datetime: {
-        'render': inputRender,
-        'type': 'date-time',
-    },
-    file: {
-        'render': inputRender,
-        'type': 'date-time',
-    },
-    hidden: {
-        component: 'input',
-        type: 'hidden',
-    },
-    radio: {
-        'render': inputRender,
-        'type': 'radio',
-    },
-    textarea: {
-        'component': inputRender,
-        'type': 'textarea',
-    },
-    time: {
-        'render': inputRender,
-        'type': 'time',
-    },
-    week: {
-        'render': inputRender,
-        'type': 'week',
+const renderErrors = ({errors, title}) => (
+    <div className='liform-error-group'>
+        { title && <strong>{title}</strong> }
+        { errors.map((e,i) => <div key={i} className='error'>{e}</div>) }
+    </div>
+)
+
+export default {
+    errors: renderErrors,
+    field: {
+        // type
+        array: ArrayWidget,
+        boolean: {
+            'render': inputRender,
+            'type': 'checkbox',
+        },
+        integer: {
+            'render': inputRender,
+            'type': 'integer',
+        },
+        number: {
+            'render': inputRender,
+            'type': 'number',
+        },
+        object: ObjectWidget,
+        string: {
+            'render': inputRender,
+        },
+
+        // block
+        button: ButtonWidget,
+        choice: {
+            'render': choiceRender,
+        },
+        color: {
+            'render': inputRender,
+            'type': 'color',
+        },
+        date: {
+            'render': inputRender,
+            'type': 'date',
+        },
+        datetime: {
+            'render': inputRender,
+            'type': 'date-time',
+        },
+        file: {
+            'render': inputRender,
+            'type': 'date-time',
+        },
+        hidden: {
+            component: 'input',
+            type: 'hidden',
+        },
+        radio: {
+            'render': inputRender,
+            'type': 'radio',
+        },
+        textarea: {
+            'component': inputRender,
+            'type': 'textarea',
+        },
+        time: {
+            'render': inputRender,
+            'type': 'time',
+        },
+        week: {
+            'render': inputRender,
+            'type': 'week',
+        },
     },
 }

@@ -2,25 +2,25 @@ import React from "react";
 import PropTypes from "prop-types";
 import arrayMutators from "final-form-arrays"
 import { Form as FinalForm } from "react-final-form";
-import { buildFlatValidatorExpander, buildFlatValidatorStack, buildFlatAjvValidate } from "./validate";
+import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from "./validate";
 import { compileSchema } from "./schema";
 import Lifield, { renderField } from "./field"
 import DefaultTheme from "./themes/default";
 
-const compileFinalFormProps = (rootName, props) => {
+const compileFinalFormProps = (props, liform) => {
   return {
     debug: props.debug,
     decorators: props.decorators,
     form: props.form,
-    initialValues: props.initialValues || (rootName != '' ? {[rootName]: props.value} : props.value),
+    initialValues: props.initialValues || props.value,
     initialValuesEquals: props.initialValuesEquals,
     keepDirtyOnReinitialize: props.keepDirtyOnReinitialize,
     mutators: { ...arrayMutators, ...props.mutators },
     onSubmit: props.onSubmit || (() => {}),
     subscription: props.subscription,
-    validate: props.validate || buildFlatValidatorExpander(rootName, buildFlatValidatorStack(
-      buildFlatAjvValidate(props.ajv, props.schema, rootName)
-    ))
+    validate: props.validate || buildFlatValidatorHandler(buildFlatValidatorStack(
+      buildFlatAjvValidate(props.ajv, props.schema, props.ajvTranslator || translateAjv)
+    ), liform)
   }
 }
 
@@ -55,9 +55,11 @@ class Liform extends React.Component {
     this.children = compileChildren(this.getParts(), props)
     this.renderContainer = props.render || this.renderContainer
     this.renderField = props.renderField || renderField
-    this.finalFormProps = compileFinalFormProps(this.rootName, this.props)
+    this.finalFormProps = compileFinalFormProps(this.props, this)
     this.renderReset = props.renderReset || this.renderReset
     this.renderSubmit = props.renderSubmit || this.renderSubmit
+    this.meta = props.meta || {}
+    this.errors = {}
   }
 
   render() { return (
@@ -84,10 +86,10 @@ class Liform extends React.Component {
   }
 
   getParts() { return {
-    header: this.renderHeader,
-    form: this.renderForm.bind(this),
-    footer: this.renderFooter,
-    action: this.renderAction.bind(this),
+    header: null,
+    form: this.renderForm,
+    footer: this.renderErrors,
+    action: this.renderAction,
   }}
 
   renderContainer(props) { return (
@@ -101,25 +103,16 @@ class Liform extends React.Component {
     </form>
   )}
 
-  renderHeader(props) { return <>
-    { props.renderErrors === 'header' && Liform.renderErrors(props) }
-  </>}
-
   renderForm(props) { return (
     <Lifield
       liform={props.liform}
-      name={props.liform.rootName}
       schema={props.liform.schema}
     />
   ) }
 
-  renderFooter(props) { return <>
-    { props.renderErrors === 'footer' && Liform.renderErrors(props) }
-  </>}
-
   renderAction(props) { return <div className='liform-action'>
-    { this.renderReset && this.renderReset(props) }
-    { this.renderSubmit && this.renderSubmit(props) }
+    { props.liform.renderReset && props.liform.renderReset(props) }
+    { props.liform.renderSubmit && props.liform.renderSubmit(props) }
   </div> }
 
   renderReset(props) {
@@ -143,14 +136,16 @@ class Liform extends React.Component {
   }
 
   renderErrors(props) {
-    return !Array.isArray(props.meta.errors) ? null : Object.keys(props.meta.errors).map(propertyPath => {
-      return <div class='error-group alert alert-warning'>
-        <strong>{propertyPath}</strong>
-        { props.meta.errors[propertyPath].map(error => {
-          <div class='error'>{error}</div>
-        })}
-      </div>
-    })
+    if (!props.liform.meta.errors) {
+      return null
+    }
+
+    const errorPaths = [''].filter(key => props.liform.meta.errors[key])
+    const Errors = props.liform.theme.errors
+
+    return <div className='liform-errors'>
+      { errorPaths.map(propertyPath => <Errors key={propertyPath} title={propertyPath} errors={props.liform.meta.errors[propertyPath]}/>) }
+    </div>
   }
 
 }

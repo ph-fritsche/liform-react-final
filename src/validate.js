@@ -1,7 +1,7 @@
 import Ajv from "ajv";
-import { setIn, getIn } from "final-form";
+import { FORM_ERROR, getIn } from "final-form";
 
-export const buildFlatAjvValidate = (ajv, schema, rootName) => {
+export const buildFlatAjvValidate = (ajv, schema, ajvTranslate) => {
     if (!(ajv instanceof Ajv)) {
         ajv = new Ajv({
             allErrors: true,
@@ -12,25 +12,37 @@ export const buildFlatAjvValidate = (ajv, schema, rootName) => {
         schema = true
     }
 
-    return flatAjvValidate.bind(null, ajv, schema, rootName)
+    if (!(ajvTranslate instanceof Function)) {
+        ajvTranslate
+    }
+
+    return flatAjvValidate.bind(null, ajv, schema, ajvTranslate)
 }
 
-export const flatAjvValidate = (ajv, schema, rootName, values) => {
+export const translateAjv = ({dataPath, keyword, params, message}, values) => {
+    let fieldName = dataPath.substr(0,1) === '.' ? dataPath.substr(1) : dataPath
+
+    if (keyword === 'required') {
+        fieldName = (fieldName ? fieldName + '.' : '') + params.missingProperty
+    }
+
+    message = keyword.substr(0,1).toUpperCase() + keyword.substr(1)
+    
+    return { fieldName, message }
+}
+
+export const flatAjvValidate = (ajv, schema, ajvTranslate, values) => {
     if (ajv.validate(schema, values)) {
         return undefined
     }
 
     let flatErrors = {}
 
-    ajv.errors.map(({dataPath, keyword, message, params}) => {
-        let fieldName = [...String(rootName || '').split('.'), ...String(dataPath).split('.')].filter(v => v != '').join('.')
+    ajv.errors.forEach(errorObject => {
+        const translated = ajvTranslate(errorObject, values)
 
-        if (keyword === 'required') {
-            fieldName = (fieldName ? fieldName + '.' : '') + params.missingProperty
-        }
-
-        flatErrors[fieldName] = flatErrors[fieldName] || []
-        flatErrors[fieldName].push({keyword, message})
+        flatErrors[translated.fieldName] = flatErrors[translated.fieldName] || []
+        flatErrors[translated.fieldName].push(translated.message)
     })
 
     return flatErrors
@@ -53,36 +65,19 @@ export const buildFlatValidatorStack = (...validators) => {
     }
 }
 
-export const buildFlatValidatorExpander = (rootName, flatErrorValidator) => {
+export const buildFlatValidatorHandler = (flatErrorValidator, liform) => {
+    let i = 0
     return (values) => {
-        let errorObject = {}
         const flatErrors = flatErrorValidator(values)
-
-        // Reverse order for walking over children first
-        for (const fieldName of Object.keys(flatErrors).sort().reverse()) {
-            let nodePath
-            if (rootName && fieldName === rootName) {
-                nodePath = ''
-            } else if (rootName && fieldName.startsWith(rootName + '.')) {
-                nodePath = fieldName.slice(String(rootName).length + 1)
-            } else {
-                nodePath = fieldName
-            }
-
-            let nodeErrors = getIn(errorObject, nodePath)
-
-            // If there are errors set for a property, skip over the object
-            if ((nodeErrors instanceof Object) && !Array.isArray(nodeErrors)) {
-                continue;
-            }
-
-            nodeErrors = Array.isArray(nodeErrors) ? nodeErrors : []
-
-            errorObject = setIn(errorObject, nodePath, nodeErrors.concat(
-                Array.isArray(flatErrors[fieldName]) ? flatErrors[fieldName] : [flatErrors[fieldName]]
-            ))
-        }
-
-        return errorObject
+        liform.errors = flatErrors
+        return Object.keys(flatErrors).length > 0 ? { [FORM_ERROR]: "The form has errors - see Liform.errors" } : {}
     }
+}
+
+export const validateField = (liform, name, value, allValues, fieldMeta) => {
+    return typeof(liform.errors) === 'object' ? liform.errors[name] : undefined
+}
+
+export const buildFieldValidator = (liform, name) => {
+    return validateField.bind(undefined, liform, name)
 }
