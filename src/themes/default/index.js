@@ -53,30 +53,7 @@ export const ObjectWidget = ({name, schema, ...props}) => {
     </fieldset>
 }
 
-export const inputRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
-    input.name = htmlizeName(name, liform.rootName)
-
-    if (input.type === 'color' && input.value === '') {
-        input.value = '#000000'
-    }
-
-    input.placeholder = placeholder
-
-    if (schema.type === 'number') {
-        const onChange = input.onChange
-        input.onChange = (e) => onChange(Number.isNaN(Number(e.target.value)) ? null : Number(e.target.value))
-    }
-
-    return <div className='liform-field liform-string'>
-        <label>
-            { schema && schema.title }
-            { input.type === 'textarea' ? <textarea {...input}/> : <input {...input}/> }
-        </label>
-        { renderFieldError(liform, name, meta) }
-    </div>
-}
-
-class PureOptions extends React.PureComponent {
+export class PureOptions extends React.PureComponent {
     render() {
         return this.props.values && this.props.values.map((v,i) =>
             <option key={v} value={v}>
@@ -129,23 +106,30 @@ export const choiceRender = ({liform, schema, input: {name, ...input}, placehold
 
 }
 
-const renderFieldError = (liform, name, meta) => {
-    return (meta.touched || meta.dirty) && meta.error && meta.error.map(e =>
-        <div key={e} className='liform-error liform-validate'>{e}</div>
-    ) || meta.pristine && liform.meta.errors && liform.meta.errors[name] && liform.meta.errors[name].map(e =>
-        <div key={e} className='liform-error liform-meta'>{e}</div>
-    )
+export const inputRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
+    input.name = htmlizeName(name, liform.rootName)
+
+    if (input.type === 'color' && input.value === '') {
+        input.value = '#000000'
+    }
+
+    if (schema.pattern) {
+        input.pattern = schema.pattern
+    }
+
+    input.placeholder = placeholder
+
+    return <div className='liform-field liform-input'>
+        <label>
+            { schema && schema.title }
+            { input.type === 'textarea' ? <textarea {...input}/> : <input {...input}/> }
+        </label>
+        { renderFieldError(liform, name, meta) }
+    </div>
 }
 
-const renderErrors = ({errors, title}) => (
-    <div className='liform-error-group'>
-        { title && <strong>{title}</strong> }
-        { errors.map((e,i) => <div key={i} className='error'>{e}</div>) }
-    </div>
-)
-
-const hiddenRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
-    const element = <input type='hidden' name={htmlizeName(name, liform.rootName)} value={input.value}/>
+export const hiddenRender = ({liform, schema, input: {name, value, onChange}, meta}) => {
+    const element = <input type='hidden' name={htmlizeName(name, liform.rootName)} value={value} onChange={onChange}/>
     const errors = renderFieldError(liform, name, meta)
     if (errors) {
         return <div className='liform-field liform-hidden'>
@@ -160,6 +144,63 @@ const hiddenRender = ({liform, schema, input: {name, ...input}, placeholder, met
     }
 }
 
+export const numberRender = ({liform, schema, input: {name, value, onChange, onBlur, ...input}, placeholder, meta}) => {
+    input.name = htmlizeName(name, liform.rootName)
+
+    input.defaultValue = value
+
+    const ref = React.createRef()
+    input.onChange = e => {
+        const v = Number(e.target.value)
+        if (e.target.value !== '' && v == e.target.value && (schema.type !== 'integer' || Number.isInteger(v))) {
+            onChange(v)
+        }
+    }
+    input.onBlur = (e) => {
+        let v
+        if (e.target.value != '') {
+            v= Number(e.target.value)
+            const step = schema.step || schema.type === 'integer' ? 1 : undefined
+            if (step) {
+                v = Math.round(v / step) * step
+            }
+        } else {
+            v = undefined
+        }
+        if (v !== value) {
+            onChange(v)
+            ref.current.value = v
+        }
+        onBlur(e)
+    }
+
+    input.step = schema.step || schema.type === 'integer' ? 1 : 0.1
+    input.placeholder = placeholder
+
+    return <div className='liform-field liform-number'>
+        <label>
+            { schema && schema.title }
+            <input {...input} type='number' ref={ref}/>
+        </label>
+        { renderFieldError(liform, name, meta) }
+    </div>
+}
+
+const renderFieldError = (liform, name, meta) => {
+    return (meta.touched || meta.dirty) && meta.error && meta.error.map(e =>
+        <div key={e} className='liform-error liform-validate'>{e}</div>
+    ) || meta.pristine && liform.meta.errors && liform.meta.errors[name] && liform.meta.errors[name].map(e =>
+        <div key={e} className='liform-error liform-meta'>{e}</div>
+    )
+}
+
+export const renderErrors = ({errors, title}) => (
+    <div className='liform-error-group'>
+        { title && <strong>{title}</strong> }
+        { errors.map((e,i) => <div key={i} className='liform-error'>{e}</div>) }
+    </div>
+)
+
 export default {
     errors: renderErrors,
     field: {
@@ -170,19 +211,17 @@ export default {
             'type': 'checkbox',
         },
         integer: {
-            'render': inputRender,
-            'type': 'integer',
+            'render': numberRender,
         },
         number: {
-            'render': inputRender,
-            'type': 'number',
+            'render': numberRender,
         },
         object: ObjectWidget,
         string: {
             'render': inputRender,
         },
 
-        // block
+        // block - symfony native types - https://symfony.com/doc/current/reference/forms/types.html
         button: ButtonWidget,
         choice: {
             'render': choiceRender,
@@ -197,18 +236,30 @@ export default {
         },
         datetime: {
             'render': inputRender,
-            'type': 'date-time',
+            'type': 'datetime-local',
+        },
+        email: {
+            'render': inputRender,
+            'type': 'email',
         },
         file: {
             'render': inputRender,
-            'type': 'date-time',
+            'type': 'file',
         },
         hidden: {
             render: hiddenRender,
         },
+        password: {
+            'render': inputRender,
+            'type': 'password',
+        },
         radio: {
             'render': inputRender,
             'type': 'radio',
+        },
+        range: {
+            'render': inputRender,
+            'type': 'range',
         },
         textarea: {
             'render': inputRender,
@@ -217,6 +268,14 @@ export default {
         time: {
             'render': inputRender,
             'type': 'time',
+        },
+        tel: {
+            'render': inputRender,
+            'type': 'tel',
+        },
+        url: {
+            'render': inputRender,
+            'type': 'url',
         },
         week: {
             'render': inputRender,
