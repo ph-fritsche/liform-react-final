@@ -62,6 +62,11 @@ export const inputRender = ({liform, schema, input: {name, ...input}, placeholde
 
     input.placeholder = placeholder
 
+    if (schema.type === 'number') {
+        const onChange = input.onChange
+        input.onChange = (e) => onChange(Number.isNaN(Number(e.target.value)) ? null : Number(e.target.value))
+    }
+
     return <div className='liform-field liform-string'>
         <label>
             { schema && schema.title }
