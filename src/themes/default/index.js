@@ -181,6 +181,7 @@ export const numberRender = ({liform, schema, input: {name, value, onChange, onB
         <label>
             { schema && schema.title }
             <input {...input} type='number' ref={ref}/>
+            <span className='liform-number-unit'>{schema.symbol}</span>
         </label>
         { renderFieldError(liform, name, meta) }
     </div>
