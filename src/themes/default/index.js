@@ -261,6 +261,10 @@ export default {
             'render': inputRender,
             'type': 'range',
         },
+        search: {
+            'render': inputRender,
+            'type': 'search',
+        },
         textarea: {
             'render': inputRender,
             'type': 'textarea',
