@@ -59,7 +59,7 @@ class Liform extends React.Component {
     this.renderReset = props.renderReset || this.renderReset
     this.renderSubmit = props.renderSubmit || this.renderSubmit
     this.meta = props.meta || {}
-    this.errors = {}
+    this.validationErrors = {}
   }
 
   render() { return (

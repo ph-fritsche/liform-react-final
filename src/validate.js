@@ -69,13 +69,13 @@ export const buildFlatValidatorHandler = (flatErrorValidator, liform) => {
     let i = 0
     return (values) => {
         const flatErrors = flatErrorValidator(values)
-        liform.errors = flatErrors
-        return Object.keys(flatErrors).length > 0 ? { [FORM_ERROR]: "The form has errors - see Liform.errors" } : {}
+        liform.validationErrors = flatErrors
+        return Object.keys(flatErrors).length > 0 ? { [FORM_ERROR]: "The form has errors - see Liform.validationErrors" } : {}
     }
 }
 
 export const validateField = (liform, name, value, allValues, fieldMeta) => {
-    return typeof(liform.errors) === 'object' ? liform.errors[name] : undefined
+    return typeof(liform.validationErrors) === 'object' ? liform.validationErrors[name] : undefined
 }
 
 export const buildFieldValidator = (liform, name) => {
