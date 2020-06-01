@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import arrayMutators from "final-form-arrays"
 import { Form as FinalForm } from "react-final-form";
+import { buildSubmitHandler } from "./submit";
 import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from "./validate";
 import { compileSchema } from "./schema";
 import Lifield, { renderField } from "./field"
@@ -14,9 +15,9 @@ const compileFinalFormProps = (props, liform) => {
     form: props.form,
     initialValues: props.initialValues || props.value,
     initialValuesEquals: props.initialValuesEquals,
-    keepDirtyOnReinitialize: props.keepDirtyOnReinitialize,
+    keepDirtyOnReinitialize: props.keepDirtyOnReinitialize || true,
     mutators: { ...arrayMutators, ...props.mutators },
-    onSubmit: props.onSubmit || (() => {}),
+    onSubmit: buildSubmitHandler(liform, props),
     subscription: props.subscription,
     validate: props.validate || buildFlatValidatorHandler(buildFlatValidatorStack(
       buildFlatAjvValidate(props.ajv, props.schema, props.ajvTranslator || translateAjv)
