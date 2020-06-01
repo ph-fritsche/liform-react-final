@@ -17,7 +17,7 @@ const compileFinalFormProps = (props, liform) => {
     initialValuesEquals: props.initialValuesEquals,
     keepDirtyOnReinitialize: props.keepDirtyOnReinitialize || true,
     mutators: { ...arrayMutators, ...props.mutators },
-    onSubmit: buildSubmitHandler(liform, props),
+    onSubmit: (props.buildSubmitHandler || buildSubmitHandler)(liform, props),
     subscription: props.subscription,
     validate: props.validate || buildFlatValidatorHandler(buildFlatValidatorStack(
       buildFlatAjvValidate(props.ajv, props.schema, props.ajvTranslator || translateAjv)
@@ -156,13 +156,9 @@ Liform.defaultTheme = DefaultTheme
 
 Liform.propTypes = {
   schema: PropTypes.object,
-  onSubmit: PropTypes.func,
-  initialValues: PropTypes.object,
-  syncValidation: PropTypes.func,
-  formKey: PropTypes.string,
-  baseForm: PropTypes.func,
-  context: PropTypes.object,
-  ajv: PropTypes.object
+  value: PropTypes.any,
+  meta: PropTypes.object,
+  name: PropTypes.string,
 };
 
 export default Liform;
