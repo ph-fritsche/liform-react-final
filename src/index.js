@@ -140,7 +140,8 @@ class Liform extends React.Component {
       return null
     }
 
-    const errorPaths = [''].filter(key => props.liform.meta.errors[key])
+    const registered = props.liform.form.getRegisteredFields()
+    const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(key) < 0)
     const Errors = props.liform.theme.errors
 
     return <div className='liform-errors'>
