@@ -154,17 +154,6 @@ class Liform extends React.Component {
 
 Liform.defaultTheme = DefaultTheme
 
-const EmbeddedLiform = props => {
-  const schema = compileSchema(props.schema);
-
-  return renderField(schema, 
-    props.fieldName || null, 
-    props.theme || DefaultTheme,
-    props.prefix || "");
-  
-}
-
-
 Liform.propTypes = {
   schema: PropTypes.object,
   onSubmit: PropTypes.func,
@@ -179,5 +168,4 @@ Liform.propTypes = {
 export default Liform;
 
 export {
-  EmbeddedLiform,
 };
