@@ -25,23 +25,85 @@ const compileFinalFormProps = (props, liform) => {
   }
 }
 
-const compileChildren = (parts, props) => {
-  if (props.children instanceof Function) {
-    return props.children
+const compileChildren = (parts, children) => {
+  if (children instanceof Function) {
+    return children
   }
 
-  let children = parts
-  if (props.children instanceof Object) {
-    for (const child of (Array.isArray(props.children) ? props.children : [props.children])) {
-      if (children[child.type]) {
-        children[child.type] = child.props.children
+  let compiled = {...parts}
+  if (children instanceof Object) {
+    for (const child of (Array.isArray(children) ? children : [children])) {
+      if (compiled[child.type]) {
+        compiled[child.type] = child.props.children
       } else {
-        children.__rest__ = children.__rest__ || []
-        children.__rest__.push(child)
+        compiled.__rest__ = compiled.__rest__ || []
+        compiled.__rest__.push(child)
       }
     }
   }
-  return children
+  return compiled
+}
+
+const renderContainer = (props) => (
+  <form
+    onSubmit={props.handleSubmit}
+    onReset={() => {props.liform.form.reset()}}
+    method={props.method || props.liform.schema.method || 'POST'}
+    action={props.action || props.liform.schema.action}
+    >
+      { props.children }
+  </form>
+)
+
+const renderForm = (props) => (
+  <Lifield
+    liform={props.liform}
+    schema={props.liform.schema}
+  />
+)
+
+const renderAction = (props) => (
+  <div className='liform-action'>
+    { props.liform.renderReset && props.liform.renderReset(props) }
+    { props.liform.renderSubmit && props.liform.renderSubmit(props) }
+  </div>
+)
+
+const renderReset = (props) => props.liform.renderField({
+  liform: props.liform,
+  'schema': {
+    'widget':['reset','button'],
+    title: 'Reset',
+  },
+})
+
+const renderSubmit = (props) => props.liform.renderField({
+  liform: props.liform,
+  'schema': {
+    'widget':['submit','button'],
+    title: 'Submit',
+  },
+})
+
+const renderErrors = (props) => {
+  if (!props.liform.meta.errors) {
+    return null
+  }
+
+  const registered = props.liform.form.getRegisteredFields()
+  const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(key) < 0)
+  const Errors = props.liform.theme.errors
+
+  return <div className='liform-errors'>
+    { errorPaths.map(propertyPath => <Errors key={propertyPath} title={propertyPath} errors={props.liform.meta.errors[propertyPath]}/>) }
+  </div>
+}
+
+const parts = {
+  header: null,
+  form: renderForm,
+  footer: renderErrors,
+  action: renderAction,
 }
 
 export const LiformContext = React.createContext()
@@ -53,12 +115,14 @@ class Liform extends React.Component {
     this.schema = compileSchema(props.schema)
     this.theme = props.theme || Liform.defaultTheme
     this.rootName = props.name || this.schema.name || ''
-    this.children = compileChildren(this.getParts(), props)
-    this.renderContainer = props.render || this.renderContainer
+    this.children = compileChildren(props.parts || parts, props.children)
+    this.renderContainer = props.render || renderContainer
     this.renderField = props.renderField || renderField
+    this.renderReset = props.renderReset || renderReset
+    this.renderSubmit = props.renderSubmit || renderSubmit
     this.finalFormProps = compileFinalFormProps(this.props, this)
-    this.renderReset = props.renderReset || this.renderReset
-    this.renderSubmit = props.renderSubmit || this.renderSubmit
+    this.renderReset = props.renderReset || renderReset
+    this.renderSubmit = props.renderSubmit || renderSubmit
     this.meta = props.meta || {}
     this.validationErrors = {}
   }
@@ -85,71 +149,6 @@ class Liform extends React.Component {
       />
     )
   }
-
-  getParts() { return {
-    header: null,
-    form: this.renderForm,
-    footer: this.renderErrors,
-    action: this.renderAction,
-  }}
-
-  renderContainer(props) { return (
-    <form
-      onSubmit={props.handleSubmit}
-      onReset={() => {props.liform.form.reset()}}
-      method={props.method || props.liform.schema.method || 'POST'}
-      action={props.action || props.liform.schema.action}
-      >
-        { props.children }
-    </form>
-  )}
-
-  renderForm(props) { return (
-    <Lifield
-      liform={props.liform}
-      schema={props.liform.schema}
-    />
-  ) }
-
-  renderAction(props) { return <div className='liform-action'>
-    { props.liform.renderReset && props.liform.renderReset(props) }
-    { props.liform.renderSubmit && props.liform.renderSubmit(props) }
-  </div> }
-
-  renderReset(props) {
-    return props.liform.renderField({
-      liform: props.liform,
-      'schema': {
-        'widget':['reset','button'],
-        title: 'Reset',
-      },
-    })
-  }
-
-  renderSubmit(props) {
-    return props.liform.renderField({
-      liform: props.liform,
-      'schema': {
-        'widget':['submit','button'],
-        title: 'Submit',
-      },
-    })
-  }
-
-  renderErrors(props) {
-    if (!props.liform.meta.errors) {
-      return null
-    }
-
-    const registered = props.liform.form.getRegisteredFields()
-    const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(key) < 0)
-    const Errors = props.liform.theme.errors
-
-    return <div className='liform-errors'>
-      { errorPaths.map(propertyPath => <Errors key={propertyPath} title={propertyPath} errors={props.liform.meta.errors[propertyPath]}/>) }
-    </div>
-  }
-
 }
 
 Liform.defaultTheme = DefaultTheme
