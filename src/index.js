@@ -112,18 +112,21 @@ class Liform extends React.Component {
   constructor(props) {
     super(props)
 
-    this.schema = compileSchema(props.schema)
-    this.theme = props.theme || Liform.defaultTheme
     this.rootName = props.name || this.schema.name || ''
+    this.theme = props.theme || Liform.defaultTheme
+
+    this.schema = compileSchema(props.schema)
+    this.meta = props.meta || {}
+
     this.children = compileChildren(props.parts || parts, props.children)
+
     this.renderContainer = props.render || renderContainer
     this.renderField = props.renderField || renderField
     this.renderReset = props.renderReset || renderReset
     this.renderSubmit = props.renderSubmit || renderSubmit
+
     this.finalFormProps = compileFinalFormProps(this.props, this)
-    this.renderReset = props.renderReset || renderReset
-    this.renderSubmit = props.renderSubmit || renderSubmit
-    this.meta = props.meta || {}
+
     this.validationErrors = {}
   }
 
