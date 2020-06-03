@@ -8,12 +8,12 @@ import { compileSchema } from "./schema";
 import Lifield, { renderField } from "./field"
 import DefaultTheme from "./themes/default";
 
-const compileChildren = (parts, children) => {
+const compileChildren = (sections, children) => {
   if (children instanceof Function) {
     return children
   }
 
-  let compiled = {...parts}
+  let compiled = {...sections}
   if (children instanceof Object) {
     for (const child of (Array.isArray(children) ? children : [children])) {
       if (compiled[child.type]) {
@@ -82,7 +82,7 @@ const renderErrors = (props) => {
   </div>
 }
 
-const parts = {
+const sections = {
   header: null,
   form: renderForm,
   footer: renderErrors,
@@ -92,7 +92,7 @@ const parts = {
 export const LiformContext = React.createContext()
 
 function Liform(props) {
-  const children = useMemo(() => compileChildren(props.parts || parts, props.children), [props.parts || parts, props.children])
+  const children = useMemo(() => compileChildren(props.sections || sections, props.children), [props.sections || sections, props.children])
 
   const [rootName, setRootName] = useState(props.name || props.schema.name || '')
   const [theme, setTheme] = useState(props.theme || Liform.defaultTheme)
