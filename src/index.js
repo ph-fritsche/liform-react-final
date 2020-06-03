@@ -120,7 +120,6 @@ class Liform extends React.Component {
 
     this.children = compileChildren(props.parts || parts, props.children)
 
-    this.renderContainer = props.render || renderContainer
     this.renderField = props.renderField || renderField
     this.renderReset = props.renderReset || renderReset
     this.renderSubmit = props.renderSubmit || renderSubmit
@@ -141,13 +140,15 @@ class Liform extends React.Component {
             liform: this,
           }
 
-          return <this.renderContainer {...renderProps}>{
+          return React.createElement(
+            this.props.render || renderContainer,
+            renderProps,
             (this.children instanceof Function) ?
               this.children(renderProps) :
               Object.keys(this.children).map(key => <React.Fragment key={key}>
-                { (this.children[key] instanceof Function) ? this.children[key](renderProps) : this.children[key] }
+                  { (this.children[key] instanceof Function) ? this.children[key](renderProps) : this.children[key] }
               </React.Fragment>)
-          }</this.renderContainer>
+          )
         }}
       />
     )
