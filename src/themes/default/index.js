@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
 import { mapProperties } from "../../properties";
-import Lifield, { htmlizeName } from "../../field";
+import Lifield from "../../field";
 
 export const ArrayWidget = ({name, schema, ...props}) => {
     return <FinalFieldArray name={name} render={({fields, meta}) => (
@@ -63,9 +63,7 @@ export class PureOptions extends React.PureComponent {
     }
 }
 
-export const choiceRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
-    input.name = htmlizeName(name, liform.rootName)
-
+export const choiceRender = ({liform, name, schema, input: {...input}, placeholder, meta}) => {
     if (schema.type === 'array' && !Array.isArray(input.value)) {
         input.value = []
     }
@@ -106,9 +104,7 @@ export const choiceRender = ({liform, schema, input: {name, ...input}, placehold
 
 }
 
-export const inputRender = ({liform, schema, input: {name, ...input}, placeholder, meta}) => {
-    input.name = htmlizeName(name, liform.rootName)
-
+export const inputRender = ({liform, name, schema, input: {...input}, placeholder, meta}) => {
     if (input.type === 'color' && input.value === '') {
         input.value = '#000000'
     }
@@ -129,7 +125,7 @@ export const inputRender = ({liform, schema, input: {name, ...input}, placeholde
 }
 
 export const hiddenRender = ({liform, schema, input: {name, value, onChange}, meta}) => {
-    const element = <input type='hidden' name={htmlizeName(name, liform.rootName)} value={value} onChange={onChange}/>
+    const element = <input type='hidden' name={name} value={value} onChange={onChange}/>
     const errors = renderFieldError(liform, name, meta)
     if (errors) {
         return <div className='liform-field liform-hidden'>
@@ -144,9 +140,7 @@ export const hiddenRender = ({liform, schema, input: {name, value, onChange}, me
     }
 }
 
-export const numberRender = ({liform, schema, input: {name, value, onChange, onBlur, ...input}, placeholder, meta}) => {
-    input.name = htmlizeName(name, liform.rootName)
-
+export const numberRender = ({liform, name, schema, input: {value, onChange, onBlur, ...input}, placeholder, meta}) => {
     input.defaultValue = value
 
     const ref = React.createRef()

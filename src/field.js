@@ -79,10 +79,17 @@ export const renderField = (props) => {
   if (typeof(Widget) === 'string') {
     fieldProps = { key: props.key, ...fieldProps, component: Widget }
   } else if (typeof(Widget) === 'object') {
-    fieldProps = { ...props, ...fieldProps, ...Widget }
+    const {render, component, ...rest} = Widget
+    fieldProps = { ...props, ...fieldProps, ...rest, render: renderFinalField.bind(undefined, render || component) }
   }
 
-  return <FinalField {...fieldProps}/>
+  return React.createElement(FinalField, fieldProps)
+}
+
+export const renderFinalField = (element, {input: {name, ...input}, ...rest}) => {
+  input.name = htmlizeName(name, rest.liform.rootName)
+
+  return React.createElement(element, {...rest, name, input})
 }
 
 export default class Lifield extends React.PureComponent {
