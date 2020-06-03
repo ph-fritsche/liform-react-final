@@ -127,8 +127,8 @@ const myRenderField = (props) => (
 ```
 
 #### Customize the submit handling
-Prop name | | |
-- | - | -
+| Prop name | Description |
+| --- | --- |
 `action` | Url where the form data is sent to.
 `prepareRequest` | Callback that will receive the values as first, the `LiformApi` as second and the default prepareRequest callback as third argument.<br/>Should return [fetch() init options](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters) object.
 `handleSubmitResponse` | Callback that will receive the submit handling callbacks below, the callbacks for the [Final Form Submit Promise](https://final-form.org/docs/react-final-form/types/FormProps#3-asynchronous-with-a-promise) and the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response)
