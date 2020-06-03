@@ -100,6 +100,6 @@ export default class Lifield extends React.PureComponent {
   render() {
     const { render, ...rest } = this.props
 
-    return (render || this.props.liform.renderField)(rest)
+    return (render || this.props.liform.render.field)(rest)
   }
 }

@@ -65,13 +65,7 @@ const onSubmitRedirectDefault = (finalPromise, location) => {
 }
 
 const onSubmitResult = (liform, finalPromise, props, response) => {
-    if (props.meta) {
-        liform.meta = props.meta
-    }
-    if (props.value) {
-        liform.finalFormProps.initialValues = props.value
-        liform.form.initialize(props.value)
-    }
+    liform.updateData(props)
     finalPromise.resolve(response.ok ? { [FORM_ERROR]: 'The submit failed' } : undefined)
 }
 
