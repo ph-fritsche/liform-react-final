@@ -166,7 +166,7 @@ function Liform(props) {
     validate: onValidate,
   }
 
-  return (
+  return <LiformContext.Provider value={liformApi}>
     <FinalForm {...finalFormProps}
       render={(finalFormRenderProps) => {
 
@@ -196,7 +196,7 @@ function Liform(props) {
         )
       }}
     />
-  )
+  </LiformContext.Provider>
 }
 
 Liform.defaultTheme = DefaultTheme
