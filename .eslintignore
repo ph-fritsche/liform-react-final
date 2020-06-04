@@ -1,4 +1,4 @@
 webpack.config*.js
-src/__tests__
+test
 node_modules
 examples

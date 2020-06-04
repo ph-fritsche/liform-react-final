@@ -1,3 +1,0 @@
-##hi
-
-a ritual *salutation*
