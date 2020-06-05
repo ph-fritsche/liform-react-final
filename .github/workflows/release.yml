@@ -40,6 +40,6 @@ jobs:
       with:
         name: dist
         path: dist
-    - run: yarn publish --new-version "${{ github.event.release.tag_name }}"
+    - run: yarn publish --no-git-tag-version --new-version "${{ github.event.release.tag_name }}"
       env:
         NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
