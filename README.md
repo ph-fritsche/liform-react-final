@@ -1,7 +1,5 @@
 # liform-react-final
 
-![tests](https://api.travis-ci.org/ph-fritsche/liform-react-final.svg?branch=master)
-
 Library for generating React forms from [JSON schema](https://json-schema.org/) using [React Final Form](https://final-form.org/react).
 
 This library is developed to work with [Pitch Liform](https://packagist.org/packages/pitch/liform) for rendering [Symfony Forms](https://symfony.com/doc/current/components/form.html).
