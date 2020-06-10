@@ -866,7 +866,7 @@
     "@babel/plugin-transform-react-jsx-source" "^7.10.1"
     "@babel/plugin-transform-react-pure-annotations" "^7.10.1"
 
-"@babel/runtime@^7.8.4":
+"@babel/runtime@^7.10.0", "@babel/runtime@^7.4.5", "@babel/runtime@^7.8.4":
   version "7.10.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.2.tgz#d103f21f2602497d38348a32e008637d506db839"
   integrity sha512-6sF3uQw2ivImfVIl62RZ7MXhO2tap69WeWK57vAaimT6AZbE4FbqjdEJIN1UqoD6wI6B+1n9UiagafH1sxjOtg==
@@ -1100,6 +1100,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
+
+"@scarf/scarf@^1.0.5":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@scarf/scarf/-/scarf-1.0.6.tgz#52011dfb19187b53b75b7b6eac20da0810ddd88f"
+  integrity sha512-y4+DuXrAd1W5UIY3zTcsosi/1GyYT8k5jGnZ/wG7UUHVrU+MHlH4Mp87KK2/lvMW4+H7HVcdB+aJhqywgXksjA==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.0"
@@ -2246,6 +2251,19 @@ fill-range@^7.0.1:
   dependencies:
     to-regex-range "^5.0.1"
 
+final-form-arrays@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/final-form-arrays/-/final-form-arrays-3.0.2.tgz#9f3bef778dec61432357744eb6f3abef7e7f3847"
+  integrity sha512-TfO8aZNz3RrsZCDx8GHMQcyztDNpGxSSi9w4wpSNKlmv2PfFWVVM8P7Yj5tj4n0OWax+x5YwTLhT5BnqSlCi+w==
+
+final-form@^4.20.0:
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/final-form/-/final-form-4.20.0.tgz#454ba46f783a4c4404ad875cf36f470395ad5efa"
+  integrity sha512-kdPGNlR/23M2p7ccVwE/vCBQH9TH1NAhhMVkETHbaQXkTWIJdEii3ZdHrOgYvFY7O87myEhcqzx3zjMERtoNJg==
+  dependencies:
+    "@babel/runtime" "^7.10.0"
+    "@scarf/scarf" "^1.0.5"
+
 find-up@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-2.1.0.tgz#45d1b7e506c717ddd482775a2b77920a3c0c57a7"
@@ -3380,7 +3398,7 @@ lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 
-loose-envify@^1.0.0:
+loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
@@ -3616,6 +3634,11 @@ oauth-sign@~0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.9.0.tgz#47a7b016baa68b5fa0ecf3dee08a85c679ac6455"
   integrity sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==
+
+object-assign@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
+  integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
 
 object-copy@^0.1.0:
   version "0.1.0"
@@ -3892,6 +3915,15 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.4"
 
+prop-types@^15.6.2:
+  version "15.7.2"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
+  integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
+  dependencies:
+    loose-envify "^1.4.0"
+    object-assign "^4.1.1"
+    react-is "^16.8.1"
+
 psl@^1.1.28:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/psl/-/psl-1.8.0.tgz#9326f8bcfb013adcc005fdff056acce020e51c24"
@@ -3915,10 +3947,45 @@ qs@~6.5.2:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
 
-react-is@^16.12.0:
+react-final-form-arrays@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-final-form-arrays/-/react-final-form-arrays-3.1.1.tgz#39d23e7ede966e418cad209e8fde46da1d603e99"
+  integrity sha512-e6S1x9597cvI4QPniOPmllXXandDAqCCuBo4AvXstZYgcV8whsqzk8aCrmQEy6eEfy2tEhvn6f4VI1GY+JBRsg==
+  dependencies:
+    "@babel/runtime" "^7.4.5"
+
+react-final-form@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/react-final-form/-/react-final-form-6.5.0.tgz#b0440acf534fd57991c048764ab20af13124aed6"
+  integrity sha512-H97PLCtfMIN32NHqm85E738Pj+NOF1p0eQEG+h5DbdaofwtqDRp7taHu45+PlXOqg9ANbM6MyXkYxWpIiE6qbQ==
+  dependencies:
+    "@babel/runtime" "^7.10.0"
+    "@scarf/scarf" "^1.0.5"
+    ts-essentials "^6.0.5"
+
+react-is@^16.12.0, react-is@^16.8.1, react-is@^16.8.6:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-test-renderer@^16.13.1:
+  version "16.13.1"
+  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-16.13.1.tgz#de25ea358d9012606de51e012d9742e7f0deabc1"
+  integrity sha512-Sn2VRyOK2YJJldOqoh8Tn/lWQ+ZiKhyZTPtaO0Q6yNj+QDbmRkVFap6pZPy3YQk8DScRDfyqm/KxKYP9gCMRiQ==
+  dependencies:
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    react-is "^16.8.6"
+    scheduler "^0.19.1"
+
+react@^16.13.1:
+  version "16.13.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
+  integrity sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
 
 read-pkg-up@^7.0.1:
   version "7.0.1"
@@ -4206,6 +4273,14 @@ saxes@^5.0.0:
   integrity sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==
   dependencies:
     xmlchars "^2.2.0"
+
+scheduler@^0.19.1:
+  version "0.19.1"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
+  integrity sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 "semver@2 || 3 || 4 || 5", semver@^5.4.1, semver@^5.5.0, semver@^5.6.0:
   version "5.7.1"
@@ -4650,6 +4725,11 @@ tr46@^2.0.2:
   integrity sha512-3n1qG+/5kg+jrbTzwAykB5yRYtQCTqOGKq5U5PE3b0a1/mzo6snDhjGS0zJVJunO0NrT3Dg1MLy5TjWP/UJppg==
   dependencies:
     punycode "^2.1.1"
+
+ts-essentials@^6.0.5:
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/ts-essentials/-/ts-essentials-6.0.5.tgz#dd5b98f73bd56dc94d15dfbc0fbf01da3163eb42"
+  integrity sha512-RSAKlpu+E0DCGY8FsbG92EveRLw2Y+UgK3ksX01w1VaHeG01dKkYo/KtAV4q0qPT6nPbLfyerb2YPVSediP+8g==
 
 tslib@^1.9.0:
   version "1.13.0"
