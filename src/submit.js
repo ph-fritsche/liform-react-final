@@ -75,7 +75,7 @@ export const buildSubmitHandler = (liform, {action, prepareRequest, ...props}) =
         onSubmitRedirect: props.onSubmitRedirect || onSubmitRedirectDefault,
         onSubmitHtmlResponse: props.onSubmitHtmlResponse || onSubmitHtmlResponseDefault,
         onSubmitSuccess: props.onSubmitSuccess || onSubmitResult.bind(undefined, liform),
-        onSubmitFail: props.onSubmitSuccess || onSubmitResult.bind(undefined, liform),
+        onSubmitFail: props.onSubmitFail || onSubmitResult.bind(undefined, liform),
     }
 
     return (values) => {
