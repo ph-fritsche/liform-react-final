@@ -2,9 +2,20 @@ import React from 'react';
 import { Field as FinalField } from "react-final-form";
 import { buildFieldValidator } from './validate';
 
-export const htmlizeName = (name, rootName) => {
+export const liformizeName = (finalName) => {
+  return finalName.replace(/^_\.?/, '')
+}
+
+export const finalizeName = (liformName) => {
+  if (liformName === undefined || liformName === "") {
+    return '_'
+  }
+  return '_.' + liformName
+}
+
+export const htmlizeName = (finalName, rootName) => {
   let i = 0
-  return (((rootName ? rootName + '.' : '') + name || '')
+  return (finalName.replace(/^_/, rootName)
     .replace(/[.[]/g, () => { i++; return i>1 ? '][' : '[' })
     + ( i>0 ? ']' : '')
   ).replace(/]]+/, ']')
@@ -54,7 +65,7 @@ export const compileFinalFieldProps = (props) => {
     formatOnBlur: props.formatOnBlur,
     initialValue: props.initialValue,
     isEqual: props.isEqual,
-    name: props.name,
+    name: finalizeName(props.name),
     parse: props.parse,
     ref: props.ref,
     subscription: props.subscription,

@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
 import { mapProperties } from "../../properties";
-import Lifield from "../../field";
+import Lifield, { liformizeName } from "../../field";
 
 export const ArrayWidget = ({name, schema, ...props}) => {
     return <FinalFieldArray name={name} render={({fields, meta}) => (
@@ -182,9 +182,10 @@ export const numberRender = ({liform, name, schema, input: {value, onChange, onB
 }
 
 const renderFieldError = (liform, name, meta) => {
+    const liformName = liformizeName(name)
     return (meta.touched || meta.dirty) && meta.error && meta.error.map(e =>
         <div key={e} className='liform-error liform-validate'>{e}</div>
-    ) || meta.pristine && liform.meta.errors && liform.meta.errors[name] && liform.meta.errors[name].map(e =>
+    ) || meta.pristine && liform.meta.errors && liform.meta.errors[liformName] && liform.meta.errors[liformName].map(e =>
         <div key={e} className='liform-error liform-meta'>{e}</div>
     )
 }

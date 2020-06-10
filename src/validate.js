@@ -32,14 +32,14 @@ export const translateAjv = ({dataPath, keyword, params, message}, values) => {
 }
 
 export const flatAjvValidate = (ajv, schema, ajvTranslate, values) => {
-    if (ajv.validate(schema, values)) {
+    if (ajv.validate(schema, values._)) {
         return undefined
     }
 
     let flatErrors = {}
 
     ajv.errors.forEach(errorObject => {
-        const translated = ajvTranslate(errorObject, values)
+        const translated = ajvTranslate(errorObject, values._)
 
         flatErrors[translated.fieldName] = flatErrors[translated.fieldName] || []
         flatErrors[translated.fieldName].push(translated.message)

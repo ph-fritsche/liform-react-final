@@ -5,7 +5,7 @@ import { Form as FinalForm } from "react-final-form";
 import { buildSubmitHandler } from "./submit";
 import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from "./validate";
 import { compileSchema } from "./schema";
-import Lifield, { renderField } from "./field"
+import Lifield, { renderField, finalizeName } from "./field"
 import DefaultTheme from "./themes/default";
 
 const compileChildren = (sections, children) => {
@@ -74,7 +74,7 @@ const renderErrors = (props) => {
   }
 
   const registered = props.liform.form.getRegisteredFields()
-  const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(key) < 0)
+  const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(finalizeName(key)) < 0)
   const Errors = props.liform.theme.errors
 
   return <div className='liform-errors'>
@@ -157,7 +157,7 @@ function Liform(props) {
     debug: props.debug,
     decorators: props.decorators,
     form: props.form,
-    initialValues: value,
+    initialValues: {_: value},
     initialValuesEquals: props.initialValuesEquals,
     keepDirtyOnReinitialize: false, //props.keepDirtyOnReinitialize !== false,
     mutators: { ...arrayMutators, ...props.mutators },
