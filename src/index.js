@@ -111,12 +111,8 @@ function Liform(props) {
   })
 
   function updateData(props) {
-    if (props.meta) {
-      setMeta(props.meta)
-    }
-    if (props.value) {
-      setValue(props.value)
-    }
+    setMeta(props.meta || {})
+    setValue(props.value)
   }
 
   function updateRender(props) {

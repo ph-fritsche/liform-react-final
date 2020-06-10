@@ -66,7 +66,7 @@ const onSubmitRedirectDefault = (finalPromise, location) => {
 
 const onSubmitResult = (liform, finalPromise, props, response) => {
     liform.updateData(props)
-    finalPromise.resolve(response.ok ? { [FORM_ERROR]: 'The submit failed' } : undefined)
+    finalPromise.resolve((response.ok && (!props.meta || !props.meta.errors))? undefined : { [FORM_ERROR]: 'The submit failed' })
 }
 
 export const buildSubmitHandler = (liform, {action, prepareRequest, ...props}) => {
@@ -79,10 +79,11 @@ export const buildSubmitHandler = (liform, {action, prepareRequest, ...props}) =
     }
 
     return (values) => {
+        const liformValue = values && values._
         return new Promise((resolve, reject) => {
             fetch(
                 action || '',
-                prepareRequest ? prepareRequest(values, liform, prepareRequestDefault) : prepareRequestDefault(values, liform)
+                prepareRequest ? prepareRequest(liformValue, liform, prepareRequestDefault) : prepareRequestDefault(liformValue, liform)
             ).then(
                 response => (props.handleSubmitResponse || handleSubmitResponseDefault)(responseCallbacks, {resolve, reject}, response),
                 reason => (props.handleSubmitError || handleSubmitErrorDefault)({resolve, reject}, reason)
