@@ -108,6 +108,17 @@ export const LifieldChildren = React.memo(
   ({render, input: {name, ...input}, meta, ...rest}) => {
     input.name = htmlizeName(name, rest.liform.rootName)
 
+    // if a value does not exist, final form provides an empty string
+    if (rest.schema && rest.schema.type && input.value === '') {
+      if (rest.schema.type === 'array') {
+        input.value = []
+      } else if (rest.schema.type === 'object') {
+        input.value = {}
+      } else if (rest.schema.type !== 'string') {
+        input.value = undefined
+      }
+    }
+
     return React.createElement(render, {...rest, name, input, meta})
   },
   (
