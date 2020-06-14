@@ -97,10 +97,57 @@ export const renderField = (props) => {
   return React.createElement(FinalField, fieldProps)
 }
 
-export const renderFinalField = (element, {input: {name, ...input}, ...rest}) => {
-  input.name = htmlizeName(name, rest.liform.rootName)
+export const renderFinalField = (element, props) => {
+  return <LifieldChildren
+    render={element}
+    {...props}
+  />
+}
 
-  return React.createElement(element, {...rest, name, input})
+export const LifieldChildren = React.memo(
+  ({render, input: {name, ...input}, meta, ...rest}) => {
+    input.name = htmlizeName(name, rest.liform.rootName)
+
+    return React.createElement(render, {...rest, name, input, meta})
+  },
+  (
+    {input: prevInput, meta: {prevMeta, error: prevError}, ...prevRest},
+    {input: nextInput, meta: {nextMeta, error: nextError}, ...nextRest},
+  ) => {
+    return shallowEqual(prevRest, nextRest)
+      && shallowEqual(prevInput, nextInput)
+      && shallowEqual(prevMeta, nextMeta)
+      && shallowEqual(prevError, nextError)
+  }
+)
+
+const shallowEqual = (a, b) => {
+  if (typeof(a) !== typeof(b) || Array.isArray(a) !== Array.isArray(b)) {
+    return false
+  }
+
+  if (Array.isArray(a)) {
+    if (a.length !== b.length) {
+      return false
+    }
+    for (var i in a) {
+      if (a[i] !== b[i]) {
+        return false
+      }
+    }
+  } else if (typeof(a) === 'object') {
+    if (!shallowEqual(Object.keys(a), Object.keys(b))) {
+      return false
+    }
+    for (var i in a) {
+      if (a[i] !== b[i]) {
+        return false
+      }
+    }
+  } else if (a !== b) {
+    return false
+  }
+  return true
 }
 
 export default class Lifield extends React.PureComponent {
