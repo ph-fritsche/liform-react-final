@@ -5,7 +5,6 @@ import { Form as FinalForm } from "react-final-form";
 import { buildSubmitHandler } from "./submit";
 import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from "./validate";
 import { compileSchema } from "./schema";
-import Lifield, { renderField, finalizeName } from "./field"
 import DefaultTheme from "./themes/default";
 
 const compileChildren = (sections, children) => {
@@ -27,73 +26,9 @@ const compileChildren = (sections, children) => {
   return compiled
 }
 
-const renderContainer = (props) => (
-  <form
-    onSubmit={props.handleSubmit}
-    onReset={props.handleReset}
-    method={props.method || props.liform.schema.method || 'POST'}
-    action={props.action || props.liform.schema.action}
-    >
-      { props.children }
-  </form>
-)
-
-const renderForm = (props) => (
-  <Lifield
-    liform={props.liform}
-    schema={props.liform.schema}
-  />
-)
-
-const renderAction = (props) => (
-  <div className='liform-action'>
-    { props.liform.render.reset && props.liform.render.reset(props) }
-    { props.liform.render.submit && props.liform.render.submit(props) }
-  </div>
-)
-
-const renderReset = (props) => props.liform.render.field({
-  liform: props.liform,
-  'schema': {
-    'widget':['reset','button'],
-    title: 'Reset',
-  },
-})
-
-const renderSubmit = (props) => props.liform.render.field({
-  liform: props.liform,
-  'schema': {
-    'widget':['submit','button'],
-    title: 'Submit',
-  },
-})
-
-const renderErrors = (props) => {
-  if (!props.liform.meta.errors) {
-    return null
-  }
-
-  const registered = props.liform.form.getRegisteredFields()
-  const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(finalizeName(key)) < 0)
-  const Errors = props.liform.theme.errors
-
-  return <div className='liform-errors'>
-    { errorPaths.map(propertyPath => <Errors key={propertyPath} title={propertyPath} errors={props.liform.meta.errors[propertyPath]}/>) }
-  </div>
-}
-
-const sections = {
-  header: null,
-  form: renderForm,
-  footer: renderErrors,
-  action: renderAction,
-}
-
 export const LiformContext = React.createContext()
 
 function Liform(props) {
-  const children = useMemo(() => compileChildren(props.sections || sections, props.children), [props.sections || sections, props.children])
-
   const [rootName, setRootName] = useState(props.name || props.schema.name || '')
   const [theme, setTheme] = useState(props.theme || Liform.defaultTheme)
 
@@ -104,19 +39,12 @@ function Liform(props) {
 
   const [validationErrors, setValidationErrors] = useState({})
 
-  const [renderFunctions, setRenderFunctions] = useState({
-    field: props.renderField || renderField,
-    reset: props.renderReset || renderReset,
-    submit: props.renderSubmit || renderSubmit,
-  })
+  const children = useMemo(() => compileChildren(props.sections || theme.sections, props.children), [props.sections || theme.sections, props.children])
+  const render = useMemo(() => ({...theme.render, ...props.render}), [theme, props.render])
 
   function updateData(props) {
     setMeta(props.meta || {})
     setValue(props.value)
-  }
-
-  function updateRender(props) {
-    setRenderFunctions({...renderFunctions, ...props})
   }
 
   const liformApiProps = {
@@ -125,9 +53,8 @@ function Liform(props) {
     schema,
     meta,
     validationErrors,
-    render: renderFunctions,
+    render,
     updateData,
-    updateRender,
   }
   const liformApi = useMemo(() => liformApiProps, Object.keys(liformApiProps).map(k => liformApiProps[k]))
 
@@ -180,7 +107,7 @@ function Liform(props) {
         }
 
         return React.createElement(
-          props.render || renderContainer,
+          render.container,
           renderProps,
           (children instanceof Function) ?
             children(renderProps) :

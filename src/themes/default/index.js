@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
 import { mapProperties } from "../../properties";
-import Lifield, { liformizeName } from "../../field";
+import Lifield, { liformizeName, renderField } from "../../field";
 
 export const ArrayWidget = ({name, schema, ...props}) => {
     return <FinalFieldArray name={name} render={({fields, meta}) => (
@@ -190,15 +190,80 @@ const renderFieldError = (liform, name, meta) => {
     )
 }
 
-export const renderErrors = ({errors, title}) => (
-    <div className='liform-error-group'>
-        { title && <strong>{title}</strong> }
-        { errors.map((e,i) => <div key={i} className='liform-error'>{e}</div>) }
+const renderContainer = (props) => (
+    <form
+        onSubmit={props.handleSubmit}
+        onReset={props.handleReset}
+        method={props.method || props.liform.schema.method || 'POST'}
+        action={props.action || props.liform.schema.action}
+        >
+        { props.children }
+    </form>
+)
+
+export const renderForm = (props) => (
+    <Lifield
+        liform={props.liform}
+        schema={props.liform.schema}
+    />
+)
+
+export const renderAction = (props) => (
+    <div className='liform-action'>
+        { props.liform.render.reset && props.liform.render.reset(props) }
+        { props.liform.render.submit && props.liform.render.submit(props) }
     </div>
 )
 
+const renderReset = (props) => props.liform.render.field({
+    liform: props.liform,
+    schema: {
+        widget: ['reset','button'],
+        title: 'Reset',
+    },
+})
+
+const renderSubmit = (props) => props.liform.render.field({
+    liform: props.liform,
+    schema: {
+        widget: ['submit','button'],
+        title: 'Submit',
+    },
+})
+
+export const renderFormErrors = (props) => {
+    if (!props.liform.meta.errors) {
+        return null
+    }
+
+    const registered = props.liform.form.getRegisteredFields()
+    const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(finalizeName(key)) < 0)
+    const Errors = ({errors, title}) => (
+        <div className='liform-error-group'>
+            { title && <strong>{title}</strong> }
+            { errors.map((e,i) => <div key={i} className='liform-error'>{e}</div>) }
+        </div>
+    )
+
+    return <div className='liform-errors'>
+        { errorPaths.map(propertyPath => <Errors key={propertyPath} title={propertyPath} errors={props.liform.meta.errors[propertyPath]}/>) }
+    </div>
+}
+
 export default {
-    errors: renderErrors,
+    sections: {
+        header: null,
+        form: renderForm,
+        footer: null,
+        errors: renderFormErrors,
+        action: renderAction,
+    },
+    render: {
+        container: renderContainer,
+        field: renderField,
+        reset: renderReset,
+        submit: renderSubmit,
+    },
     field: {
         // type
         array: ArrayWidget,
