@@ -1,7 +1,8 @@
 import React from 'react'
 import Renderer from 'react-test-renderer'
-import Liform from '../src'
-import { Form, Field } from 'react-final-form'
+import Liform, { DefaultTheme } from '../src'
+
+Liform.theme = DefaultTheme
 
 describe("Liform with single field form", () => {
     const props = {

@@ -1,14 +1,15 @@
-import DefaultTheme from "./themes/default";
-
 import { Liform as RealLiform } from './form'
 
-function Liform (props) {
-    return RealLiform({...props, theme: props.theme || Liform.defaultTheme})
+export default function Liform (props) {
+    return RealLiform({...props, theme: props.theme || Liform.theme})
 }
-Liform.defaultTheme = DefaultTheme
 
-export default Liform;
+export { RealLiform as Liform }
 
-export {
-    RealLiform as Liform,
-};
+export { Lifield, finalizeName, liformizeName, htmlizeName, renderField } from './field'
+export { compileSchema } from './schema'
+export { mapProperties, sortProperties, sortPropertyKeys} from './properties'
+export { buildSubmitHandler } from './submit'
+export { buildFieldValidator, buildFlatValidatorHandler, buildFlatValidatorStack } from './validate'
+
+export { default as DefaultTheme } from './themes/default'

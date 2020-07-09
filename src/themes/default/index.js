@@ -1,7 +1,6 @@
 import React from "react";
 import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
-import { mapProperties } from "../../properties";
-import Lifield, { liformizeName, renderField } from "../../field";
+import { Lifield, liformizeName, mapProperties, renderField } from "../../";
 
 export const ArrayWidget = ({name, schema, ...props}) => {
     return <FinalFieldArray name={name} render={({fields, meta}) => (

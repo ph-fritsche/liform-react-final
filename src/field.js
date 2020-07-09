@@ -161,7 +161,7 @@ const shallowEqual = (a, b) => {
     return true
 }
 
-export default class Lifield extends React.PureComponent {
+export class Lifield extends React.PureComponent {
     constructor(props) {
         super(props)
     }
