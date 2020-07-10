@@ -34,9 +34,9 @@ export const guessWidget = (fieldSchema, theme) => {
     }
 
     let typeGuess
-    if (Object.property.hasOwnProperty.call(fieldSchema, 'enum')) {
+    if (Object.prototype.hasOwnProperty.call(fieldSchema, 'enum')) {
         typeGuess = 'choice'
-    } else if (Object.property.hasOwnProperty.call(fieldSchema, 'oneOf')) {
+    } else if (Object.prototype.hasOwnProperty.call(fieldSchema, 'oneOf')) {
         typeGuess = 'oneOf'
     } else if (theme.field[fieldSchema.format]) {
         typeGuess = fieldSchema.format
