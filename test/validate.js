@@ -20,20 +20,38 @@ describe('Ajv', () => {
         expect(validator({any: 'foo'})).toEqual(undefined)
     })
 
-    it('Validate root type', () => {
-        const schema = {type: 'string'}
-        const validator = buildFlatAjvValidate(undefined, schema)
+    it('Validate type', () => {
+        let schema = {type: 'string'}
+        let validator = buildFlatAjvValidate(undefined, schema)
 
         expect(validator({_: 'foo'})).toEqual(undefined)
         expect(validator({_: 123})).toEqual({'': ['Type']})
+
+        schema = {type: 'object', properties: {'foo': {type: 'string'}}}
+        validator = buildFlatAjvValidate(undefined, schema)
+
+        expect(validator({_: {foo: 'bar'}})).toEqual(undefined)
+        expect(validator({_: {foo: 123}})).toEqual({'foo': ['Type']})
+
+        schema = {type: 'object', properties: {'foo': {type: 'object', properties: {'bar': {type: 'string'}}}}}
+        validator = buildFlatAjvValidate(undefined, schema)
+
+        expect(validator({_: {foo: {bar: 'baz'}}})).toEqual(undefined)
+        expect(validator({_: {foo: {bar: 123}}})).toEqual({'foo.bar': ['Type']})
     })
 
     it('Validate required property', () => {
-        const schema = {type: 'object', properties: {'foo': true}, required: ['foo']}
-        const validator = buildFlatAjvValidate(undefined, schema)
+        let schema = {type: 'object', properties: {'foo': true}, required: ['foo']}
+        let validator = buildFlatAjvValidate(undefined, schema)
 
-        expect(validator({_: {'foo': 'bar'}})).toEqual(undefined)
-        expect(validator({_: {'bar': 'baz'}})).toEqual({'foo': ['Required']})
+        expect(validator({_: {'foo': 'foo'}})).toEqual(undefined)
+        expect(validator({_: {'bar': 'bar'}})).toEqual({'foo': ['Required']})
+
+        schema = {type: 'object', properties: {'foo': {type: 'object', properties: {'bar': true}, required: ['bar']}}}
+        validator = buildFlatAjvValidate(undefined, schema)
+
+        expect(validator({_: {foo: {bar: 'bar'}}})).toEqual(undefined)
+        expect(validator({_: {foo: {baz: 'baz'}}})).toEqual({'foo.bar': ['Required']})
     })
 
     it('Translate errors', () => {
@@ -98,5 +116,7 @@ describe('Field validator', () => {
 
         expect(buildFieldValidator(liformContext, 'foo.bar')()).toEqual(['baz'])
         expect(buildFieldValidator(liformContext, 'some.other.field')()).toEqual(undefined)
+
+        expect(buildFieldValidator({}, 'foo')()).toEqual(undefined)
     })
 })
