@@ -5,10 +5,12 @@ describe('Property helpers', () => {
         const object = {
             a: {propertyOrder: 2},
             b: {propertyOrder: 1},
-            c: {propertyOrder: 1},
+            c: {}, // json-schema defines 1000 as default
+            d: {propertyOrder: 2000},
+            e: {propertyOrder: 1},
         }
 
-        expect(sortPropertyKeys(object)).toEqual(['b','c','a'])
+        expect(sortPropertyKeys(object)).toEqual(['b','e','a','c','d'])
     })
 
     it('Sort properties', () => {
