@@ -6,7 +6,7 @@ export default function Liform (props) {
 
 export { RealLiform as Liform }
 
-export { Lifield, finalizeName, liformizeName, htmlizeName, renderField } from './field'
+export { Lifield, finalizeName, liformizeName, htmlizeName, renderField, renderFinalField } from './field'
 export { compileSchema } from './schema'
 export { mapProperties, sortProperties, sortPropertyKeys} from './properties'
 export { buildSubmitHandler } from './submit'

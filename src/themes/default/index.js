@@ -180,12 +180,9 @@ export const numberRender = ({liform, name, schema, input: {value, onChange, onB
     </div>
 }
 
-const renderFieldError = (liform, name, meta) => {
-    const liformName = liformizeName(name)
-    return (meta.touched || meta.dirty) && meta.error && meta.error.map(e =>
-        <div key={e} className='liform-error liform-validate'>{e}</div>
-    ) || meta.pristine && liform.meta.errors && liform.meta.errors[liformName] && liform.meta.errors[liformName].map(e =>
-        <div key={e} className='liform-error liform-meta'>{e}</div>
+const renderFieldError = ({meta: {error}}) => {
+    return error && error.map(e =>
+        <div key={e} className='liform-error'>{e}</div>
     )
 }
 

@@ -105,19 +105,26 @@ export const renderFinalField = (element, props) => {
 }
 
 export const LifieldChildren = React.memo(
-    ({render, input: {name, ...input}, meta, ...rest}) => {
-        input.name = htmlizeName(name, rest.liform.rootName)
+    ({render, input: {name, ...input}, meta: {error: finalError, ...meta}, ...rest}) => {
+        const liform = rest.liform
+        const schema = rest.schema
+
+        input.name = htmlizeName(name, liform.rootName)
 
         // if a value does not exist, final form provides an empty string
-        if (rest.schema && rest.schema.type && input.value === '') {
-            if (rest.schema.type === 'array') {
+        if (schema && schema.type && input.value === '') {
+            if (schema.type === 'array') {
                 input.value = []
-            } else if (rest.schema.type === 'object') {
+            } else if (schema.type === 'object') {
                 input.value = {}
-            } else if (rest.schema.type !== 'string') {
+            } else if (schema.type !== 'string') {
                 input.value = undefined
             }
         }
+
+        const liformName = liformizeName(name)
+        meta.error = (meta.touched || meta.dirty) && liform.validationErrors && liform.validationErrors[liformName]
+            || meta.pristine && liform.meta.errors && liform.meta.errors[liformName]
 
         return React.createElement(render, {...rest, name, input, meta})
     },
