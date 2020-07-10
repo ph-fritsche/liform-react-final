@@ -13,6 +13,5 @@ module.exports = {
     ],
     "transformIgnorePatterns": [],
     "setupFiles": [
-        "./test/_setup.js"
     ],
 }

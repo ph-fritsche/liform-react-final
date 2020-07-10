@@ -1,5 +1,5 @@
 import Ajv from "ajv";
-import { FORM_ERROR, getIn } from "final-form";
+import { FORM_ERROR } from "final-form";
 
 export const buildFlatAjvValidate = (ajv, schema, ajvTranslate) => {
     if (!(ajv instanceof Ajv)) {
@@ -13,7 +13,7 @@ export const buildFlatAjvValidate = (ajv, schema, ajvTranslate) => {
     }
 
     if (!(ajvTranslate instanceof Function)) {
-        ajvTranslate
+        ajvTranslate = translateAjv
     }
 
     return flatAjvValidate.bind(null, ajv, schema, ajvTranslate)

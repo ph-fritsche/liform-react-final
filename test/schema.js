@@ -1,6 +1,6 @@
 import { compileSchema } from "../src/schema";
 
-describe("createLiform", () => {
+describe("Compile schema", () => {
   const schema = {
     definitions: {
       nameref: {
