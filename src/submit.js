@@ -55,7 +55,7 @@ const onSubmitHtmlResponseDefault = (finalPromise, response) => {
     })
 }
 
-const handleSubmitRedirectResponseDefault = ({},{resolve}) => {
+const handleSubmitRedirectResponseDefault = (promise, {resolve}) => {
     return resolve({ [FORM_ERROR]: 'The submit is redirected' })
 }
 

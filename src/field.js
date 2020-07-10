@@ -34,9 +34,9 @@ export const guessWidget = (fieldSchema, theme) => {
     }
 
     let typeGuess
-    if (fieldSchema.hasOwnProperty('enum')) {
+    if (Object.property.hasOwnProperty.call(fieldSchema, 'enum')) {
         typeGuess = 'choice'
-    } else if (fieldSchema.hasOwnProperty('oneOf')) {
+    } else if (Object.property.hasOwnProperty.call(fieldSchema, 'oneOf')) {
         typeGuess = 'oneOf'
     } else if (theme.field[fieldSchema.format]) {
         typeGuess = fieldSchema.format
@@ -105,7 +105,8 @@ export const renderFinalField = (element, props) => {
 }
 
 export const LifieldChildren = React.memo(
-    ({render, input: {name, ...input}, meta: {error: finalError, ...meta}, ...rest}) => {
+    function LifieldChildren ({render, input: {name, ...input}, meta: metaProp, ...rest}) {
+        const meta = {...metaProp}
         const liform = rest.liform
         const schema = rest.schema
 
@@ -148,7 +149,7 @@ const shallowEqual = (a, b) => {
         if (a.length !== b.length) {
             return false
         }
-        for (var i in a) {
+        for (const i in a) {
             if (a[i] !== b[i]) {
                 return false
             }
@@ -157,7 +158,7 @@ const shallowEqual = (a, b) => {
         if (!shallowEqual(Object.keys(a), Object.keys(b))) {
             return false
         }
-        for (var i in a) {
+        for (const i in a) {
             if (a[i] !== b[i]) {
                 return false
             }

@@ -19,7 +19,7 @@ export const buildFlatAjvValidate = (ajv, schema, ajvTranslate) => {
     return flatAjvValidate.bind(null, ajv, schema, ajvTranslate)
 }
 
-export const translateAjv = ({dataPath, keyword, params, message}, values) => {
+export const translateAjv = ({dataPath, keyword, params, message}) => {
     let fieldName = dataPath.substr(0,1) === '.' ? dataPath.substr(1) : dataPath
 
     if (keyword === 'required') {
@@ -66,7 +66,6 @@ export const buildFlatValidatorStack = (...validators) => {
 }
 
 export const buildFlatValidatorHandler = (flatErrorValidator, liform) => {
-    let i = 0
     return (values) => {
         const flatErrors = flatErrorValidator(values)
         liform.validationErrors = flatErrors
@@ -74,7 +73,7 @@ export const buildFlatValidatorHandler = (flatErrorValidator, liform) => {
     }
 }
 
-export const validateField = (liform, name, value, allValues, fieldMeta) => {
+export const validateField = (liform, name) => {
     return typeof(liform.validationErrors) === 'object' ? liform.validationErrors[name] : undefined
 }
 

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import arrayMutators from "final-form-arrays"
 import { Form as FinalForm } from "react-final-form";
@@ -28,25 +28,26 @@ export function compileChildren (sections, children) {
 export const LiformContext = React.createContext()
 
 export function Liform(props) {
-    const [rootName, setRootName] = useState(props.name || props.schema.name || '')
-    const [theme, setTheme] = useState(props.theme)
+    const [rootName] = useState(props.name || props.schema.name || '')
+    const [theme] = useState(props.theme)
 
     const schema = useMemo(() => compileSchema(props.schema), [props.schema])
 
     const [meta, setMeta] = useState(props.meta || {})
     const [value, setValue] = useState(props.value)
 
-    const [validationErrors, setValidationErrors] = useState({})
+    const [validationErrors] = useState({})
 
-    const children = useMemo(() => compileChildren(props.sections || theme.sections, props.children), [props.sections || theme.sections, props.children])
+    const sections = props.sections || theme.sections
+    const children = useMemo(() => compileChildren(sections, props.children), [sections, props.children])
     const render = useMemo(() => ({...theme.render, ...props.render}), [theme, props.render])
 
-    function updateData(props) {
+    const updateData = useCallback((props) => {
         setMeta(props.meta || {})
         setValue(props.value)
-    }
+    }, [setMeta, setValue])
 
-    const liformApiProps = {
+    const liformApi = useMemo(() => ({
         rootName,
         theme,
         schema,
@@ -54,13 +55,19 @@ export function Liform(props) {
         validationErrors,
         render,
         updateData,
-    }
-    const liformApi = useMemo(() => liformApiProps, Object.keys(liformApiProps).map(k => liformApiProps[k]))
+    }), [
+        rootName,
+        theme,
+        schema,
+        meta,
+        validationErrors,
+        render,
+        updateData,
+    ])
 
-    const submitProps = {
+    const onSubmit = useMemo(() => (props.buildSubmitHandler || buildSubmitHandler)(liformApi, {
         action: props.action,
         prepareRequest: props.prepareRequest,
-        buildSubmitHandler: props.buildSubmitHandler || buildSubmitHandler,
         handleSubmitError: props.handleSubmitError,
         handleSubmitResponse: props.handleSubmitResponse,
         handleSubmitRedirectResponse: props.handleSubmitRedirectResponse,
@@ -68,12 +75,23 @@ export function Liform(props) {
         onSubmitHtmlResponse: props.onSubmitHtmlResponse,
         onSubmitSuccess: props.onSubmitSuccess,
         onSubmitFail: props.onSubmitFail,
-    }
-    const onSubmit = useMemo(() => buildSubmitHandler(liformApi, submitProps), [].concat([liformApi], Object.keys(submitProps).map(k => submitProps[k])))
+    }), [
+        props.buildSubmitHandler,
+        liformApi,
+        props.action,
+        props.prepareRequest,
+        props.handleSubmitError,
+        props.handleSubmitResponse,
+        props.handleSubmitRedirectResponse,
+        props.onSubmitRedirect,
+        props.onSubmitHtmlResponse,
+        props.onSubmitSuccess,
+        props.onSubmitFail,
+    ])
 
     const onValidate = useMemo(() => buildFlatValidatorHandler(buildFlatValidatorStack(
         buildFlatAjvValidate(props.ajv, schema, props.ajvTranslator || translateAjv)
-    ), liformApi), [props.ajv, props.ajvTranslator, liformApi])
+    ), liformApi), [props.ajv, schema, props.ajvTranslator, liformApi])
 
     const finalFormProps = {
         debug: props.debug,
@@ -91,41 +109,41 @@ export function Liform(props) {
     return (
         <LiformContext.Provider value={liformApi}>
             <FinalForm {...finalFormProps}
-            render={(finalFormRenderProps) => {
+                render={(finalFormRenderProps) => {
 
-                liformApi.form = finalFormRenderProps.form
+                    liformApi.form = finalFormRenderProps.form
 
-                const renderProps = {
-                ...finalFormRenderProps,
-                handleReset: () => {
-                    // https://github.com/final-form/final-form/issues/151#issuecomment-425867172
-                    liformApi.form.setConfig('keepDirtyOnReinitialize', false)
-                    liformApi.form.reset()
-                    liformApi.form.setConfig('keepDirtyOnReinitialize', true)
-                },
-                liform: liformApi,
-                }
+                    const renderProps = {
+                        ...finalFormRenderProps,
+                        handleReset: () => {
+                            // https://github.com/final-form/final-form/issues/151#issuecomment-425867172
+                            liformApi.form.setConfig('keepDirtyOnReinitialize', false)
+                            liformApi.form.reset()
+                            liformApi.form.setConfig('keepDirtyOnReinitialize', true)
+                        },
+                        liform: liformApi,
+                    }
 
-                return React.createElement(
-                render.container,
-                renderProps,
-                (children instanceof Function) ?
-                    children(renderProps) :
-                    Object.keys(children).map(key => (
-                        <React.Fragment key={key}>
-                            { (children[key] instanceof Function) ? children[key](renderProps) : children[key] }
-                        </React.Fragment>
-                    ))
-                )
-            }}
+                    return React.createElement(
+                        render.container,
+                        renderProps,
+                        (children instanceof Function) ?
+                            children(renderProps) :
+                            Object.keys(children).map(key => (
+                                <React.Fragment key={key}>
+                                    { (children[key] instanceof Function) ? children[key](renderProps) : children[key] }
+                                </React.Fragment>
+                            ))
+                    )
+                }}
             />
         </LiformContext.Provider>
     )
 }
 
 Liform.propTypes = {
-  schema: PropTypes.object,
-  value: PropTypes.any,
-  meta: PropTypes.object,
-  name: PropTypes.string,
+    schema: PropTypes.object,
+    value: PropTypes.any,
+    meta: PropTypes.object,
+    name: PropTypes.string,
 }

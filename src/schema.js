@@ -11,13 +11,13 @@ export const compileSchema = (schema, root) => {
     if (isObject(schema)) {
         newSchema = {};
         for (let i in schema) {
-        if (schema.hasOwnProperty(i)) {
-            if (i === "$ref") {
-                newSchema = compileSchema(resolveRef(schema[i], root), root);
-            } else {
-                newSchema[i] = compileSchema(schema[i], root);
+            if (Object.prototype.hasOwnProperty.call(schema, i)) {
+                if (i === "$ref") {
+                    newSchema = compileSchema(resolveRef(schema[i], root), root);
+                } else {
+                    newSchema[i] = compileSchema(schema[i], root);
+                }
             }
-        }
         }
         return newSchema;
     }

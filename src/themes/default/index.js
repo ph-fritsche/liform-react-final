@@ -1,6 +1,7 @@
 import React from "react";
 import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
-import { Lifield, liformizeName, mapProperties, renderField } from "../../";
+import { Lifield, mapProperties, renderField } from "../../";
+import { finalizeName } from "../../field";
 
 export const ArrayWidget = ({name, schema, ...props}) => {
     return <FinalFieldArray name={name} render={({fields, meta}) => (
@@ -17,16 +18,16 @@ export const ArrayWidget = ({name, schema, ...props}) => {
                         }
                     />
                     { (schema.allowDelete || Array.isArray(meta.initial) && index >= meta.initial.length) &&
-                        <button type='button' onClick={() => fields.remove(index)}>❌</button>
+                        <button type='button' onClick={() => fields.remove(index)}><span role='img' aria-label='remove collection element'>❌</span></button>
                     }
                 </div>
             )) }
-            { schema.allowAdd && <button type='button' onClick={() => fields.push()}>➕</button> }
+            { schema.allowAdd && <button type='button' onClick={() => fields.push()}><span role='img' aria-label='add collection element'>➕</span></button> }
         </fieldset>
     )}/>
 }
 
-export const ButtonWidget = ({name, schema, ...props}) => {
+export const ButtonWidget = ({name, schema}) => {
 
     const types = ['submit', 'reset', 'button']
     let type
@@ -192,7 +193,7 @@ const renderContainer = (props) => (
         onReset={props.handleReset}
         method={props.method || props.liform.schema.method || 'POST'}
         action={props.action || props.liform.schema.action}
-        >
+    >
         { props.children }
     </form>
 )
