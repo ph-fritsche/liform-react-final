@@ -1,7 +1,6 @@
 import React from 'react'
 import Renderer from 'react-test-renderer'
 import { compileChildren, Liform } from '../src/form'
-import { shallowEqual } from '../src/util/equal'
 
 describe('Compile children', () => {
     it('Ignore sections if children is function', () => {
@@ -11,33 +10,33 @@ describe('Compile children', () => {
 
     it('Replace sections', () => {
         expect(compileChildren({
-            a: <foo></foo>,
-            b: <bar></bar>,
+            foo: <foo></foo>,
+            bar: <bar></bar>,
         }, [
-            <a><baz></baz></a>,
+            <foo key="a"><baz></baz></foo>,
         ])).toEqual({
-            a: <baz></baz>,
-            b: <bar></bar>,
+            foo: <baz></baz>,
+            bar: <bar></bar>,
         })
 
         expect(compileChildren({
-            a: <foo></foo>,
-            b: <bar></bar>,
-        }, <a><baz></baz></a>)).toEqual({
-            a: <baz></baz>,
-            b: <bar></bar>,
+            foo: <foo></foo>,
+            bar: <bar></bar>,
+        }, <foo><baz></baz></foo>)).toEqual({
+            foo: <baz></baz>,
+            bar: <bar></bar>,
         })
     })
 
     it('Add __rest__', () => {
         expect(compileChildren({
-            a: <foo></foo>,
+            foo: <foo></foo>,
         }, [
-            <b></b>,
+            <bar key="bar"></bar>,
         ])).toEqual({
-            a: <foo></foo>,
+            foo: <foo></foo>,
             __rest__: [
-                <b></b>,
+                <bar key="bar"></bar>,
             ],
         })
     })
@@ -55,14 +54,14 @@ describe('Liform', () => {
 
         const node = Renderer.create(<Liform theme={theme}/>)
 
-        node.root.findByType(container)
+        expect(node.root.findByType(container)).toBeTruthy()
     })
 
     it('Pass compiled children', () => {
         const container = jest.fn(props => props.children)
         const theme = {
             render: {container},
-            sections: {a: 'foo', b: 'bar', c: 'baz'},
+            sections: {foo: 'foo', bar: 'bar', baz: 'baz'},
         }
 
         let node
@@ -75,8 +74,8 @@ describe('Liform', () => {
         expect(node.root.findByType(container).children).toEqual(['foo'])
 
         node = Renderer.create(<Liform theme={theme}>
-            <b>{childrenFunction}</b>
-            <a>bar</a>
+            <bar>{childrenFunction}</bar>
+            <foo>bar</foo>
         </Liform>)
 
         expect(node.root.findByType(container).children).toEqual(['bar', 'foo', 'baz'])
