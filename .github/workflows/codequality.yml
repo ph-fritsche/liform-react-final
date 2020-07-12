@@ -26,5 +26,5 @@ jobs:
     - run: yarn run test
     - uses: codecov/codecov-action@v1
       with:
-        file: ./coverage/clover.xml
+        file: ./coverage/lcov.info
         fail_ci_if_error: true
