@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field as FinalField } from 'react-final-form';
 import { buildFieldValidator } from './validate';
+import { shallowEqual } from './util/equal';
 
 export const liformizeName = (finalName) => {
     return finalName.replace(/^_\.?/, '')
@@ -139,35 +140,6 @@ export const LifieldChildren = React.memo(
             && shallowEqual(prevError, nextError)
     }
 )
-
-const shallowEqual = (a, b) => {
-    if (typeof(a) !== typeof(b) || Array.isArray(a) !== Array.isArray(b)) {
-        return false
-    }
-
-    if (Array.isArray(a)) {
-        if (a.length !== b.length) {
-            return false
-        }
-        for (const i in a) {
-            if (a[i] !== b[i]) {
-                return false
-            }
-        }
-    } else if (typeof(a) === 'object') {
-        if (!shallowEqual(Object.keys(a), Object.keys(b))) {
-            return false
-        }
-        for (const i in a) {
-            if (a[i] !== b[i]) {
-                return false
-            }
-        }
-    } else if (a !== b) {
-        return false
-    }
-    return true
-}
 
 export class Lifield extends React.PureComponent {
     constructor(props) {
