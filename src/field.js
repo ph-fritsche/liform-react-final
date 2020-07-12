@@ -16,7 +16,7 @@ export const finalizeName = (liformName) => {
 
 export const htmlizeName = (finalName, rootName) => {
     let i = 0
-    return (finalName.replace(/^_/, rootName)
+    return (finalName.replace(/^_\./, rootName ? rootName + '.' : '')
         .replace(/[.[]/g, () => { i++; return i>1 ? '][' : '[' })
         + ( i>0 ? ']' : '')
     ).replace(/]]+/, ']')
