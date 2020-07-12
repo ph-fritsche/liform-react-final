@@ -99,7 +99,7 @@ export function Liform(props) {
         form: props.form,
         initialValues: {_: value},
         initialValuesEquals: props.initialValuesEquals,
-        keepDirtyOnReinitialize: false, //props.keepDirtyOnReinitialize !== false,
+        keepDirtyOnReinitialize: props.keepDirtyOnReinitialize !== false,
         mutators: { ...arrayMutators, ...props.mutators },
         onSubmit,
         subscription: props.subscription,
