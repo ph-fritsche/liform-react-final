@@ -7,7 +7,7 @@ import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandle
 import { compileSchema } from './schema';
 
 export function compileChildren (sections, children) {
-    if (children instanceof Function) {
+    if (typeof(children) === 'function') {
         return children
     }
 
@@ -127,11 +127,11 @@ export function Liform(props) {
                     return React.createElement(
                         render.container,
                         renderProps,
-                        (children instanceof Function) ?
+                        (typeof(children) === 'function') ?
                             children(renderProps) :
                             Object.keys(children).map(key => (
                                 <React.Fragment key={key}>
-                                    { (children[key] instanceof Function) ? children[key](renderProps) : children[key] }
+                                    { (typeof(children[key]) === 'function') ? children[key](renderProps) : children[key] }
                                 </React.Fragment>
                             ))
                     )

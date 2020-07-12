@@ -82,7 +82,7 @@ export const renderField = (props) => {
     const theme = props.theme || props.liform.theme
     const Widget = props.widget || theme.field[guessWidget(props.schema, theme)]
 
-    if (Widget instanceof Function) {
+    if (typeof(Widget) === 'function') {
         return <Widget {...props}/>
     } else if (typeof(Widget) !== 'object') {
         throw new Error('Field widgets must be functions or objects, got ' + JSON.stringify(Widget))

@@ -12,7 +12,7 @@ export const buildFlatAjvValidate = (ajv, schema, ajvTranslate) => {
         schema = true
     }
 
-    if (!(ajvTranslate instanceof Function)) {
+    if (!(typeof(ajvTranslate) === 'function')) {
         ajvTranslate = translateAjv
     }
 
