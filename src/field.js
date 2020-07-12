@@ -55,7 +55,7 @@ export const guessWidget = (fieldSchema, theme) => {
     return typeGuess
 };
 
-export const compileFinalFieldProps = (props) => {
+const compileFinalFieldProps = (props) => {
     return {
         afterSubmit: props.afterSubmit,
         allowNull: props.allowNull,
@@ -84,15 +84,16 @@ export const renderField = (props) => {
 
     if (Widget instanceof Function) {
         return <Widget {...props}/>
+    } else if (typeof(Widget) !== 'object') {
+        throw new Error('Field widgets must be functions or objects, got ' + JSON.stringify(Widget))
     }
 
-    let fieldProps = compileFinalFieldProps(props)
-
-    if (typeof(Widget) === 'string') {
-        fieldProps = { key: props.key, ...fieldProps, component: Widget }
-    } else if (typeof(Widget) === 'object') {
-        const {render, component, ...rest} = Widget
-        fieldProps = { ...props, ...fieldProps, ...rest, render: renderFinalField.bind(undefined, render || component) }
+    const {render, component, ...rest} = Widget
+    const fieldProps = { ...props, ...compileFinalFieldProps(props), ...rest }
+    if (render || component) {
+        fieldProps.render = renderFinalField.bind(undefined, render || component)
+    } else if (!props.children) {
+        throw new Error('Field widgets without render/component require props.children')
     }
 
     return React.createElement(FinalField, fieldProps)
@@ -105,7 +106,7 @@ export const renderFinalField = (element, props) => {
     />
 }
 
-export const LifieldChildren = React.memo(
+const LifieldChildren = React.memo(
     function LifieldChildren ({render, input: {name, ...input}, meta: metaProp, ...rest}) {
         const meta = {...metaProp}
         const liform = rest.liform
