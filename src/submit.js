@@ -46,6 +46,7 @@ const onSubmitHtmlResponseDefault = (finalPromise, response) => {
 
         const newDoc = window.document.open('text/html')
         newDoc.addEventListener('DOMContentLoaded', () => {
+            /* istanbul ignore next */
             window.ReactOnRails && window.ReactOnRails.reactOnRailsPageLoaded()
         })
         newDoc.write(html)
@@ -55,7 +56,7 @@ const onSubmitHtmlResponseDefault = (finalPromise, response) => {
     })
 }
 
-const handleSubmitRedirectResponseDefault = (promise, {resolve}) => {
+const handleSubmitRedirectResponseDefault = ({resolve}) => {
     return resolve({ [FORM_ERROR]: 'The submit is redirected' })
 }
 
