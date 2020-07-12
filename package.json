@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "babel src --out-dir dist",
-    "lint": "eslint src",
+    "lint": "eslint src test",
     "test": "jest"
   },
   "keywords": [

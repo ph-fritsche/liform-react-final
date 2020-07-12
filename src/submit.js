@@ -1,4 +1,4 @@
-import { FORM_ERROR } from "final-form"
+import { FORM_ERROR } from 'final-form'
 
 const prepareRequestDefault = (values, liform) => { return {
     method: 'POST',
@@ -45,7 +45,7 @@ const onSubmitHtmlResponseDefault = (finalPromise, response) => {
         delete window.ReactOnRails
 
         const newDoc = window.document.open('text/html')
-        newDoc.addEventListener("DOMContentLoaded", () => {
+        newDoc.addEventListener('DOMContentLoaded', () => {
             window.ReactOnRails && window.ReactOnRails.reactOnRailsPageLoaded()
         })
         newDoc.write(html)

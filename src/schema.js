@@ -1,5 +1,5 @@
 function isObject(thing) {
-    return typeof thing === "object" && thing !== null && !Array.isArray(thing);
+    return typeof thing === 'object' && thing !== null && !Array.isArray(thing);
 }
 
 export const compileSchema = (schema, root) => {
@@ -12,7 +12,7 @@ export const compileSchema = (schema, root) => {
         newSchema = {};
         for (let i in schema) {
             if (Object.prototype.hasOwnProperty.call(schema, i)) {
-                if (i === "$ref") {
+                if (i === '$ref') {
                     newSchema = compileSchema(resolveRef(schema[i], root), root);
                 } else {
                     newSchema[i] = compileSchema(schema[i], root);
@@ -34,8 +34,8 @@ export const compileSchema = (schema, root) => {
 }
 
 function resolveRef(uri, schema) {
-    uri = uri.replace("#/", "");
-    const tokens = uri.split("/");
+    uri = uri.replace('#/', '');
+    const tokens = uri.split('/');
     const tip = tokens.reduce((obj, token) => obj[token], schema);
 
     return tip;

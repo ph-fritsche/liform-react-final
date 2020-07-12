@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field as FinalField } from "react-final-form";
+import { Field as FinalField } from 'react-final-form';
 import { buildFieldValidator } from './validate';
 
 export const liformizeName = (finalName) => {
@@ -7,7 +7,7 @@ export const liformizeName = (finalName) => {
 }
 
 export const finalizeName = (liformName) => {
-    if (liformName === undefined || liformName === "") {
+    if (liformName === undefined || liformName === '') {
         return '_'
     }
     return '_.' + liformName

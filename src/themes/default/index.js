@@ -1,14 +1,14 @@
-import React from "react";
-import { FieldArray as FinalFieldArray } from "react-final-form-arrays"
-import { Lifield, mapProperties, renderField } from "../../";
-import { finalizeName } from "../../field";
+import React from 'react';
+import { FieldArray as FinalFieldArray } from 'react-final-form-arrays'
+import { Lifield, mapProperties, renderField } from '../../';
+import { finalizeName } from '../../field';
 
 export const ArrayWidget = ({name, schema, ...props}) => {
     return <FinalFieldArray name={name} render={({fields, meta}) => (
-        <fieldset className='liform-field liform-array'>
+        <fieldset className="liform-field liform-array">
             { schema.title && <legend>{ schema.title }</legend> }
             { fields.map((name, index) => (
-                <div key={name} className='liform-array-item'>
+                <div key={name} className="liform-array-item">
                     <Lifield {...props}
                         name={`${name}`}
                         schema={
@@ -18,11 +18,11 @@ export const ArrayWidget = ({name, schema, ...props}) => {
                         }
                     />
                     { (schema.allowDelete || Array.isArray(meta.initial) && index >= meta.initial.length) &&
-                        <button type='button' onClick={() => fields.remove(index)}><span role='img' aria-label='remove collection element'>❌</span></button>
+                        <button type="button" onClick={() => fields.remove(index)}><span role="img" aria-label="remove collection element">❌</span></button>
                     }
                 </div>
             )) }
-            { schema.allowAdd && <button type='button' onClick={() => fields.push()}><span role='img' aria-label='add collection element'>➕</span></button> }
+            { schema.allowAdd && <button type="button" onClick={() => fields.push()}><span role="img" aria-label="add collection element">➕</span></button> }
         </fieldset>
     )}/>
 }
@@ -37,11 +37,11 @@ export const ButtonWidget = ({name, schema}) => {
         type = types.filter(t => schema.widget.indexOf(t) >= 0)[0]
     }
 
-    return <button name={name} type={type || 'button'} className='liform-field liform-button'>{schema.title}</button>
+    return <button name={name} type={type || 'button'} className="liform-field liform-button">{schema.title}</button>
 }
 
 export const ObjectWidget = ({name, schema, ...props}) => {
-    return <fieldset className='liform-field liform-object'>
+    return <fieldset className="liform-field liform-object">
         { schema.title && <legend>{ schema.title }</legend> }
         { mapProperties(schema.properties || {}, (propSchema, key) => (
             <Lifield key={key} {...props}
@@ -69,9 +69,9 @@ export const choiceRender = ({liform, name, schema, input: {...input}, placehold
     }
 
     if (schema.choiceExpanded) {
-        return <div className='liform-field liform-choice'>
+        return <div className="liform-field liform-choice">
             <legend>{ schema && schema.title }</legend>
-            <div className='liform-options'>
+            <div className="liform-options">
                 { (schema.enum || schema.items.enum).map((elValue,i) =>
                     <label key={i}>
                         <input
@@ -90,11 +90,11 @@ export const choiceRender = ({liform, name, schema, input: {...input}, placehold
             </div>
         </div>
     } else {
-        return <div className='liform-field liform-choice'>
+        return <div className="liform-field liform-choice">
             <label>
                 { schema && schema.title }
                 <select {...input} multiple={schema.type === 'array'}>
-                    { schema.type !== 'array' && placeholder && <option value=''>{placeholder}</option> }
+                    { schema.type !== 'array' && placeholder && <option value="">{placeholder}</option> }
                     { (schema.enum || schema.items.enum) && <PureOptions values={schema.enum || schema.items.enum} labels={schema.enumTitles || schema.items.enumTitles}/> }
                 </select>
                 { renderFieldError(liform, name, meta) }
@@ -115,7 +115,7 @@ export const inputRender = ({liform, name, schema, input: {...input}, placeholde
 
     input.placeholder = placeholder
 
-    return <div className='liform-field liform-input'>
+    return <div className="liform-field liform-input">
         <label>
             { schema && schema.title }
             { input.type === 'textarea' ? <textarea {...input}/> : <input {...input}/> }
@@ -125,10 +125,10 @@ export const inputRender = ({liform, name, schema, input: {...input}, placeholde
 }
 
 export const hiddenRender = ({liform, schema, input: {name, value, onChange}, meta}) => {
-    const element = <input type='hidden' name={name} value={value} onChange={onChange}/>
+    const element = <input type="hidden" name={name} value={value} onChange={onChange}/>
     const errors = renderFieldError(liform, name, meta)
     if (errors) {
-        return <div className='liform-field liform-hidden'>
+        return <div className="liform-field liform-hidden">
             { element }
             <label>
                 { schema && schema.title }
@@ -171,11 +171,11 @@ export const numberRender = ({liform, name, schema, input: {value, onChange, onB
     input.step = schema.step || schema.type === 'integer' ? 1 : 0.1
     input.placeholder = placeholder
 
-    return <div className='liform-field liform-number'>
+    return <div className="liform-field liform-number">
         <label>
             { schema && schema.title }
-            <input {...input} type='number' ref={ref}/>
-            <span className='liform-number-unit'>{schema.symbol}</span>
+            <input {...input} type="number" ref={ref}/>
+            <span className="liform-number-unit">{schema.symbol}</span>
         </label>
         { renderFieldError(liform, name, meta) }
     </div>
@@ -183,7 +183,7 @@ export const numberRender = ({liform, name, schema, input: {value, onChange, onB
 
 const renderFieldError = ({meta: {error}}) => {
     return error && error.map(e =>
-        <div key={e} className='liform-error'>{e}</div>
+        <div key={e} className="liform-error">{e}</div>
     )
 }
 
@@ -206,7 +206,7 @@ export const renderForm = (props) => (
 )
 
 export const renderAction = (props) => (
-    <div className='liform-action'>
+    <div className="liform-action">
         { props.liform.render.reset && props.liform.render.reset(props) }
         { props.liform.render.submit && props.liform.render.submit(props) }
     </div>
@@ -236,13 +236,13 @@ export const renderFormErrors = (props) => {
     const registered = props.liform.form.getRegisteredFields()
     const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(finalizeName(key)) < 0)
     const Errors = ({errors, title}) => (
-        <div className='liform-error-group'>
+        <div className="liform-error-group">
             { title && <strong>{title}</strong> }
-            { errors.map((e,i) => <div key={i} className='liform-error'>{e}</div>) }
+            { errors.map((e,i) => <div key={i} className="liform-error">{e}</div>) }
         </div>
     )
 
-    return <div className='liform-errors'>
+    return <div className="liform-errors">
         { errorPaths.map(propertyPath => <Errors key={propertyPath} title={propertyPath} errors={props.liform.meta.errors[propertyPath]}/>) }
     </div>
 }

@@ -1,10 +1,10 @@
-import React, { useMemo, useState, useCallback } from "react";
-import PropTypes from "prop-types";
-import arrayMutators from "final-form-arrays"
-import { Form as FinalForm } from "react-final-form";
-import { buildSubmitHandler } from "./submit";
-import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from "./validate";
-import { compileSchema } from "./schema";
+import React, { useMemo, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import arrayMutators from 'final-form-arrays'
+import { Form as FinalForm } from 'react-final-form';
+import { buildSubmitHandler } from './submit';
+import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from './validate';
+import { compileSchema } from './schema';
 
 export function compileChildren (sections, children) {
     if (children instanceof Function) {

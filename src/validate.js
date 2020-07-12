@@ -1,5 +1,5 @@
-import Ajv from "ajv";
-import { FORM_ERROR } from "final-form";
+import Ajv from 'ajv';
+import { FORM_ERROR } from 'final-form';
 
 export const buildFlatAjvValidate = (ajv, schema, ajvTranslate) => {
     if (!(ajv instanceof Ajv)) {
@@ -69,7 +69,7 @@ export const buildFlatValidatorHandler = (flatErrorValidator, liform) => {
     return (values) => {
         const flatErrors = flatErrorValidator(values)
         liform.validationErrors = flatErrors
-        return Object.keys(flatErrors).length > 0 ? { [FORM_ERROR]: "The form has errors - see Liform.validationErrors" } : {}
+        return Object.keys(flatErrors).length > 0 ? { [FORM_ERROR]: 'The form has errors - see Liform.validationErrors' } : {}
     }
 }
 
