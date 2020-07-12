@@ -28,7 +28,7 @@ export function compileChildren (sections, children) {
 export const LiformContext = React.createContext()
 
 export function Liform(props) {
-    const [rootName] = useState(props.name || props.schema.name || '')
+    const [rootName] = useState(props.name || props.schema && props.schema.name || '')
     const [theme] = useState(props.theme)
 
     const schema = useMemo(() => compileSchema(props.schema), [props.schema])
