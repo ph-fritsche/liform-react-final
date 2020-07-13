@@ -12,4 +12,4 @@ export { mapProperties, sortProperties, sortPropertyKeys} from './properties'
 export { buildSubmitHandler } from './submit'
 export { buildFieldValidator, buildFlatValidatorHandler, buildFlatValidatorStack } from './validate'
 
-export { default as DefaultTheme } from './themes/default'
+export { default as DefaultTheme } from './DefaultTheme'
