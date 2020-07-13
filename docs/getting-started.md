@@ -13,7 +13,7 @@ yarn add liform-react-final
 
 ## Usage
 
-Pass the [Liform props](/liform-props) object created by [Pitch Liform](https://github.com/ph-fritsche/liform) (or by other means) to the `Liform` component.
+Pass the [Liform props](https://ph-fritsche.github.io/liform-react-final/liform-props) object created by [Pitch Liform](https://github.com/ph-fritsche/liform) (or by other means) to the `Liform` component.
 
 ###### With the default theme
 
@@ -49,7 +49,7 @@ Once the user clicks the submit button and the values pass the validation the fo
 
 The server can report failure or success per HTTP status `2xx` or `4xx`.
 
-For `application/json` responses with a new [Liform props](/liform-props) object the form will be updated.
+For `application/json` responses with a new [Liform props](https://ph-fritsche.github.io/liform-react-final/liform-props) object the form will be updated.
 
 For `text/html` responses a new document will be written.
 
