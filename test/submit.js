@@ -1,5 +1,3 @@
-import React from 'react'
-import Renderer from 'react-test-renderer'
 import { buildSubmitHandler } from '../src/submit'
 import { FORM_ERROR } from 'final-form'
 
@@ -144,9 +142,8 @@ describe('Submit handler', () => {
         expect(promise).toBeInstanceOf(Promise)
         expect(global.fetch).toBeCalled()
 
-        promise.catch(() => expect(global.document.location.assign).toBeCalledWith('some location'))
-
         return expect(promise).rejects.toMatch('location')
+            .then(() => expect(global.document.location.assign).toBeCalledWith('some location'))
     })
 
     it('Inject onSubmitSuccess', () => {
@@ -193,9 +190,8 @@ describe('Submit handler', () => {
         expect(promise).toBeInstanceOf(Promise)
         expect(global.fetch).toBeCalled()
 
-        promise.then(() => expect(updateData).toBeCalledWith(newData))
-
         return expect(promise).resolves.toHaveProperty(FORM_ERROR)
+            .then(() => expect(updateData).toBeCalledWith(newData))
     })
 
     it('Default onSubmitSuccess without meta.errors', () => {
@@ -220,9 +216,8 @@ describe('Submit handler', () => {
         expect(promise).toBeInstanceOf(Promise)
         expect(global.fetch).toBeCalled()
 
-        promise.then(() => expect(updateData).toBeCalledWith(newData))
-
         return expect(promise).resolves.toBe(undefined)
+            .then(() => expect(updateData).toBeCalledWith(newData))
     })
 
     it('Inject onSubmitFail', () => {
@@ -269,9 +264,8 @@ describe('Submit handler', () => {
         expect(promise).toBeInstanceOf(Promise)
         expect(global.fetch).toBeCalled()
 
-        promise.then(() => expect(updateData).toBeCalledWith(newData))
-
         return expect(promise).resolves.toHaveProperty(FORM_ERROR)
+            .then(() => expect(updateData).toBeCalledWith(newData))
     })
 
     it('Inject onSubmitHtmlResponse', () => {
