@@ -8,4 +8,4 @@ This library is developed to work with [Pitch Liform](https://packagist.org/pack
 
 ---
 
-* [Documentation](https://ph.fritsche.github.io/liform-react-final/)
+* [Documentation](https://ph-fritsche.github.io/liform-react-final/)
