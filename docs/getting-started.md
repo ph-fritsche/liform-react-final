@@ -1,3 +1,7 @@
+---
+nav_order: 0
+---
+
 # Getting started
 
 ## Installation

@@ -1,3 +1,7 @@
+---
+nav_order: 10
+---
+
 # Theme
 
 Every code coupling __Liform React Final__ with a concrete UI representation lives inside the theme so that you can replace it with components to your liking.

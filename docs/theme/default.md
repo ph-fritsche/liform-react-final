@@ -1,3 +1,7 @@
+---
+nav_order: 11
+---
+
 # Default theme
 
 The default theme provides a representation with native HTML elements that you can style per CSS or use as a starting point to provide your own theme.
