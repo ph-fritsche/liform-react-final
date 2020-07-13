@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderFieldError, Field } from '../Field/Field';
+import { Field } from '../Field/Field';
 
 export const NumberInput = props => {
     const {

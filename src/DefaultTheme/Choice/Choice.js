@@ -1,5 +1,6 @@
 import React from 'react';
 import { Field } from '../Field/Field';
+import { PureOptions } from './PureOptions';
 
 export const Choice = (props) => {
     const {
