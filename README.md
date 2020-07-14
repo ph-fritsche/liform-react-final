@@ -1,6 +1,6 @@
 [![codecov](https://codecov.io/gh/ph-fritsche/liform-react-final/branch/master/graph/badge.svg)](https://codecov.io/gh/ph-fritsche/liform-react-final)
 
-# Liform React Final
+# ![Liform React Final](https://ph-fritsche.github.io/liform-react-final/assets/liform-react-final.png)
 
 Library for generating React forms from [JSON schema](https://json-schema.org/) using [React Final Form](https://final-form.org/react).
 
