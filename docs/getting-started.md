@@ -18,8 +18,10 @@ Pass the [Liform props](https://ph-fritsche.github.io/liform-react-final/liform-
 ###### With the default theme
 
 ```jsx
-import Liform from 'liform-react-final'
+import Liform, { DefaultTheme } from 'liform-react-final'
 
+// once per property on the default export ...
+Liform.theme = DefaultTheme
 <Liform {...liformProps}/>
 ```
 
@@ -29,6 +31,7 @@ import Liform from 'liform-react-final'
 import { Liform } from 'liform-react-final'
 import theme from 'liform-material'
 
+// ... or as jsx attribute
 <Liform {...liformProps} theme={theme}/>
 ```
 
