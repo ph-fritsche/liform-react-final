@@ -23,6 +23,7 @@ export const htmlizeName = (finalName, rootName) => {
 }
 
 export const guessWidget = (fieldSchema, theme) => {
+    fieldSchema = fieldSchema ?? true
     let guesses = []
 
     if (fieldSchema.widget) {
@@ -74,7 +75,7 @@ const compileFinalFieldProps = (props) => {
         validateFields: props.validateFields,
         value: props.value,
 
-        placeholder: props.schema.placeholder || props.schema.attr && props.schema.attr.placeholder,
+        placeholder: props.schema && (props.schema.placeholder || props.schema.attr && props.schema.attr.placeholder),
     }
 }
 

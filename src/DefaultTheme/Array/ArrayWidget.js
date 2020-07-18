@@ -3,7 +3,13 @@ import { FieldArray as FinalFieldArray } from 'react-final-form-arrays'
 import { Lifield } from '../..';
 import { finalizeName } from '../../field';
 
-export const ArrayWidget = ({name, schema, ...props}) => {
+export const ArrayWidget = props => {
+    const {
+        name,
+        schema = true,
+        ...others
+    } = props
+
     const finalName = finalizeName(name)
 
     return <FinalFieldArray name={finalName} render={({fields, meta}) => (
@@ -11,7 +17,7 @@ export const ArrayWidget = ({name, schema, ...props}) => {
             { schema.title && <legend>{ schema.title }</legend> }
             { fields.map((name, index) => (
                 <div key={name} className="liform-array-item">
-                    <Lifield {...props}
+                    <Lifield {...others}
                         name={`${name}`}
                         schema={
                             Array.isArray(schema.items) ?

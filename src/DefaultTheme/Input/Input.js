@@ -3,7 +3,7 @@ import { Field } from '../Field/Field';
 
 export const Input = props => {
     const {
-        schema,
+        schema = true,
         input: {...input},
         placeholder,
         meta

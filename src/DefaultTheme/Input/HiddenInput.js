@@ -3,7 +3,7 @@ import { Field } from '../Field/Field';
 
 export const HiddenInput = props => {
     const {
-        schema,
+        schema = true,
         input: {name, value, onChange},
         meta
     } = props

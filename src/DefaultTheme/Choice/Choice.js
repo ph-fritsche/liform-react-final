@@ -6,7 +6,7 @@ export const Choice = (props) => {
     const {
         liform,
         name,
-        schema,
+        schema = true,
         input: {...input},
         placeholder,
         meta

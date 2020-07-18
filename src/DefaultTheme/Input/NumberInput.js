@@ -3,7 +3,7 @@ import { Field } from '../Field/Field';
 
 export const NumberInput = props => {
     const {
-        schema,
+        schema = true,
         input: {
             value,
             onChange,
