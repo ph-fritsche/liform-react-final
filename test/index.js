@@ -1,34 +1,25 @@
 import React from 'react'
 import Renderer from 'react-test-renderer'
-import Liform, { DefaultTheme } from '../src'
+import Liform from '../src'
 
-Liform.theme = DefaultTheme
+describe('Index', () => {
+    it('Set theme per property on default export', () => {
+        const container = jest.fn(() => null)
+        Liform.theme = {render: {container}}
 
-describe('Liform with single field form', () => {
-    const props = {
-        'schema':{'title':'text','type':'string','attr':[],'widget':['_text','text','form']},
-        'meta':null,
-        'value': 'foo'
-    }
+        Renderer.create(<Liform/>)
 
-    it('Render', () => {
-        const renderedComponent = Renderer.create(<Liform {...props}/>)
+        expect(container).toBeCalled()
+    })
 
-        expect(renderedComponent).toBeTruthy()
+    it('Set theme per jsx property on default export', () => {
+        const container = jest.fn(() => null)
+        const containerProp = jest.fn(() => null)
+        Liform.theme = {render: {container}}
+
+        Renderer.create(<Liform theme={{render: {container: containerProp}}}/>)
+
+        expect(container).not.toBeCalled()
+        expect(containerProp).toBeCalled()
     })
 })
-
-describe('Liform with simple object form', () => {
-    const props = {
-        'schema':{'title':'form','required':['foo','bar'],'properties':{'foo':{'title':'foo','type':'string','attr':[],'widget':['_form_foo','text','form'],'propertyOrder':0},'bar':{'title':'bar','type':'number','symbol':null,'step':null,'attr':[],'widget':['_form_bar','number','form'],'propertyOrder':1}},'type':'object','attr':[],'widget':['_form','form']},
-        'meta':null,
-        'value': {'foo': 'FOO', 'bar': 123}
-    }
-
-    it('Render', () => {
-        const renderedComponent = Renderer.create(<Liform {...props}/>)
-
-        expect(renderedComponent).toBeTruthy()
-    })
-})
-
