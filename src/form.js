@@ -142,7 +142,7 @@ export function Liform(props) {
 }
 
 Liform.propTypes = {
-    schema: PropTypes.object,
+    schema: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
     value: PropTypes.any,
     meta: PropTypes.object,
     name: PropTypes.string,
