@@ -6,10 +6,11 @@ import { Liform, DefaultTheme } from '../../src'
 const TestLiform = props => (
     <Liform
         theme={DefaultTheme}
-        children={DefaultTheme.sections.form}
         name="foo"
         {...props}
-    />
+    >
+        {DefaultTheme.sections.form}
+    </Liform>
 )
 
 describe('Types', () => {
