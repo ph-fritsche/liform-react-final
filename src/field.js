@@ -45,12 +45,12 @@ export const guessWidget = (fieldSchema, theme) => {
     } else {
         typeGuess = fieldSchema.type || null
     }
-    if (typeGuess && guesses.indexOf(typeGuess) < 0) {
+    if (guesses.indexOf(typeGuess) < 0) {
         guesses.push(typeGuess)
     }
 
-    if (!typeGuess || !theme.field[typeGuess]) {
-        throw new Error('Liform: No widget defined for ' + guesses + '\n' + JSON.stringify(fieldSchema))
+    if (!theme.field[typeGuess]) {
+        throw new Error('Liform: No widget defined for ' + guesses.map(v => v === null ? '(null)' : v) + '\n' + JSON.stringify(fieldSchema))
     }
 
     return typeGuess
