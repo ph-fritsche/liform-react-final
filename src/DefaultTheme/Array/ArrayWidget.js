@@ -1,9 +1,12 @@
 import React from 'react';
 import { FieldArray as FinalFieldArray } from 'react-final-form-arrays'
 import { Lifield } from '../..';
+import { finalizeName } from '../../field';
 
 export const ArrayWidget = ({name, schema, ...props}) => {
-    return <FinalFieldArray name={name} render={({fields, meta}) => (
+    const finalName = finalizeName(name)
+
+    return <FinalFieldArray name={finalName} render={({fields, meta}) => (
         <fieldset className="liform-field liform-array">
             { schema.title && <legend>{ schema.title }</legend> }
             { fields.map((name, index) => (
