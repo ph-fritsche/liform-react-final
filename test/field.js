@@ -13,6 +13,7 @@ describe('Name conversion', () => {
     it('Final Form to Liform', () => {
         expect(liformizeName('_')).toBe('')
         expect(liformizeName('_.foo')).toBe('foo')
+        expect(liformizeName('_[0]')).toBe('0')
     })
 
     it('Final Form to HTML', () => {

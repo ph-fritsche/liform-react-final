@@ -4,7 +4,10 @@ import { buildFieldValidator } from './validate';
 import { shallowEqual } from './util/equal';
 
 export const liformizeName = (finalName) => {
-    return finalName.replace(/^_\.?/, '')
+    return finalName
+        .replace(/\[/g, '.')
+        .replace(/\]/g, '')
+        .replace(/^_\.?/, '')
 }
 
 export const finalizeName = (liformName) => {

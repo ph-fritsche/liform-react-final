@@ -1,7 +1,7 @@
 import React from 'react';
 import { FieldArray as FinalFieldArray } from 'react-final-form-arrays'
 import { Lifield } from '../..';
-import { finalizeName } from '../../field';
+import { finalizeName, liformizeName } from '../../field';
 
 export const ArrayWidget = props => {
     const {
@@ -18,7 +18,7 @@ export const ArrayWidget = props => {
             { fields.map((name, index) => (
                 <div key={name} className="liform-array-item">
                     <Lifield {...others}
-                        name={`${name}`}
+                        name={liformizeName(name)}
                         schema={
                             Array.isArray(schema.items) ?
                                 (index <= schema.items.length ? schema.items[index] : schema.additionalItems) : 
