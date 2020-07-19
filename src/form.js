@@ -14,7 +14,7 @@ export function compileChildren (sections, children) {
     let compiled = {...sections}
     if (children instanceof Object) {
         for (const child of (Array.isArray(children) ? children : [children])) {
-            if (Object.keys(sections).includes(child.type)) {
+            if (sections && Object.keys(sections).includes(child.type)) {
                 compiled[child.type] = child.props.children
             } else {
                 compiled.__rest__ = compiled.__rest__ || []

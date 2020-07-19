@@ -87,6 +87,17 @@ describe('Liform', () => {
         </Liform>)
 
         expect(node.root.findByType(container).children).toEqual(['bar', 'foo', 'baz'])
+
+        node = Renderer.create(<Liform theme={{render:{container}}}>
+            <foo>fooChild</foo>
+            <bar>barChild</bar>
+        </Liform>)
+
+        expect(node.root.findByType(container).children.length).toBe(2)
+        expect(node.root.findByType(container).children[0].type).toBe('foo')
+        expect(node.root.findByType(container).children[0].children).toEqual(['fooChild'])
+        expect(node.root.findByType(container).children[1].type).toBe('bar')
+        expect(node.root.findByType(container).children[1].children).toEqual(['barChild'])
     })
 
     it('Update data', () => {
