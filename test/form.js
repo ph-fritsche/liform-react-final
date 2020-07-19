@@ -26,6 +26,14 @@ describe('Compile children', () => {
             foo: <baz></baz>,
             bar: <bar></bar>,
         })
+
+        expect(compileChildren({
+            foo: null,
+            bar: <bar></bar>,
+        }, <foo><baz></baz></foo>)).toEqual({
+            foo: <baz></baz>,
+            bar: <bar></bar>,
+        })
     })
 
     it('Add __rest__', () => {
