@@ -12,14 +12,14 @@ export const Container = props => (
     </form>
 )
 
-export const Reset = props => (
+export const Reset = () => (
     <Lifield schema={{
         widget: ['reset','button'],
         title: 'Reset',
     }}/>
 )
 
-export const Submit = props => (
+export const Submit = () => (
     <Lifield schema={{
         widget: ['submit','button'],
         title: 'Submit',
