@@ -1,6 +1,7 @@
 import React from 'react';
+import { Lifield } from '../'
 
-export const Container = (props) => (
+export const Container = props => (
     <form
         onSubmit={props.handleSubmit}
         onReset={props.handleReset}
@@ -11,18 +12,16 @@ export const Container = (props) => (
     </form>
 )
 
-export const Reset = (props) => props.liform.render.field({
-    liform: props.liform,
-    schema: {
+export const Reset = props => (
+    <Lifield schema={{
         widget: ['reset','button'],
         title: 'Reset',
-    },
-})
+    }}/>
+)
 
-export const Submit = (props) => props.liform.render.field({
-    liform: props.liform,
-    schema: {
+export const Submit = props => (
+    <Lifield schema={{
         widget: ['submit','button'],
         title: 'Submit',
-    },
-})
+    }}/>
+)
