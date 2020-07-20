@@ -60,7 +60,7 @@ export const guessWidget = (fieldSchema, theme) => {
     return typeGuess
 };
 
-const compileFinalFieldProps = (props) => {
+const compileFinalFieldProps = (liform, props) => {
     return {
         afterSubmit: props.afterSubmit,
         allowNull: props.allowNull,
@@ -75,26 +75,32 @@ const compileFinalFieldProps = (props) => {
         parse: props.parse,
         ref: props.ref,
         subscription: props.subscription,
-        validate: props.validate || buildFieldValidator(props.liform, props.name),
+        validate: props.validate || buildFieldValidator(liform, props.name),
         validateFields: props.validateFields,
         value: props.value,
-
-        placeholder: props.schema && (props.schema.placeholder || props.schema.attr && props.schema.attr.placeholder),
     }
 }
 
-export const renderField = (props) => {
-    const theme = props.theme || props.liform.theme
-    const Widget = props.widget || theme.field[guessWidget(props.schema, theme)]
+export const renderField = props => {
+    const {
+        liform,
+        schema = true,
+        Widget = liform.theme.field[guessWidget(schema, liform.theme)],
+        ...others
+    } = props
 
     if (typeof(Widget) === 'function') {
-        return <Widget {...props}/>
+        return React.createElement(Widget, {
+            liform,
+            schema,
+            ...others,
+        })
     } else if (typeof(Widget) !== 'object') {
         throw new Error('Field widgets must be functions or objects, got ' + JSON.stringify(Widget))
     }
 
     const {render, component, ...rest} = Widget
-    const fieldProps = { ...props, ...compileFinalFieldProps(props), ...rest }
+    const fieldProps = { ...others, liform, schema, ...compileFinalFieldProps(liform, others), ...rest }
     if (render || component) {
         fieldProps.render = renderFinalField.bind(undefined, render || component)
     } else if (!props.children) {
@@ -112,11 +118,7 @@ export const renderFinalField = (element, props) => {
 }
 
 const LifieldChildren = React.memo(
-    function LifieldChildren ({render, input: {name, ...input}, meta: metaProp, ...rest}) {
-        const meta = {...metaProp}
-        const liform = rest.liform
-        const schema = rest.schema
-
+    function LifieldChildren ({render, input: {name, ...input}, meta: {...meta}, liform, schema, ...rest}) {
         input.name = htmlizeName(name, liform.rootName)
 
         // if a value does not exist, final form provides an empty string
@@ -131,10 +133,13 @@ const LifieldChildren = React.memo(
         }
 
         const liformName = liformizeName(name)
+
         meta.error = (meta.touched || meta.dirty) && liform.validationErrors && liform.validationErrors[liformName]
             || meta.pristine && liform.meta.errors && liform.meta.errors[liformName]
 
-        return React.createElement(render, {...rest, name, input, meta})
+        const placeholder = rest.placeholder || schema.placeholder || schema.attr && schema.attr.placeholder
+
+        return React.createElement(render, {...rest, name, schema, input, meta, placeholder})
     },
     (
         {input: prevInput, meta: {prevMeta, error: prevError}, ...prevRest},

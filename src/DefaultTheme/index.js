@@ -1,4 +1,3 @@
-import { renderField } from '..';
 import { Form, FormErrors, Action } from './sections';
 import { Container, Reset, Submit } from './render';
 import { ArrayWidget } from './Array/ArrayWidget';
@@ -19,7 +18,6 @@ export default {
     },
     render: {
         container: Container,
-        field: renderField,
         reset: Reset,
         submit: Submit,
     },
