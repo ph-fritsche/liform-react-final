@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import arrayMutators from 'final-form-arrays'
 import { Form as FinalForm } from 'react-final-form';
@@ -28,30 +28,30 @@ export function compileChildren (sections, children) {
 export const LiformContext = React.createContext()
 
 export function Liform(props) {
-    const [rootName] = useState(props.name || props.schema && props.schema.name || '')
-    const [theme] = useState(props.theme)
-
+    const rootName = props.name || props.schema && props.schema.name || ''
+    const theme = props.theme
     const schema = useMemo(() => compileSchema(props.schema), [props.schema])
+    const data = useMemo(() => ({meta: props.meta || {}, value: props.value}), [props.meta, props.value])
 
-    const [meta, setMeta] = useState(props.meta || {})
-    const [value, setValue] = useState(props.value)
-
-    const [validationErrors] = useState({})
+    const [,setData] = useState({})
+    const { current: validationErrors } = useRef({})
 
     const sections = props.sections || theme.sections
     const children = useMemo(() => compileChildren(sections, props.children), [sections, props.children])
     const render = useMemo(() => ({...theme.render, ...props.render}), [theme, props.render])
 
     const updateData = useCallback((props) => {
-        setMeta(props.meta || {})
-        setValue(props.value)
-    }, [setMeta, setValue])
+        data.meta = props.meta || {}
+        data.value = props.value
+        setData({})
+    }, [data, setData])
 
     const liformApi = useMemo(() => ({
         rootName,
         theme,
         schema,
-        meta,
+        meta: data.meta,
+        value: data.value,
         validationErrors,
         render,
         updateData,
@@ -59,7 +59,8 @@ export function Liform(props) {
         rootName,
         theme,
         schema,
-        meta,
+        data.meta,
+        data.value,
         validationErrors,
         render,
         updateData,
@@ -90,14 +91,14 @@ export function Liform(props) {
     ])
 
     const onValidate = useMemo(() => buildFlatValidatorHandler(buildFlatValidatorStack(
-        buildFlatAjvValidate(props.ajv, schema, props.ajvTranslator || translateAjv)
-    ), liformApi), [props.ajv, schema, props.ajvTranslator, liformApi])
+        buildFlatAjvValidate(props.ajv, liformApi.schema, props.ajvTranslator || translateAjv)
+    ), liformApi), [props.ajv, props.ajvTranslator, liformApi])
 
     const finalFormProps = {
         debug: props.debug,
         decorators: props.decorators,
         form: props.form,
-        initialValues: {_: value},
+        initialValues: {_: liformApi.value},
         initialValuesEquals: props.initialValuesEquals,
         keepDirtyOnReinitialize: props.keepDirtyOnReinitialize !== false,
         mutators: { ...arrayMutators, ...props.mutators },
