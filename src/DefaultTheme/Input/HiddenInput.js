@@ -10,7 +10,7 @@ export const HiddenInput = props => {
 
     const element = <input type="hidden" name={name} value={value} onChange={onChange}/>
 
-    return meta.errors
+    return meta.error
         ? (
             <Field className="liform-hidden" schema={schema} meta={meta}>
                 { element }
