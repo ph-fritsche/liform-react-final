@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Field as FinalField } from 'react-final-form';
 import { buildFieldValidator } from './validate';
 import { shallowEqual } from './util/equal';
+import { LiformContext } from './form';
 
 export const liformizeName = (finalName) => {
     return finalName
@@ -146,14 +147,21 @@ const LifieldChildren = React.memo(
     }
 )
 
-export class Lifield extends React.PureComponent {
-    constructor(props) {
-        super(props)
-    }
+export function Lifield (props) {
+    const {
+        liform: liformProp,
+        render: renderProp,
+    } = props
 
-    render() {
-        const { render, ...rest } = this.props
+    const liformContext = useContext(LiformContext)
+    const liform = liformProp || liformContext
 
-        return (render || this.props.liform.render.field)(rest)
-    }
+    const render = renderProp || liform.render.field || renderField
+
+    return React.createElement(
+        LifieldRender,
+        {...props, render, liform}
+    )
 }
+
+const LifieldRender = React.memo(function Lifield({render, ...rest}) { return render(rest)})

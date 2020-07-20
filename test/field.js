@@ -2,6 +2,7 @@ import React from 'react'
 import Renderer from 'react-test-renderer'
 import { renderField, liformizeName, finalizeName, htmlizeName, guessWidget, Lifield } from '../src/field'
 import { Field, Form } from 'react-final-form'
+import { LiformContext } from '../src/form'
 
 describe('Name conversion', () => {
     it('Liform to Final form', () => {
@@ -310,6 +311,18 @@ describe('Lifield component', () => {
         }
 
         Renderer.create(<Lifield foo={1} liform={liform}/>)
+
+        expect(liform.render.field).toBeCalledWith({foo: 1, liform})
+    })
+
+    it('If no liform prop is given, get it from LiformContext', () => {
+        const liform = {
+            render: {
+                field: jest.fn(() => null),
+            },
+        }
+
+        Renderer.create(<LiformContext.Provider value={liform}><Lifield foo={1}/></LiformContext.Provider>)
 
         expect(liform.render.field).toBeCalledWith({foo: 1, liform})
     })
