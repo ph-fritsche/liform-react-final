@@ -120,7 +120,7 @@ describe('Types', () => {
             },
         }))
 
-        rendered.getByText('foo field')
+        expect(rendered.getByText('foo field')).toBeTruthy()
     })
 
     it('Render input fields for object properties', async () => {
