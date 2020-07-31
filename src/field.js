@@ -142,8 +142,8 @@ const LifieldChildren = React.memo(
         return React.createElement(render, {...rest, name, schema, input, meta, placeholder})
     },
     (
-        {input: prevInput, meta: {prevMeta, error: prevError}, ...prevRest},
-        {input: nextInput, meta: {nextMeta, error: nextError}, ...nextRest},
+        {input: prevInput, meta: {error: prevError, ...prevMeta}, ...prevRest},
+        {input: nextInput, meta: {error: nextError, ...nextMeta}, ...nextRest},
     ) => {
         return shallowEqual(prevRest, nextRest)
             && shallowEqual(prevInput, nextInput)

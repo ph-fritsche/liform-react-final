@@ -1,6 +1,6 @@
 import React from 'react'
 import Renderer from 'react-test-renderer'
-import { renderField, liformizeName, finalizeName, htmlizeName, guessWidget, Lifield } from '../src/field'
+import { renderField, liformizeName, finalizeName, htmlizeName, guessWidget, Lifield, renderFinalField } from '../src/field'
 import { Field, Form } from 'react-final-form'
 import { LiformContext } from '../src/form'
 
@@ -326,4 +326,64 @@ describe('Lifield component', () => {
 
         expect(liform.render.field).toBeCalledWith({foo: 1, liform})
     })
+})
+
+describe('LifieldChildren via renderFinalField', () => {
+    const objectA = {foo: 'bar'}
+    const arrayA = ['bar']
+    const props = {
+        liform: {},
+        schema: true,
+        input: {
+            name: 'foo',
+        },
+        meta: {},
+    }
+
+    it.each([
+        [
+            {...props, foo: 'bar'},
+            {...props, foo: 'bar'},
+            {...props, foo: 'baz'},
+        ],
+        [
+            {...props, foo: objectA},
+            {...props, foo: objectA},
+            {...props, foo: {foo: 'bar'}},
+        ],
+        [
+            {...props, input: {...props.input, foo: 'bar'}},
+            {...props, input: {...props.input, foo: 'bar'}},
+            {...props, input: {...props.input, foo: 'baz'}},
+        ],
+        [
+            {...props, meta: {...props.meta, foo: 'bar'}},
+            {...props, meta: {...props.meta, foo: 'bar'}},
+            {...props, meta: {...props.meta, foo: 'baz'}},
+        ],
+        [
+            {...props, meta: {...props.meta, foo: arrayA}},
+            {...props, meta: {...props.meta, foo: arrayA}},
+            {...props, meta: {...props.meta, foo: ['bar']}},
+        ],
+        [
+            {...props, meta: {...props.meta, error: ['bar']}},
+            {...props, meta: {...props.meta, error: ['bar']}},
+            {...props, meta: {...props.meta, error: ['baz']}},
+        ],
+    ])('Render only on changed props', (props0, props1, props2) => {
+        const renderFunction = jest.fn(() => null)
+        const Component = renderFinalField.bind(undefined, renderFunction)
+
+        const node = Renderer.create(<Component {...props0}/>)
+        Renderer.act(() => {
+            node.update(<Component {...props1}/>)
+        })
+        Renderer.act(() => {
+            node.update(<Component {...props2}/>)
+        })
+
+        expect(renderFunction).toBeCalledTimes(2)
+    })
+
 })
