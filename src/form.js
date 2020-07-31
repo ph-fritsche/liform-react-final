@@ -2,9 +2,9 @@ import React, { useMemo, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import arrayMutators from 'final-form-arrays'
 import { Form as FinalForm } from 'react-final-form';
-import { buildSubmitHandler } from './submit';
+import { buildSubmitHandler, buildSubmitHandlerProps } from './submit';
 import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from './validate';
-import { compileSchema } from './schema';
+import { compileSchema, SchemaProp } from './schema';
 
 export function compileChildren (sections, children) {
     if (typeof(children) === 'function') {
@@ -26,6 +26,23 @@ export function compileChildren (sections, children) {
 }
 
 export const LiformContext = React.createContext()
+
+const MetaProp = PropTypes.objectOf(
+    PropTypes.objectOf(
+        PropTypes.array
+    ),
+)
+
+export const LiformContextProp = PropTypes.shape({
+    rootName: PropTypes.string,
+    theme: PropTypes.object,
+    schema: SchemaProp,
+    meta: MetaProp,
+    value: PropTypes.any,
+    validationErrors: PropTypes.objectOf(PropTypes.array),
+    render: PropTypes.objectOf(PropTypes.elementType),
+    updateData: PropTypes.func,
+})
 
 export function Liform(props) {
     const rootName = props.name || props.schema && props.schema.name || ''
@@ -143,8 +160,31 @@ export function Liform(props) {
 }
 
 Liform.propTypes = {
-    schema: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+    schema: SchemaProp,
     value: PropTypes.any,
-    meta: PropTypes.object,
+    meta: MetaProp,
     name: PropTypes.string,
+
+    theme: PropTypes.shape({
+        render: PropTypes.shape({
+            container: PropTypes.elementType,
+        }),
+        sections: PropTypes.objectOf(
+            PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.oneOf([null])])
+        ),
+    }).isRequired,
+
+    sections: PropTypes.objectOf(
+        PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.oneOf([null])])
+    ),
+    children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.arrayOf(PropTypes.element), PropTypes.oneOf([null])]),
+    render: PropTypes.objectOf(PropTypes.elementType),
+
+    buildSubmitHandler: PropTypes.func,
+    ...buildSubmitHandlerProps,
+
+    ajv: PropTypes.func,
+    ajvTranslator: PropTypes.func,
+
+    ...FinalForm.propTypes,
 }

@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { Lifield } from '../'
+import { LiformContextProp } from '../form';
 
 export const Container = props => (
     <form
@@ -11,6 +13,15 @@ export const Container = props => (
         { props.children }
     </form>
 )
+
+Container.propTypes = {
+    liform: LiformContextProp.isRequired,
+    handleSubmit: PropTypes.func,
+    handleReset: PropTypes.func,
+    method: PropTypes.string,
+    action: PropTypes.string,
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element), PropTypes.oneOf([null])]),
+}
 
 export const Reset = () => (
     <Lifield schema={{

@@ -21,7 +21,6 @@
   "rules": {
     "indent": 2,
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
-    "jsx-quotes": [2, "prefer-double"],
-    "react/prop-types": 0
+    "jsx-quotes": [2, "prefer-double"]
   }
 }

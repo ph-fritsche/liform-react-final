@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types'
+import { SchemaProp } from '../../schema';
 
 export const ButtonWidget = ({name, schema}) => {
 
@@ -13,3 +15,8 @@ export const ButtonWidget = ({name, schema}) => {
     return <button name={name} type={type || 'button'} className="liform-field liform-button">{schema.title}</button>
 }
 
+
+ButtonWidget.propTypes = {
+    schema: SchemaProp,
+    name: PropTypes.string,
+}

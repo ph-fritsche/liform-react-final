@@ -1,4 +1,5 @@
-import { compileSchema } from '../src/schema';
+import PropTypes from 'prop-types'
+import { compileSchema, SchemaProp } from '../src/schema';
 
 describe('Compile schema', () => {
     const schema = {
@@ -42,5 +43,37 @@ describe('Compile schema', () => {
         expect(schema.properties.someProp.foo).toBe('bar')
         expect(schemaCompiled.properties.someProp.foo).toBe(undefined)
         expect(schemaCompiled.properties.someProp.type).toBe('number')
+    })
+})
+
+describe('SchemaProp', () => {
+    it.each([
+        [{title: false}],
+        [{description: []}],
+        [{items: ['foo']}],
+        [{additionalItems: 'foo'}],
+    ])('Returns error on invalid schema', (schema) => {
+        const realError = console.error
+        console.error = (e) => { throw new Error(e) }
+
+        expect(() => PropTypes.checkPropTypes({foo: SchemaProp}, {foo: schema}, 'foo', 'FooComponent')).toThrowError()
+
+        PropTypes.resetWarningCache()
+        console.error = realError
+    })
+
+    it.each([
+        [{title: 'foo'}],
+        [{description: 'foo'}],
+        [{items: [true, {type: 'string'}]}],
+        [{additionalItems: {type: 'number'}}],
+    ])('Accepts valid schema', (schema) => {
+        const realError = console.error
+        console.error = (e) => { throw new Error(e) }
+
+        PropTypes.checkPropTypes({foo: SchemaProp}, {foo: schema}, 'foo', 'FooComponent')
+
+        PropTypes.resetWarningCache()
+        console.error = realError
     })
 })

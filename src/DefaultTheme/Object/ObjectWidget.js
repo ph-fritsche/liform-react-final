@@ -1,6 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Lifield, mapProperties } from '../..'
 import { Errors } from '../shared'
+import { LiformContextProp } from '../../form'
+import { SchemaProp } from '../../schema'
 
 export const ObjectWidget = props => {
     const {
@@ -23,3 +26,8 @@ export const ObjectWidget = props => {
     </fieldset>
 }
 
+ObjectWidget.propTypes = {
+    liform: LiformContextProp,
+    name: PropTypes.string,
+    schema: SchemaProp,
+}

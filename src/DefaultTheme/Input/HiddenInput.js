@@ -1,5 +1,6 @@
 import React from 'react';
 import { Field } from '../Field/Field';
+import { FieldRenderProps } from '../../field';
 
 export const HiddenInput = props => {
     const {
@@ -18,3 +19,5 @@ export const HiddenInput = props => {
         )
         : element
 }
+
+HiddenInput.propTypes = FieldRenderProps

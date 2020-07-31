@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { FORM_ERROR } from 'final-form'
 
 const prepareRequestDefault = (values, liform) => { return {
@@ -93,4 +94,14 @@ export const buildSubmitHandler = (liform, {action, prepareRequest, ...props}) =
     }
 }
   
-  
+export const buildSubmitHandlerProps = {
+    action: PropTypes.string,
+    prepareRequest: PropTypes.func,
+    handleSubmitError: PropTypes.func,
+    handleSubmitResponse: PropTypes.func,
+    handleSubmitRedirectResponse: PropTypes.func,
+    onSubmitRedirect: PropTypes.func,
+    onSubmitHtmlResponse: PropTypes.func,
+    onSubmitSuccess: PropTypes.func,
+    onSubmitFail: PropTypes.func,
+}

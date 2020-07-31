@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field } from '../Field/Field';
 import { PureOptions } from './PureOptions';
+import { FieldRenderProps } from '../../field';
 
 export const Choice = (props) => {
     const {
@@ -48,3 +49,5 @@ export const Choice = (props) => {
             </Field>
         )
 }
+
+Choice.propTypes = FieldRenderProps

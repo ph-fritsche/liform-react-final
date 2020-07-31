@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 
 export class PureOptions extends React.PureComponent {
     render() {
@@ -8,4 +9,9 @@ export class PureOptions extends React.PureComponent {
             </option>
         )
     }
+}
+
+PureOptions.propTypes = {
+    values: PropTypes.arrayOf(PropTypes.string),
+    labels: PropTypes.arrayOf(PropTypes.string),
 }

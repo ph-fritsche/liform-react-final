@@ -1,7 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { FieldArray as FinalFieldArray } from 'react-final-form-arrays'
 import { Lifield, finalizeName, liformizeName } from '../..'
 import { Errors } from '../shared';
+import { SchemaProp } from '../../schema';
+import { LiformContextProp } from '../../form';
 
 export const ArrayWidget = props => {
     const {
@@ -35,4 +38,10 @@ export const ArrayWidget = props => {
             { schema.allowAdd && <button type="button" onClick={() => fields.push()}><span role="img" aria-label="add collection element">➕</span></button> }
         </fieldset>
     )}/>
+}
+
+ArrayWidget.propTypes = {
+    liform: LiformContextProp,
+    schema: SchemaProp,
+    name: PropTypes.string,
 }

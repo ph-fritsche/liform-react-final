@@ -1,5 +1,6 @@
 import React from 'react';
 import { Field } from '../Field/Field';
+import { FieldRenderProps } from '../../field';
 
 export const NumberInput = props => {
     const {
@@ -51,3 +52,5 @@ export const NumberInput = props => {
         </Field>
     )
 }
+
+NumberInput.propTypes = FieldRenderProps

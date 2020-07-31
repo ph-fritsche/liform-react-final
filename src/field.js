@@ -1,8 +1,11 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Field as FinalField } from 'react-final-form';
+import { FieldProps as FinalFieldProps, FieldRenderProps as FinalFieldRenderProps } from 'react-final-form';
 import { buildFieldValidator } from './validate';
 import { shallowEqual } from './util/equal';
-import { LiformContext } from './form';
+import { LiformContext, LiformContextProp } from './form';
+import { SchemaProp } from './schema';
 
 export const liformizeName = (finalName) => {
     return finalName
@@ -110,6 +113,16 @@ export const renderField = props => {
     return React.createElement(FinalField, fieldProps)
 }
 
+renderField.propTypes = {
+    ...FinalFieldProps,
+    
+    liform: LiformContextProp,
+    schema: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+    Widget: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+
+    children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.arrayOf(PropTypes.element), PropTypes.oneOf([null])]),
+}
+
 export const renderFinalField = (element, props) => {
     return <LifieldChildren
         render={element}
@@ -152,6 +165,26 @@ const LifieldChildren = React.memo(
     }
 )
 
+LifieldChildren.propTypes = {
+    render: PropTypes.elementType,
+
+    liform: LiformContextProp.isRequired,
+
+    schema: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+
+    input: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+    }).isRequired,
+    meta: PropTypes.object.isRequired,
+}
+
+export const FieldRenderProps = {
+    ...FinalFieldRenderProps,
+
+    schema: SchemaProp,
+    name: PropTypes.string,
+}
+
 export function Lifield (props) {
     const {
         liform: liformProp,
@@ -169,4 +202,13 @@ export function Lifield (props) {
     )
 }
 
+Lifield.propTypes = {
+    liform: LiformContextProp,
+    render: PropTypes.elementType,
+}
+
 const LifieldRender = React.memo(function Lifield({render, ...rest}) { return render(rest)})
+
+LifieldRender.propTypes = {
+    render: PropTypes.func,
+}
