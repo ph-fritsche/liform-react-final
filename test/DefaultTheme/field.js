@@ -109,6 +109,20 @@ describe('Types', () => {
         expect(fieldset).toHaveTextContent('Some error.')
     })
 
+    it('Render array without value and errors', () => {
+        const rendered = render(TestLiform({
+            schema: {
+                title: 'foo field',
+                type: 'array',
+                items: {
+                    type: 'string',
+                },
+            },
+        }))
+
+        rendered.getByText('foo field')
+    })
+
     it('Render input fields for object properties', async () => {
         const rendered = render(TestLiform({
             value: {a: 'bar', b: 'baz'},
@@ -127,6 +141,21 @@ describe('Types', () => {
 
         expect(fieldset).toHaveFormValues({'foo[a]': 'bar', 'foo[b]': 'baz'})
         expect(fieldset).toHaveTextContent('Some error.')
+    })
+
+    it('Render object without value and errors', () => {
+        const rendered = render(TestLiform({
+            schema: {
+                title: 'foo field',
+                type: 'object',
+                properties: {
+                    a: {type: 'string'},
+                    b: {type: 'string'},
+                },
+            },
+        }))
+
+        expect(rendered.getByText('foo field').closest('fieldset')).toHaveFormValues({'foo[a]': '', 'foo[b]': ''})
     })
 })
 
