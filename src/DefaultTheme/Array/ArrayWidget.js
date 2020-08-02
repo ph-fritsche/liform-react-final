@@ -26,7 +26,7 @@ export const ArrayWidget = props => {
                         name={liformizeName(name)}
                         schema={
                             Array.isArray(schema.items) ?
-                                (index <= schema.items.length ? schema.items[index] : schema.additionalItems) : 
+                                (index < schema.items.length ? schema.items[index] : schema.additionalItems) : 
                                 schema.items
                         }
                     />
@@ -35,7 +35,9 @@ export const ArrayWidget = props => {
                     }
                 </div>
             )) }
-            { schema.allowAdd && <button type="button" onClick={() => fields.push()}><span role="img" aria-label="add collection element">➕</span></button> }
+            { (schema.allowAdd || fields.length < (Array.isArray(meta.initial) ? meta.initial.length : 0)) &&
+                <button type="button" onClick={() => fields.push()}><span role="img" aria-label="add collection element">➕</span></button>
+            }
         </fieldset>
     )}/>
 }
