@@ -54,6 +54,29 @@ describe('Types', () => {
         expect(field).not.toHaveTextContent('Some error.')
     })
 
+    it('Render and change string input with pattern', () => {
+        const rendered = render(TestLiform({
+            schema: {type: 'string', title: 'foo field', pattern: '^abc$'},
+            value: 'a',
+        }))
+
+        const input = rendered.getByLabelText('foo field')
+        const field = input.closest('div')
+
+        expect(field).not.toHaveTextContent('Pattern')
+        expect(input).toHaveAttribute('pattern', '^abc$')
+
+        userEvent.type(input, 'b')
+
+        expect(field).toHaveTextContent('Pattern')
+        
+        userEvent.type(input, 'c')
+
+        expect(input).toHaveValue('abc')
+
+        expect(field).not.toHaveTextContent('Pattern')
+    })
+
     it('Render and change number input', () => {
         const rendered = render(TestLiform({
             schema: {type: 'number', title: 'foo field'},
@@ -70,10 +93,37 @@ describe('Types', () => {
         expect(field).toHaveTextContent('Some error.')
 
         userEvent.clear(input)
+        userEvent.click(rendered.container)
+
+        expect(input).toHaveValue(null)
+
         userEvent.type(input, '456')
 
         expect(input).toHaveValue(456)
         expect(field).not.toHaveTextContent('Some error.')
+    })
+
+    it('Round number input on blur', () => {
+        const rendered = render(TestLiform({
+            schema: {type: 'number', title: 'foo field', step: 0.02},
+            value: 123,
+        }))
+
+        const input = rendered.getByLabelText('foo field')
+
+        expect(input).toHaveValue(123)
+
+        userEvent.clear(input)
+        userEvent.type(input, '456.777')
+        // fireEvent.change(input, {target: {value: 456.7}})
+        // fireEvent.change(input, {target: {value: 456.77}})
+        // fireEvent.change(input, {target: {value: 456.777}})
+
+        expect(input).toHaveValue(456.777)
+
+        userEvent.click(rendered.container)
+
+        expect(input).toHaveValue(456.78)
     })
 
     it('Render and change integer input', () => {
@@ -125,6 +175,86 @@ describe('Types', () => {
         expect(rendered.getByText('foo field')).toBeTruthy()
     })
 
+    it('Render array with different item types', () => {
+        const rendered = render(TestLiform({
+            schema: {
+                title: 'foo field',
+                type: 'array',
+                items: [
+                    {type: 'boolean'},
+                    {type: 'number'},
+                ],
+                additionalItems: {type: 'string'},
+            },
+            value: [true, 123, 'bar'],
+        }))
+
+        expect(rendered.getByText('foo field')).toBeTruthy()
+
+        const inputs = rendered.container.querySelectorAll('input')
+
+        expect(inputs).toHaveLength(3)
+        expect(inputs[0]).toHaveAttribute('name', 'foo[0]')
+        expect(inputs[0]).toBeChecked()
+        expect(inputs[1]).toHaveAttribute('name', 'foo[1]')
+        expect(inputs[1]).toHaveValue(123)
+        expect(inputs[2]).toHaveAttribute('name', 'foo[2]')
+        expect(inputs[2]).toHaveValue('bar')
+    })
+
+    it('Add and remove extra array elements', () => {
+        const rendered = render(TestLiform({
+            value: ['a', 'b'],
+            schema: {
+                type: 'array',
+                title: 'foo field',
+                items: {type: 'string'},
+                allowAdd: true,
+            },
+        }))
+
+        const fieldset = rendered.getByText('foo field', {selector: 'legend'}).closest('fieldset')
+
+        expect(rendered.queryAllByRole('button', {name: /remove/i})).toHaveLength(0)
+
+        userEvent.click(rendered.getByRole('button', {name: /add/i}))
+
+        expect(rendered.getAllByRole('textbox')).toHaveLength(3)
+        userEvent.type(rendered.getAllByRole('textbox')[2], 'c')
+
+        expect(fieldset).toHaveFormValues({'foo[0]': 'a', 'foo[1]': 'b', 'foo[2]': 'c'})
+
+        userEvent.click(rendered.getByRole('button', {name: /remove/i}))
+
+        expect(fieldset).toHaveFormValues({'foo[0]': 'a', 'foo[1]': 'b'})
+    })
+
+    it('Remove and add existing array elements', () => {
+        const rendered = render(TestLiform({
+            value: ['a', 'b'],
+            schema: {
+                type: 'array',
+                title: 'foo field',
+                items: {type: 'string'},
+                allowDelete: true,
+            },
+        }))
+
+        const fieldset = rendered.getByText('foo field', {selector: 'legend'}).closest('fieldset')
+
+        expect(rendered.queryAllByRole('button', {name: /add/i})).toHaveLength(0)
+
+        userEvent.click(rendered.getAllByRole('button', {name: /remove/i})[1])
+
+        expect(rendered.getAllByRole('textbox')).toHaveLength(1)
+        expect(fieldset).toHaveFormValues({'foo[0]': 'a'})
+
+        userEvent.click(rendered.getByRole('button', {name: /add/i}))
+
+        expect(rendered.getAllByRole('textbox')).toHaveLength(2)
+        expect(fieldset).toHaveFormValues({'foo[0]': 'a', 'foo[1]': ''})
+    })
+
     it('Render input fields for object properties', () => {
         const rendered = render(TestLiform({
             value: {a: 'bar', b: 'baz'},
@@ -162,6 +292,17 @@ describe('Types', () => {
 })
 
 describe('Blocks', () => {
+    it('Render button', () => {
+        const rendered = render(TestLiform({
+            schema: {
+                title: 'foo field',
+                widget: 'button',
+            },
+        }))
+
+        expect(rendered.getByRole('button')).toBeTruthy()
+    })
+
     it('Render and change color input', () => {
         const rendered = render(TestLiform({
             schema: {
@@ -315,6 +456,10 @@ describe('Choice', () => {
         userEvent.selectOptions(input, ['baz'])
 
         expect(input).toHaveValue(['foo', 'baz'])
+
+        userEvent.click(rendered.container)
+
+        expect(input).toHaveValue(['foo', 'baz'])
     })
 
     it('Render and change multiple expanded', () => {
@@ -351,5 +496,9 @@ describe('Choice', () => {
         userEvent.click(checkBar)
 
         expect(checkBar).toBeChecked()
+
+        userEvent.click(checkFoo)
+
+        expect(checkFoo).not.toBeChecked()
     })
 })

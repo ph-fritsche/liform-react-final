@@ -38,6 +38,11 @@ describe('Guess widget', () => {
             'bar': {},
         }
     }
+    const themeWithFallback = {
+        field: {
+            [null]: {}
+        }
+    }
 
     it('Per widget property', () => {
         expect(guessWidget({widget: ['bar', 'foo']}, theme)).toBe('bar')
@@ -52,11 +57,17 @@ describe('Guess widget', () => {
         expect(guessWidget({oneOf: {}}, theme)).toBe('oneOf')
     })
 
+    it('For fallback', () => {
+        expect(guessWidget({widget: 'myWidget'}, themeWithFallback)).toBe(null)
+        expect(guessWidget(undefined, themeWithFallback)).toBe(null)
+    })
+
     it('Throw error if no widget is found', () => {
         expect(() => guessWidget({type: 'number'}, theme)).toThrow('No widget defined for number')
-        expect(() => guessWidget({widget: 'myWidget'}, theme)).toThrow('No widget defined for myWidget')
+        expect(() => guessWidget({widget: 'myWidget'}, theme)).toThrow('No widget defined for myWidget,(null)')
         expect(() => guessWidget({type: 'number', widget: 'myWidget'}, theme)).toThrow('No widget defined for myWidget,number')
         expect(() => guessWidget({type: 'number', widget: 'number'}, theme)).toThrow('No widget defined for number')
+        expect(() => guessWidget({type: 'number', widget: 'number'}, themeWithFallback)).toThrow('No widget defined for number')
     })
 })
 
