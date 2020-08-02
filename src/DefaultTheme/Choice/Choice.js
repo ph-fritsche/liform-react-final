@@ -5,10 +5,11 @@ import { FieldRenderProps } from '../../field';
 
 export const Choice = (props) => {
     const {
-        liform,
-        name,
         schema = true,
-        input: {...input},
+        input: {
+            onChange: onChangeProp,
+            ...input
+        },
         placeholder,
         meta
     } = props
@@ -19,7 +20,7 @@ export const Choice = (props) => {
 
     return schema.choiceExpanded
         ? (
-            <div className="liform-field liform-choice">
+            <fieldset className="liform-field liform-choice">
                 <legend>{ schema && schema.title }</legend>
                 <div className="liform-options">
                     { (schema.enum || schema.items.enum).map((elValue,i) =>
@@ -29,20 +30,28 @@ export const Choice = (props) => {
                                 name={input.name + (schema.type === 'array' ? '[]' : '')}
                                 value={elValue}
                                 checked={schema.type === 'array' ? input.value.indexOf(elValue) >= 0 : input.value === elValue }
-                                onChange={(e) => { liform.form.change(name, schema.type === 'array' ?
-                                    (e.target.checked ? input.value.concat([elValue]) : input.value.filter(v => v !== elValue)) :
-                                    (e.target.checked ? elValue : null)
-                                ) }}
+                                onChange={e => onChangeProp(
+                                    schema.type === 'array'
+                                        ? (e.target.checked ? input.value.concat([elValue]) : input.value.filter(v => v !== elValue))
+                                        : (e.target.checked ? elValue : null)
+                                ) }
                             />
                             { (schema.enumTitles || schema.items.enumTitles)[i] }
                         </label>
                     ) }
                 </div>
-            </div>
+                { meta.error && meta.error.map(e =>
+                    <div key={e} className="liform-error">{e}</div>
+                )}
+            </fieldset>
         )
         : (
             <Field className="liform-choice" schema={schema} meta={meta}>
-                <select {...input} multiple={schema.type === 'array'}>
+                <select {...input}
+                    multiple={schema.type === 'array'}
+                    onChange={e => onChangeProp(extractNativeSelectValue(e))}
+                    onBlur={e => onChangeProp(extractNativeSelectValue(e))}
+                >
                     { schema.type !== 'array' && placeholder && <option value="">{placeholder}</option> }
                     { (schema.enum || schema.items.enum) && <PureOptions values={schema.enum || schema.items.enum} labels={schema.enumTitles || schema.items.enumTitles}/> }
                 </select>
@@ -51,3 +60,19 @@ export const Choice = (props) => {
 }
 
 Choice.propTypes = FieldRenderProps
+
+function extractNativeSelectValue (event) {
+    if (!event || !(event.target instanceof HTMLSelectElement)) {
+        return event
+    }
+
+    if (event.target.hasAttribute('multiple')) {
+        const v = []
+        for (let i = 0; i < event.target.selectedOptions.length; i++) {
+            v.push(event.target.selectedOptions.item(i).value)
+        }
+        return v
+    }
+
+    return event.target.value
+}
