@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
-import '@testing-library/jest-dom/extend-expect'
+import userEvent from '@testing-library/user-event'
 import { Liform, DefaultTheme } from '../../src'
 
 const TestLiform = props => (
@@ -14,53 +14,54 @@ const TestLiform = props => (
 )
 
 describe('Types', () => {
-    it('Render and change boolean input', async () => {
+    it('Render and change boolean input', () => {
         const rendered = render(TestLiform({
             schema: {type: 'boolean', title: 'foo field'},
             meta: {errors: {'': ['Some error.']}},
         }))
 
-        const input = await rendered.findByLabelText('foo field')
+        const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
         expect(input.getAttribute('name')).toEqual('foo')
         expect(input).not.toBeChecked()
         expect(field).toHaveTextContent('Some error.')
 
-        fireEvent.click(input)
+        userEvent.click(input)
 
         expect(input).toBeChecked()
         expect(field).not.toHaveTextContent('Some error.')
     })
 
-    it('Render and change string input', async () => {
+    it('Render and change string input', () => {
         const rendered = render(TestLiform({
             schema: {type: 'string', title: 'foo field'},
             value: 'bar',
             meta: {errors: {'': ['Some error.']}},
         }))
 
-        const input = await rendered.findByLabelText('foo field')
+        const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
         expect(input.getAttribute('name')).toEqual('foo')
         expect(input).toHaveValue('bar')
         expect(field).toHaveTextContent('Some error.')
 
-        fireEvent.change(input, {target: {value: 'baz'}})
+        userEvent.clear(input)
+        userEvent.type(input, 'baz')
 
         expect(input).toHaveValue('baz')
         expect(field).not.toHaveTextContent('Some error.')
     })
 
-    it('Render and change number input', async () => {
+    it('Render and change number input', () => {
         const rendered = render(TestLiform({
             schema: {type: 'number', title: 'foo field'},
             value: 123,
             meta: {errors: {'': ['Some error.']}},
         }))
 
-        const input = await rendered.findByLabelText('foo field')
+        const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
         expect(input.getAttribute('name')).toEqual('foo')
@@ -68,20 +69,21 @@ describe('Types', () => {
         expect(input).toHaveValue(123)
         expect(field).toHaveTextContent('Some error.')
 
-        fireEvent.change(input, {target: {value: '456'}})
+        userEvent.clear(input)
+        userEvent.type(input, '456')
 
         expect(input).toHaveValue(456)
         expect(field).not.toHaveTextContent('Some error.')
     })
 
-    it('Render and change integer input', async () => {
+    it('Render and change integer input', () => {
         const rendered = render(TestLiform({
             schema: {type: 'integer', title: 'foo field'},
             value: 123,
             meta: {errors: {'': ['Some error.']}},
         }))
 
-        const input = await rendered.findByLabelText('foo field')
+        const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
         expect(input.getAttribute('name')).toEqual('foo')
@@ -96,14 +98,14 @@ describe('Types', () => {
         expect(field).not.toHaveTextContent('Some error.')
     })
 
-    it('Render input fields for array elements', async () => {
+    it('Render input fields for array elements', () => {
         const rendered = render(TestLiform({
             value: ['a', 'b'],
             schema: {type: 'array', title: 'foo field', items: {type: 'string'}},
             meta: {errors: {'': ['Some error.']}},
         }))
 
-        const fieldset = (await rendered.findByText('foo field', {selector: 'legend'})).closest('fieldset')
+        const fieldset = rendered.getByText('foo field', {selector: 'legend'}).closest('fieldset')
 
         expect(fieldset).toHaveFormValues({'foo[0]': 'a', 'foo[1]': 'b'})
         expect(fieldset).toHaveTextContent('Some error.')
@@ -123,7 +125,7 @@ describe('Types', () => {
         expect(rendered.getByText('foo field')).toBeTruthy()
     })
 
-    it('Render input fields for object properties', async () => {
+    it('Render input fields for object properties', () => {
         const rendered = render(TestLiform({
             value: {a: 'bar', b: 'baz'},
             schema: {
@@ -137,7 +139,7 @@ describe('Types', () => {
             meta: {errors: {'': ['Some error.']}},
         }))
 
-        const fieldset = (await rendered.findByText('foo field', {selector: 'legend'})).closest('fieldset')
+        const fieldset = rendered.getByText('foo field', {selector: 'legend'}).closest('fieldset')
 
         expect(fieldset).toHaveFormValues({'foo[a]': 'bar', 'foo[b]': 'baz'})
         expect(fieldset).toHaveTextContent('Some error.')
@@ -160,7 +162,7 @@ describe('Types', () => {
 })
 
 describe('Blocks', () => {
-    it('Render and change color input', async () => {
+    it('Render and change color input', () => {
         const rendered = render(TestLiform({
             schema: {
                 title: 'foo field',
@@ -173,7 +175,7 @@ describe('Blocks', () => {
             },
         }))
 
-        const input = await rendered.findByLabelText('foo field')
+        const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
         expect(input).toHaveValue('#000000')
@@ -185,7 +187,7 @@ describe('Blocks', () => {
         expect(field).not.toHaveTextContent('Some error.')
     })
 
-    it('Render and change hidden input', async () => {
+    it('Render and change hidden input', () => {
         const rendered = render(TestLiform({
             schema: {
                 title: 'foo field',
@@ -217,7 +219,7 @@ describe('Blocks', () => {
             value: 'bar',
         }))
 
-        const field = (await rendered.findByText('foo field')).closest('div')
+        const field = rendered.getByText('foo field').closest('div')
 
         expect(field).toHaveTextContent('Some error.')
     })
