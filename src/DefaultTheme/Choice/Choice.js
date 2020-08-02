@@ -14,10 +14,6 @@ export const Choice = (props) => {
         meta
     } = props
 
-    if (schema.type === 'array' && !Array.isArray(input.value)) {
-        input.value = []
-    }
-
     return schema.choiceExpanded
         ? (
             <fieldset className="liform-field liform-choice">
@@ -62,10 +58,6 @@ export const Choice = (props) => {
 Choice.propTypes = FieldRenderProps
 
 function extractNativeSelectValue (event) {
-    if (!event || !(event.target instanceof HTMLSelectElement)) {
-        return event
-    }
-
     if (event.target.hasAttribute('multiple')) {
         const v = []
         for (let i = 0; i < event.target.selectedOptions.length; i++) {
