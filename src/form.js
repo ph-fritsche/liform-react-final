@@ -2,6 +2,7 @@ import React, { useMemo, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import arrayMutators from 'final-form-arrays'
 import { Form as FinalForm } from 'react-final-form';
+import { FormRenderProps as FinalFormRenderProps } from 'react-final-form'
 import { buildSubmitHandler, buildSubmitHandlerProps } from './submit';
 import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from './validate';
 import { compileSchema, SchemaProp } from './schema';
@@ -43,6 +44,11 @@ export const LiformContextProp = PropTypes.shape({
     render: PropTypes.objectOf(PropTypes.elementType),
     updateData: PropTypes.func,
 })
+
+export const FormRenderProps = {
+    ...FinalFormRenderProps,
+    liform: LiformContextProp,
+}
 
 export function Liform(props) {
     const rootName = props.name || props.schema && props.schema.name || ''
