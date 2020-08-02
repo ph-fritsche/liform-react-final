@@ -1,31 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Lifield, finalizeName } from '..';
-import { LiformContextProp } from '../form';
-import { SchemaProp } from '../schema';
+import { Lifield, finalizeName, FormRenderProps } from '..';
 
-export const Form = (props) => (
-    <Lifield
-        liform={props.liform}
-        schema={props.liform.schema}
-    />
-)
+export const Form = props => {
+    const {
+        liform
+    } = props
 
-Form.propTypes = {
-    liform: LiformContextProp,
-    schema: SchemaProp,
+    return <Lifield liform={liform} schema={liform.schema}/>
 }
 
-export const Action = (props) => (
-    <div className="liform-action">
-        { props.liform.render.reset && props.liform.render.reset(props) }
-        { props.liform.render.submit && props.liform.render.submit(props) }
-    </div>
-)
+Form.propTypes = FormRenderProps
 
-Action.propTypes = {
-    liform: LiformContextProp,
+export const Action = props => {
+    const {
+        liform: {
+            render: {
+                reset,
+                submit,
+            },
+        },
+    } = props
+
+    return (
+        <div className="liform-action">
+            { reset && reset(props) }
+            { submit && submit(props) }
+        </div>
+    )
 }
+
+Action.propTypes = FormRenderProps
 
 const Errors = ({errors, title}) => (
     <div className="liform-error-group">
@@ -39,23 +44,21 @@ Errors.propTypes = {
     title: PropTypes.string,
 }
 
-export const FormErrors = (props) => {
-    if (!props.liform.meta.errors) {
-        return null
-    }
+export const FormErrors = props => {
+    const {
+        liform: {
+            meta: {
+                errors = {}
+            }
+        }
+    } = props
 
     const registered = props.liform.form.getRegisteredFields()
-    const errorPaths = Object.keys(props.liform.meta.errors).filter(key => registered.indexOf(finalizeName(key)) < 0)
+    const errorPaths = Object.keys(errors).filter(key => registered.indexOf(finalizeName(key)) < 0)
 
     return <div className="liform-errors">
         { errorPaths.map(propertyPath => <Errors key={propertyPath} title={propertyPath} errors={props.liform.meta.errors[propertyPath]}/>) }
     </div>
 }
 
-FormErrors.propTypes = {
-    liform: LiformContextProp,
-}
-
-export default {
-
-}
+FormErrors.propTypes = FormRenderProps
