@@ -224,3 +224,132 @@ describe('Blocks', () => {
         expect(field).toHaveTextContent('Some error.')
     })
 })
+
+describe('Choice', () => {
+    it('Render and change select', () => {
+        const rendered = render(TestLiform({
+            schema: {
+                title: 'foo field',
+                type: 'string',
+                widget: 'choice',
+                enum: ['foo', 'bar', 'baz'],
+                enumTitles: ['fooTitle', 'barTitle', 'bazTitle'],
+            },
+            meta: {
+                errors: {
+                    '': ['Some error.'],
+                },
+            },
+            value: 'foo',
+        }))
+
+        const input = rendered.getByLabelText('foo field')
+        const field = input.closest('div')
+
+        expect(input.getAttribute('name')).toEqual('foo')
+        expect(input.tagName).toEqual('SELECT')
+        expect(input).toHaveValue('foo')
+        expect(field).toHaveTextContent('Some error.')
+
+        userEvent.selectOptions(input, 'bar')
+
+        expect(input).toHaveValue('bar')
+
+        userEvent.selectOptions(input, 'baz')
+
+        expect(input).toHaveValue('baz')
+    })
+
+    it('Render and change expanded', () => {
+        const rendered = render(TestLiform({
+            schema: {
+                title: 'foo field',
+                type: 'string',
+                widget: 'choice',
+                choiceExpanded: true,
+                enum: ['foo', 'bar', 'baz'],
+                enumTitles: ['fooTitle', 'barTitle', 'bazTitle'],
+            },
+            meta: {
+                errors: {
+                    '': ['Some error.'],
+                },
+            },
+            value: 'foo',
+        }))
+
+        const field = rendered.getByText('foo field', {selector: 'legend'}).closest('fieldset')
+        expect(field).toHaveTextContent('Some error.')
+        expect(field).toHaveFormValues({'foo': 'foo'})
+
+        userEvent.click(rendered.getByLabelText('barTitle'))
+
+        expect(field).toHaveFormValues({'foo': 'bar'})
+    })
+
+    it('Render and change multiple select', () => {
+        const rendered = render(TestLiform({
+            schema: {
+                title: 'foo field',
+                type: 'array',
+                widget: 'choice',
+                enum: ['foo', 'bar', 'baz'],
+                enumTitles: ['fooTitle', 'barTitle', 'bazTitle'],
+            },
+            meta: {
+                errors: {
+                    '': ['Some error.'],
+                },
+            },
+            value: ['foo'],
+        }))
+
+        const input = rendered.getByLabelText('foo field')
+        const field = input.closest('div')
+
+        expect(input.getAttribute('name')).toEqual('foo')
+        expect(input.tagName).toEqual('SELECT')
+        expect(input).toHaveValue(['foo'])
+        expect(field).toHaveTextContent('Some error.')
+
+        userEvent.selectOptions(input, ['baz'])
+
+        expect(input).toHaveValue(['foo', 'baz'])
+    })
+
+    it('Render and change multiple expanded', () => {
+        const rendered = render(TestLiform({
+            schema: {
+                title: 'foo field',
+                type: 'array',
+                widget: 'choice',
+                choiceExpanded: true,
+                enum: ['foo', 'bar', 'baz'],
+                enumTitles: ['fooTitle', 'barTitle', 'bazTitle'],
+            },
+            meta: {
+                errors: {
+                    '': ['Some error.'],
+                },
+            },
+            value: ['foo'],
+        }))
+
+        const field = rendered.getByText('foo field', {selector: 'legend'}).closest('fieldset')
+        expect(field).toHaveTextContent('Some error.')
+
+        const checkFoo = rendered.getByLabelText('fooTitle')
+        expect(checkFoo).toHaveAttribute('name', 'foo[]')
+        expect(checkFoo).toHaveAttribute('value', 'foo')
+        expect(checkFoo).toBeChecked()
+
+        const checkBar = rendered.getByLabelText('barTitle')
+        expect(checkBar).toHaveAttribute('name', 'foo[]')
+        expect(checkBar).toHaveAttribute('value', 'bar')
+        expect(checkBar).not.toBeChecked()
+
+        userEvent.click(checkBar)
+
+        expect(checkBar).toBeChecked()
+    })
+})
