@@ -9,9 +9,10 @@ module.exports = {
         "<rootDir>/test/**/*.{js,jsx}",
     ],
     "testPathIgnorePatterns": [
-        "/_.*$",
+        "/_.*(?<!.test.js)$",
     ],
     "transformIgnorePatterns": [],
-    "setupFiles": [
+    "setupFilesAfterEnv": [
+        "<rootDir>/test/_setup.js",
     ],
 }
