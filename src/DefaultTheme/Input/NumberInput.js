@@ -27,10 +27,14 @@ export const NumberInput = props => {
     input.onBlur = (e) => {
         let v
         if (e.target.value != '') {
-            v= Number(e.target.value)
-            const step = schema.step || schema.type === 'integer' ? 1 : undefined
+            v = Number(e.target.value)
+            const step = schema.step || schema.type === 'integer' && 1 || undefined
             if (step) {
                 v = Math.round(v / step) * step
+                const dotPos = String(step).indexOf('.')
+                if (dotPos >= 0) {
+                    v = Number(v.toFixed(String(step).length - dotPos - 1))
+                }
             }
         } else {
             v = undefined
