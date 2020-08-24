@@ -40,6 +40,18 @@ describe('Ajv', () => {
         expect(validator({_: {foo: {bar: 123}}})).toEqual({'foo.bar': ['Type']})
     })
 
+    it('Validate type on array element', () => {
+        let schema = {type: 'array', items: {type: 'string'}}
+        let validator = buildFlatAjvValidate(undefined, schema)
+
+        // expect(validator({_: ['foo', 123]})).toEqual({'1': ['Type']})
+
+        schema = {type: 'object', properties: {'foo': {type: 'array', items: {type: 'string'}}}}
+        validator = buildFlatAjvValidate(undefined, schema)
+
+        expect(validator({_: {foo: ['foo', 123]}})).toEqual({'foo.1': ['Type']})
+    })
+
     it('Validate required property', () => {
         let schema = {type: 'object', properties: {'foo': true}, required: ['foo']}
         let validator = buildFlatAjvValidate(undefined, schema)

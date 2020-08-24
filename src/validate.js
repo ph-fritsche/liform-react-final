@@ -22,6 +22,8 @@ export const buildFlatAjvValidate = (ajv, schema, ajvTranslate) => {
 export const translateAjv = ({dataPath, keyword, params, message}) => {
     let fieldName = dataPath.substr(0,1) === '.' ? dataPath.substr(1) : dataPath
 
+    fieldName = fieldName.replace(/\[/g, '.').replace(/\]/g, '')
+
     if (keyword === 'required') {
         fieldName = (fieldName ? fieldName + '.' : '') + params.missingProperty
     }
