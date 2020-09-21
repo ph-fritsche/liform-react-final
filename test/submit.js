@@ -16,7 +16,7 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.reject('some error'))
 
         const handler = jest.fn(() => ({}))
-        
+
         const liform = {}
         const promise = buildSubmitHandler(liform, {prepareRequest: handler})({_: 'foo'})
 

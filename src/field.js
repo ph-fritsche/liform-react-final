@@ -115,7 +115,7 @@ export const renderField = props => {
 
 renderField.propTypes = {
     ...FinalFieldProps,
-    
+
     liform: LiformContextProp,
     schema: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     Widget: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),

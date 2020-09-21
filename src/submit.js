@@ -17,7 +17,7 @@ const handleSubmitResponseDefault = ({handleSubmitRedirectResponse, onSubmitHtml
     if (response.status <= 199 || response.status >= 500) {
         return finalPromise.reject(response.statusText)
     }
-    
+
     if (response.status >= 300 && response.status <= 399) {
         return handleSubmitRedirectResponse(finalPromise, response)
     }
@@ -93,7 +93,7 @@ export const buildSubmitHandler = (liform, {action, prepareRequest, ...props}) =
         })
     }
 }
-  
+
 export const buildSubmitHandlerProps = {
     action: PropTypes.string,
     prepareRequest: PropTypes.func,

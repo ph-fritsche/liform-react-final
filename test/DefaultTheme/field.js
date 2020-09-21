@@ -69,7 +69,7 @@ describe('Types', () => {
         userEvent.type(input, 'b')
 
         expect(field).toHaveTextContent('Pattern')
-        
+
         userEvent.type(input, 'c')
 
         expect(input).toHaveValue('abc')

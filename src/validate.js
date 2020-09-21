@@ -29,7 +29,7 @@ export const translateAjv = ({dataPath, keyword, params, message}) => {
     }
 
     message = keyword.substr(0,1).toUpperCase() + keyword.substr(1)
-    
+
     return { fieldName, message }
 }
 

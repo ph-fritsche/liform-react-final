@@ -109,7 +109,7 @@ describe('Render field', () => {
 
         expect(typeof(field)).toBe('object')
         expect(field.type).toBe(liform.theme.field.baz)
-        
+
         Renderer.create(field).root.findByType(liform.theme.field.baz)
     })
 

@@ -151,9 +151,9 @@ export function Liform(props) {
                     return React.createElement(
                         render.container,
                         renderProps,
-                        (typeof(children) === 'function') ?
-                            children(renderProps) :
-                            Object.keys(children).map(key => (
+                        (typeof(children) === 'function')
+                            ? children(renderProps)
+                            : Object.keys(children).map(key => (
                                 <React.Fragment key={key}>
                                     { (typeof(children[key]) === 'function') ? children[key](renderProps) : children[key] }
                                 </React.Fragment>

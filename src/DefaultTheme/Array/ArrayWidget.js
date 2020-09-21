@@ -25,18 +25,18 @@ export const ArrayWidget = props => {
                     <Lifield {...others}
                         name={liformizeName(name)}
                         schema={
-                            Array.isArray(schema.items) ?
-                                (index < schema.items.length ? schema.items[index] : schema.additionalItems) : 
-                                schema.items
+                            Array.isArray(schema.items)
+                                ? (index < schema.items.length ? schema.items[index] : schema.additionalItems)
+                                : schema.items
                         }
                     />
-                    { (schema.allowDelete || Array.isArray(meta.initial) && index >= meta.initial.length) &&
-                        <button type="button" onClick={() => fields.remove(index)}><span role="img" aria-label="remove collection element">❌</span></button>
+                    { (schema.allowDelete || Array.isArray(meta.initial) && index >= meta.initial.length)
+                        && <button type="button" onClick={() => fields.remove(index)}><span role="img" aria-label="remove collection element">❌</span></button>
                     }
                 </div>
             )) }
-            { (schema.allowAdd || fields.length < (Array.isArray(meta.initial) ? meta.initial.length : 0)) &&
-                <button type="button" onClick={() => fields.push()}><span role="img" aria-label="add collection element">➕</span></button>
+            { (schema.allowAdd || fields.length < (Array.isArray(meta.initial) ? meta.initial.length : 0))
+                && <button type="button" onClick={() => fields.push()}><span role="img" aria-label="add collection element">➕</span></button>
             }
         </fieldset>
     )}/>

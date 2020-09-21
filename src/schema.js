@@ -52,7 +52,7 @@ const SchemaPropValidator = PropTypes.oneOfType([PropTypes.bool, PropTypes.shape
     title: PropTypes.string,
     description: PropTypes.string,
     placeholder: PropTypes.string,
-    
+
     type: PropTypes.string,
 
     properties: PropTypes.objectOf(SchemaProp),
