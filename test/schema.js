@@ -24,25 +24,22 @@ describe('Compile schema', () => {
 
     const schemaCompiled = compileSchema(schema);
 
-    test('Copy objects', () => {
-        expect(schemaCompiled.properties.prop).toEqual(schema.properties.prop)
-        expect(schemaCompiled.properties.prop != schema.properties.prop).toBe(true)
+    test('Clone objects', () => {
+        expect(schemaCompiled).toMatchObject({ properties: { prop: schema.properties.prop } })
+        expect(schemaCompiled.properties.prop).not.toBe(schema.properties.prop)
     })
 
-    test('Copy arrays', () => {
-        expect(schemaCompiled.required).toEqual(schema.required)
-        expect(schemaCompiled.required != schema.required).toBe(true)
+    test('Clone arrays', () => {
+        expect(schemaCompiled).toMatchObject({ required: schema.required })
+        expect(schemaCompiled.required).not.toBe(schema.required)
     })
 
     test('Resolve $refs', () => {
-        expect(schemaCompiled.properties.name).toHaveProperty('type')
-        expect(schemaCompiled.properties.name.type).toEqual('string')
+        expect(schemaCompiled).toMatchObject({ properties: { name: schema.definitions.nameref } })
     })
 
     test('Ignore prototype properties', () => {
-        expect(schema.properties.someProp.foo).toBe('bar')
-        expect(schemaCompiled.properties.someProp.foo).toBe(undefined)
-        expect(schemaCompiled.properties.someProp.type).toBe('number')
+        expect(schemaCompiled.properties.someProp).toEqual({ type: 'number' })
     })
 })
 
@@ -71,7 +68,7 @@ describe('SchemaProp', () => {
         const realError = console.error
         console.error = (e) => { throw new Error(e) }
 
-        PropTypes.checkPropTypes({foo: SchemaProp}, {foo: schema}, 'foo', 'FooComponent')
+        expect(() => PropTypes.checkPropTypes({ foo: SchemaProp }, { foo: schema }, 'foo', 'FooComponent')).not.toThrowError()
 
         PropTypes.resetWarningCache()
         console.error = realError
