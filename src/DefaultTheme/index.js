@@ -7,6 +7,8 @@ import { NumberInput } from './Input/NumberInput';
 import { ObjectWidget } from './Object/ObjectWidget';
 import { ButtonWidget } from './Button/ButtonWidget';
 import { Choice } from './Choice/Choice';
+import { ColorInput } from './Input/ColorInput';
+import { FileInput } from './Input/FileInput';
 
 export default {
     sections: {
@@ -45,8 +47,7 @@ export default {
             'render': Choice,
         },
         color: {
-            'render': Input,
-            'type': 'color',
+            'render': ColorInput,
         },
         date: {
             'render': Input,
@@ -61,8 +62,7 @@ export default {
             'type': 'email',
         },
         file: {
-            'render': Input,
-            'type': 'file',
+            'render': FileInput,
         },
         hidden: {
             render: HiddenInput,

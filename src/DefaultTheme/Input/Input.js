@@ -1,30 +1,30 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { Field } from '../Field/Field';
 import { FieldRenderProps } from '../../field';
 
 export const Input = props => {
     const {
+        InputComponent = 'input',
+        className = 'liform-input',
         schema = true,
-        input: {...input},
+        input,
         placeholder,
         meta,
     } = props
 
-    if (input.type === 'color' && input.value === '') {
-        input.value = '#000000'
-    }
-
-    if (schema.pattern) {
-        input.pattern = schema.pattern
-    }
-
-    input.placeholder = placeholder
-
     return (
-        <Field className="liform-input" schema={schema} meta={meta}>
-            { input.type === 'textarea' ? <textarea {...input}/> : <input {...input}/> }
+        <Field className={className} schema={schema} meta={meta}>
+            <InputComponent
+                {...input}
+                pattern={schema.pattern}
+                placeholder={placeholder}
+            />
         </Field>
     )
 }
 
-Input.propTypes = FieldRenderProps
+Input.propTypes = {
+    ...FieldRenderProps,
+    InputComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]),
+}
