@@ -10,7 +10,7 @@ describe('Property helpers', () => {
             e: {propertyOrder: 1},
         }
 
-        expect(sortPropertyKeys(object)).toEqual(['b','e','a','c','d'])
+        expect(sortPropertyKeys(object)).toEqual(['b', 'e', 'a', 'c', 'd'])
     })
 
     it('Sort properties', () => {
@@ -21,7 +21,7 @@ describe('Property helpers', () => {
         }
 
         const sortedObject = sortProperties(object)
-        expect(Object.keys(sortedObject)).toEqual(['b','c','a'])
+        expect(Object.keys(sortedObject)).toEqual(['b', 'c', 'a'])
         expect(sortedObject).toEqual(object)
     })
 
@@ -32,6 +32,6 @@ describe('Property helpers', () => {
             c: {v: 'baz', propertyOrder: 1},
         }
 
-        expect(mapProperties(object, (a,i) => i + ':' + a.v)).toEqual(['b:bar','c:baz','a:foo'])
+        expect(mapProperties(object, (a, i) => i + ':' + a.v)).toEqual(['b:bar', 'c:baz', 'a:foo'])
     })
 })

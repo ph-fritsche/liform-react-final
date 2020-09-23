@@ -11,7 +11,7 @@ export const Choice = (props) => {
             ...input
         },
         placeholder,
-        meta
+        meta,
     } = props
 
     return schema.choiceExpanded
@@ -19,7 +19,7 @@ export const Choice = (props) => {
             <fieldset className="liform-field liform-choice">
                 <legend>{ schema && schema.title }</legend>
                 <div className="liform-options">
-                    { (schema.enum || schema.items.enum).map((elValue,i) =>
+                    { (schema.enum || schema.items.enum).map((elValue, i) =>
                         <label key={i}>
                             <input
                                 type={schema.type === 'array' ? 'checkbox' : 'radio'}
@@ -29,15 +29,15 @@ export const Choice = (props) => {
                                 onChange={e => onChangeProp(
                                     schema.type === 'array'
                                         ? (e.target.checked ? input.value.concat([elValue]) : input.value.filter(v => v !== elValue))
-                                        : (e.target.checked ? elValue : null)
+                                        : (e.target.checked ? elValue : null),
                                 ) }
                             />
                             { (schema.enumTitles || schema.items.enumTitles)[i] }
-                        </label>
+                        </label>,
                     ) }
                 </div>
                 { meta.error && meta.error.map(e =>
-                    <div key={e} className="liform-error">{e}</div>
+                    <div key={e} className="liform-error">{e}</div>,
                 )}
             </fieldset>
         )

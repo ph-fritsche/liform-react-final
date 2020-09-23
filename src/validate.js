@@ -20,7 +20,7 @@ export const buildFlatAjvValidate = (ajv, schema, ajvTranslate) => {
 }
 
 export const translateAjv = ({dataPath, keyword, params, message}) => {
-    let fieldName = dataPath.substr(0,1) === '.' ? dataPath.substr(1) : dataPath
+    let fieldName = dataPath.substr(0, 1) === '.' ? dataPath.substr(1) : dataPath
 
     fieldName = fieldName.replace(/\[/g, '.').replace(/\]/g, '')
 
@@ -28,7 +28,7 @@ export const translateAjv = ({dataPath, keyword, params, message}) => {
         fieldName = (fieldName ? fieldName + '.' : '') + params.missingProperty
     }
 
-    message = keyword.substr(0,1).toUpperCase() + keyword.substr(1)
+    message = keyword.substr(0, 1).toUpperCase() + keyword.substr(1)
 
     return { fieldName, message }
 }
@@ -58,7 +58,7 @@ export const buildFlatValidatorStack = (...validators) => {
             const newErrors = validator(values)
             for (const fieldName in newErrors) {
                 flatErrors[fieldName] = (flatErrors[fieldName] || []).concat(
-                    Array.isArray(newErrors[fieldName]) ? newErrors[fieldName] : [newErrors[fieldName]]
+                    Array.isArray(newErrors[fieldName]) ? newErrors[fieldName] : [newErrors[fieldName]],
                 )
             }
         }

@@ -4,7 +4,7 @@ import { Lifield, finalizeName, FormRenderProps } from '..';
 
 export const Form = props => {
     const {
-        liform
+        liform,
     } = props
 
     return <Lifield liform={liform} schema={liform.schema}/>
@@ -35,7 +35,7 @@ Action.propTypes = FormRenderProps
 const Errors = ({errors, title}) => (
     <div className="liform-error-group">
         { title && <strong>{title}</strong> }
-        { errors.map((e,i) => <div key={i} className="liform-error">{e}</div>) }
+        { errors.map((e, i) => <div key={i} className="liform-error">{e}</div>) }
     </div>
 )
 
@@ -48,9 +48,9 @@ export const FormErrors = props => {
     const {
         liform: {
             meta: {
-                errors = {}
-            }
-        }
+                errors = {},
+            },
+        },
     } = props
 
     const registered = props.liform.form.getRegisteredFields()

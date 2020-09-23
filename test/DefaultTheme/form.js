@@ -19,13 +19,13 @@ describe('Sections', () => {
                     errors: {
                         'bar': ['There is something wrong with bar.'],
                         'baz': ['There is something wrong with baz.'],
-                    }
+                    },
                 }}
                 sections={{
                     field: TestField('bar', () => 'This is bar.'),
-                    errors: DefaultTheme.sections.errors
+                    errors: DefaultTheme.sections.errors,
                 }}
-            />
+            />,
         )
 
         expect(rendered.getByText('This is bar.')).toBeTruthy()
@@ -44,7 +44,7 @@ describe('Sections', () => {
                 value={{
                     bar: 'someValue',
                 }}
-            />
+            />,
         )
 
         const field = rendered.getByLabelText('TestField')
@@ -73,7 +73,7 @@ describe('Sections', () => {
                     bar: 'someValue',
                 }}
                 buildSubmitHandler={({updateData}) => ((values) => { updateData({value: values._}) })}
-            />
+            />,
         )
 
         const field = rendered.getByLabelText('TestField')

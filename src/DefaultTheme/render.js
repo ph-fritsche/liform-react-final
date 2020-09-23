@@ -25,14 +25,14 @@ Container.propTypes = {
 
 export const Reset = () => (
     <Lifield schema={{
-        widget: ['reset','button'],
+        widget: ['reset', 'button'],
         title: 'Reset',
     }}/>
 )
 
 export const Submit = () => (
     <Lifield schema={{
-        widget: ['submit','button'],
+        widget: ['submit', 'button'],
         title: 'Submit',
     }}/>
 )

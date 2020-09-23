@@ -70,7 +70,7 @@ describe('Submit handler', () => {
     it('Handle continue and server errors', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             status: 150,
-            statusText: 'some status'
+            statusText: 'some status',
         }))
 
         const promise = buildSubmitHandler({}, {})({_: undefined})
@@ -84,7 +84,7 @@ describe('Submit handler', () => {
     it('Inject handleSubmitRedirectResponse', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             status: 350,
-            statusText: 'some status'
+            statusText: 'some status',
         }))
 
         const handler = jest.fn(({resolve}) => resolve('foo'))
@@ -114,7 +114,7 @@ describe('Submit handler', () => {
     it('Inject onSubmitRedirect', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             headers: {
-                get: k => k === 'location' && 'some location'
+                get: k => k === 'location' && 'some location',
             },
         }))
 
@@ -131,7 +131,7 @@ describe('Submit handler', () => {
     it('Default onSubmitRedirect', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             headers: {
-                get: k => k === 'location' && 'some location'
+                get: k => k === 'location' && 'some location',
             },
         }))
         delete global.document
@@ -150,9 +150,9 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             ok: true,
             headers: {
-                get: k => k === 'content-type' && 'application/json'
+                get: k => k === 'content-type' && 'application/json',
             },
-            json: () => Promise.resolve({foo: 'bar'})
+            json: () => Promise.resolve({foo: 'bar'}),
         }))
 
         const handler = jest.fn(({resolve}, data) => resolve(data))
@@ -170,7 +170,7 @@ describe('Submit handler', () => {
             meta: {
                 errors: {
                     'foo.bar': ['There is an error'],
-                }
+                },
             },
             values: {
                 foo: 'some value',
@@ -179,9 +179,9 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             ok: true,
             headers: {
-                get: k => k === 'content-type' && 'application/json'
+                get: k => k === 'content-type' && 'application/json',
             },
-            json: () => Promise.resolve(newData)
+            json: () => Promise.resolve(newData),
         }))
         const updateData = jest.fn()
 
@@ -205,9 +205,9 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             ok: true,
             headers: {
-                get: k => k === 'content-type' && 'application/json'
+                get: k => k === 'content-type' && 'application/json',
             },
-            json: () => Promise.resolve(newData)
+            json: () => Promise.resolve(newData),
         }))
         const updateData = jest.fn()
 
@@ -224,9 +224,9 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             ok: false,
             headers: {
-                get: k => k === 'content-type' && 'application/json'
+                get: k => k === 'content-type' && 'application/json',
             },
-            json: () => Promise.resolve({foo: 'bar'})
+            json: () => Promise.resolve({foo: 'bar'}),
         }))
 
         const handler = jest.fn(({resolve}, data) => resolve(data))
@@ -244,7 +244,7 @@ describe('Submit handler', () => {
             meta: {
                 errors: {
                     'foo.bar': ['There is an error'],
-                }
+                },
             },
             values: {
                 foo: 'some value',
@@ -253,9 +253,9 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             ok: false,
             headers: {
-                get: k => k === 'content-type' && 'application/json'
+                get: k => k === 'content-type' && 'application/json',
             },
-            json: () => Promise.resolve(newData)
+            json: () => Promise.resolve(newData),
         }))
         const updateData = jest.fn()
 
@@ -272,9 +272,9 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             ok: false,
             headers: {
-                get: k => k === 'content-type' && 'text/html; charset=utf8'
+                get: k => k === 'content-type' && 'text/html; charset=utf8',
             },
-            text: () => Promise.resolve('foo')
+            text: () => Promise.resolve('foo'),
         }))
 
         const handler = jest.fn(({resolve}, response) => response.text().then(data => resolve(data)))
@@ -291,9 +291,9 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             ok: false,
             headers: {
-                get: k => k === 'content-type' && 'text/html; charset=utf8'
+                get: k => k === 'content-type' && 'text/html; charset=utf8',
             },
-            text: () => Promise.resolve('foo')
+            text: () => Promise.resolve('foo'),
         }))
 
         const promise = buildSubmitHandler({}, {})({_: undefined})
@@ -308,7 +308,7 @@ describe('Submit handler', () => {
         global.fetch = jest.fn(() => Promise.resolve({
             ok: false,
             headers: {
-                get: k => k === 'content-type' && 'foo'
+                get: k => k === 'content-type' && 'foo',
             },
         }))
 

@@ -12,7 +12,7 @@ export const NumberInput = props => {
             ...input
         },
         placeholder,
-        meta
+        meta,
     } = props
 
     input.defaultValue = value

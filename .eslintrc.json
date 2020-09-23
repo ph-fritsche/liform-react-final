@@ -21,23 +21,13 @@
     "plugin:testing-library/recommended"
   ],
   "rules": {
+    "comma-dangle": [2, "always-multiline"],
+    "comma-spacing": 2,
+    "eol-last": 2,
     "indent": 2,
-    "quotes": [
-      2,
-      "single",
-      {
-        "avoidEscape": true,
-        "allowTemplateLiterals": true
-      }
-    ],
-    "jsx-quotes": [
-      2,
-      "prefer-double"
-    ],
+    "jsx-quotes": [2, "prefer-double"],
     "no-trailing-spaces": 2,
-    "operator-linebreak": [
-      2,
-      "before"
-    ]
+    "operator-linebreak": [2, "before"],
+    "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}]
   }
 }

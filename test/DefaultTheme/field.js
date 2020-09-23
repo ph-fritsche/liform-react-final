@@ -23,7 +23,7 @@ describe('Types', () => {
         const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
-        expect(input.getAttribute('name')).toEqual('foo')
+        expect(input).toHaveAttribute('name', 'foo')
         expect(input).not.toBeChecked()
         expect(field).toHaveTextContent('Some error.')
 
@@ -43,7 +43,7 @@ describe('Types', () => {
         const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
-        expect(input.getAttribute('name')).toEqual('foo')
+        expect(input).toHaveAttribute('name', 'foo')
         expect(input).toHaveValue('bar')
         expect(field).toHaveTextContent('Some error.')
 
@@ -87,8 +87,8 @@ describe('Types', () => {
         const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
-        expect(input.getAttribute('name')).toEqual('foo')
-        expect(input.getAttribute('type')).toEqual('number')
+        expect(input).toHaveAttribute('name', 'foo')
+        expect(input).toHaveAttribute('type', 'number')
         expect(input).toHaveValue(123)
         expect(field).toHaveTextContent('Some error.')
 
@@ -136,8 +136,8 @@ describe('Types', () => {
         const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
-        expect(input.getAttribute('name')).toEqual('foo')
-        expect(input.getAttribute('type')).toEqual('number')
+        expect(input).toHaveAttribute('name', 'foo')
+        expect(input).toHaveAttribute('type', 'number')
         expect(input).toHaveValue(123)
         expect(field).toHaveTextContent('Some error.')
 
@@ -264,7 +264,7 @@ describe('Types', () => {
                 properties: {
                     a: {type: 'string'},
                     b: {type: 'string'},
-                }
+                },
             },
             meta: {errors: {'': ['Some error.']}},
         }))
@@ -311,7 +311,7 @@ describe('Blocks', () => {
             },
             meta: {
                 errors: {
-                    '': ['Some error.']
+                    '': ['Some error.'],
                 },
             },
         }))
@@ -336,7 +336,7 @@ describe('Blocks', () => {
             },
             meta: {
                 errors: {
-                    '': ['Some error.']
+                    '': ['Some error.'],
                 },
             },
             value: 'bar',
@@ -354,7 +354,7 @@ describe('Blocks', () => {
             },
             meta: {
                 errors: {
-                    '': ['Some error.']
+                    '': ['Some error.'],
                 },
             },
             value: 'bar',
@@ -387,7 +387,7 @@ describe('Choice', () => {
         const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
-        expect(input.getAttribute('name')).toEqual('foo')
+        expect(input).toHaveAttribute('name', 'foo')
         expect(input.tagName).toEqual('SELECT')
         expect(input).toHaveValue('foo')
         expect(field).toHaveTextContent('Some error.')
@@ -448,7 +448,7 @@ describe('Choice', () => {
         const input = rendered.getByLabelText('foo field')
         const field = input.closest('div')
 
-        expect(input.getAttribute('name')).toEqual('foo')
+        expect(input).toHaveAttribute('name', 'foo')
         expect(input.tagName).toEqual('SELECT')
         expect(input).toHaveValue(['foo'])
         expect(field).toHaveTextContent('Some error.')

@@ -5,13 +5,13 @@ describe('Compile schema', () => {
     const schema = {
         definitions: {
             nameref: {
-                type: 'string'
-            }
+                type: 'string',
+            },
         },
         title: 'A schema',
         properties: {
             name: {
-                $ref: '#/definitions/nameref'
+                $ref: '#/definitions/nameref',
             },
             prop: {
                 title: 'A property',
@@ -19,7 +19,7 @@ describe('Compile schema', () => {
             },
             someProp: Object.create({foo: 'bar'}, {type: {enumerable: true, value: 'number'}}),
         },
-        required: ['prop']
+        required: ['prop'],
     }
 
     const schemaCompiled = compileSchema(schema);

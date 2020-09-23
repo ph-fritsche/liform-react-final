@@ -7,7 +7,7 @@ export const Input = props => {
         schema = true,
         input: {...input},
         placeholder,
-        meta
+        meta,
     } = props
 
     if (input.type === 'color' && input.value === '') {

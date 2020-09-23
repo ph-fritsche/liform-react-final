@@ -162,7 +162,7 @@ const LifieldChildren = React.memo(
             && isShallowEqual(prevInput, nextInput)
             && isShallowEqual(prevMeta, nextMeta)
             && isShallowEqual(prevError, nextError)
-    }
+    },
 )
 
 LifieldChildren.propTypes = {
@@ -198,7 +198,7 @@ export function Lifield (props) {
 
     return React.createElement(
         LifieldRender,
-        {...props, render, liform}
+        {...props, render, liform},
     )
 }
 

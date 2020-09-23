@@ -36,12 +36,12 @@ describe('Guess widget', () => {
             'someFormat': {},
             'foo': {},
             'bar': {},
-        }
+        },
     }
     const themeWithFallback = {
         field: {
-            [null]: {}
-        }
+            [null]: {},
+        },
     }
 
     it('Per widget property', () => {

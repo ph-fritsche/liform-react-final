@@ -11,7 +11,7 @@ export const Field = ({schema, meta: {error}, className, children}) => (
             { children }
         </label>
         { error && error.map(e =>
-            <div key={e} className="liform-error">{e}</div>
+            <div key={e} className="liform-error">{e}</div>,
         )}
     </div>
 )

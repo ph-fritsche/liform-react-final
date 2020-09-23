@@ -30,7 +30,7 @@ export const LiformContext = React.createContext()
 
 const MetaProp = PropTypes.objectOf(
     PropTypes.objectOf(
-        PropTypes.array
+        PropTypes.array,
     ),
 )
 
@@ -56,7 +56,7 @@ export function Liform(props) {
     const schema = useMemo(() => compileSchema(props.schema), [props.schema])
     const data = useMemo(() => ({meta: props.meta || {}, value: props.value}), [props.meta, props.value])
 
-    const [,setData] = useState({})
+    const [, setData] = useState({})
     const { current: validationErrors } = useRef({})
 
     const sections = props.sections || theme.sections
@@ -114,7 +114,7 @@ export function Liform(props) {
     ])
 
     const onValidate = useMemo(() => buildFlatValidatorHandler(buildFlatValidatorStack(
-        buildFlatAjvValidate(props.ajv, liformApi.schema, props.ajvTranslator || translateAjv)
+        buildFlatAjvValidate(props.ajv, liformApi.schema, props.ajvTranslator || translateAjv),
     ), liformApi), [props.ajv, props.ajvTranslator, liformApi])
 
     const finalFormProps = {
@@ -157,7 +157,7 @@ export function Liform(props) {
                                 <React.Fragment key={key}>
                                     { (typeof(children[key]) === 'function') ? children[key](renderProps) : children[key] }
                                 </React.Fragment>
-                            ))
+                            )),
                     )
                 }}
             />
@@ -176,12 +176,12 @@ Liform.propTypes = {
             container: PropTypes.elementType,
         }),
         sections: PropTypes.objectOf(
-            PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.oneOf([null])])
+            PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.oneOf([null])]),
         ),
     }).isRequired,
 
     sections: PropTypes.objectOf(
-        PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.oneOf([null])])
+        PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.oneOf([null])]),
     ),
     children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.element, PropTypes.arrayOf(PropTypes.element), PropTypes.oneOf([null])]),
     render: PropTypes.objectOf(PropTypes.elementType),

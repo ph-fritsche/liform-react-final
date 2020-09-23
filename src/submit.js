@@ -85,10 +85,10 @@ export const buildSubmitHandler = (liform, {action, prepareRequest, ...props}) =
         return new Promise((resolve, reject) => {
             fetch(
                 action || '',
-                prepareRequest ? prepareRequest(liformValue, liform, prepareRequestDefault) : prepareRequestDefault(liformValue, liform)
+                prepareRequest ? prepareRequest(liformValue, liform, prepareRequestDefault) : prepareRequestDefault(liformValue, liform),
             ).then(
                 response => (props.handleSubmitResponse || handleSubmitResponseDefault)(responseCallbacks, {resolve, reject}, response),
-                reason => (props.handleSubmitError || handleSubmitErrorDefault)({resolve, reject}, reason)
+                reason => (props.handleSubmitError || handleSubmitErrorDefault)({resolve, reject}, reason),
             )
         })
     }

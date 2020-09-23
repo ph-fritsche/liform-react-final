@@ -6,7 +6,7 @@ export const HiddenInput = props => {
     const {
         schema = true,
         input: {name, value, onChange},
-        meta
+        meta,
     } = props
 
     const element = <input type="hidden" name={name} value={value} onChange={onChange}/>

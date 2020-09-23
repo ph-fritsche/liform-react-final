@@ -5,7 +5,7 @@ import { Field } from 'react-final-form'
 
 export const renderErrors = renderFinalField.bind(
     undefined,
-    ({meta}) => meta.error && meta.error.map(e => <div key={'error-'+e} className="liform-error">{e}</div>) || null
+    ({meta}) => meta.error && meta.error.map(e => <div key={'error-'+e} className="liform-error">{e}</div>) || null,
 )
 
 export function Errors({liform, schema, name}) {
