@@ -52,7 +52,9 @@
     "react-final-form-arrays": "^3.1.2",
     "react-test-renderer": "^16.13.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "liform-util": "^0.1.0"
+  },
   "peerDependencies": {
     "final-form": "^4.20",
     "final-form-arrays": "^3.0",

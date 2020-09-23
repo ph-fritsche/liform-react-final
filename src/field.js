@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Field as FinalField } from 'react-final-form';
 import { FieldProps as FinalFieldProps, FieldRenderProps as FinalFieldRenderProps } from 'react-final-form';
 import { buildFieldValidator } from './validate';
-import { shallowEqual } from './util/equal';
 import { LiformContext, LiformContextProp } from './form';
 import { SchemaProp } from './schema';
+import { isShallowEqual } from 'liform-util'
 
 export const liformizeName = (finalName) => {
     return finalName
@@ -158,10 +158,10 @@ const LifieldChildren = React.memo(
         {input: prevInput, meta: {error: prevError, ...prevMeta}, ...prevRest},
         {input: nextInput, meta: {error: nextError, ...nextMeta}, ...nextRest},
     ) => {
-        return shallowEqual(prevRest, nextRest)
-            && shallowEqual(prevInput, nextInput)
-            && shallowEqual(prevMeta, nextMeta)
-            && shallowEqual(prevError, nextError)
+        return isShallowEqual(prevRest, nextRest)
+            && isShallowEqual(prevInput, nextInput)
+            && isShallowEqual(prevMeta, nextMeta)
+            && isShallowEqual(prevError, nextError)
     }
 )
 
