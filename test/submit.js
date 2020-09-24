@@ -2,19 +2,39 @@ import { buildSubmitHandler } from '../src/submit'
 import { FORM_ERROR } from 'final-form'
 
 let realDocument
+let realFetch
 
 beforeEach(() => {
     realDocument = global.document
+    realFetch = global.fetch
 })
 
 afterEach(() => {
     global.document = realDocument
+    global.fetch = realFetch
 })
+
+function mockDocument(doc) {
+    delete global.document
+    return global.document = doc
+}
+
+function mockFetch(...results) {
+    delete global.fetch
+    return global.fetch = jest.fn((...args) => {
+        const next = results.shift(results)
+        const result = typeof next === 'function' ? next(...args) : next
+        return result instanceof Promise
+            ? result
+            : typeof result === 'object'
+                ? Promise.resolve(result)
+                : Promise.reject(result)
+    })
+}
 
 describe('Submit handler', () => {
     it('Inject prepareRequest', () => {
-        global.fetch = jest.fn(() => Promise.reject('some error'))
-
+        const fetch = mockFetch()
         const handler = jest.fn(() => ({}))
 
         const liform = {}
@@ -25,14 +45,33 @@ describe('Submit handler', () => {
         expect(handler.mock.calls[0][1]).toBe(liform)
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return promise.catch(() => {})
     })
 
-    it('Inject handleSubmitError', () => {
-        global.fetch = jest.fn(() => Promise.reject('some error'))
+    it('Create multipart requests if values contain Blob objects', () => {
+        const fetch = mockFetch()
+        const blob = new Blob(['BAZ'])
+        const handler = buildSubmitHandler({rootName: 'form'}, {onSubmitFail: () => {}, handleSubmitError: () => {}})
 
+        const promise = handler({_: {foo: 'bar', bar: ['a', 'b', 'c'], baz: blob}})
+
+        expect(promise).toBeInstanceOf(Promise)
+        expect(fetch).toBeCalled()
+
+        const form = fetch.mock.calls[0][1]?.body
+        expect(form).toBeInstanceOf(FormData)
+
+        expect(form.get('form[foo]')).toBe('bar')
+        expect(form.get('form[bar][0]')).toBe('a')
+        expect(form.get('form[bar][1]')).toBe('b')
+        expect(form.get('form[bar][2]')).toBe('c')
+        expect(form.get('form[baz]')).toBeInstanceOf(Blob)
+    })
+
+    it('Inject handleSubmitError', () => {
+        mockFetch()
         const handler = jest.fn(({reject}) => reject('foo'))
 
         const promise = buildSubmitHandler({}, {handleSubmitError: handler})({_: undefined})
@@ -44,123 +83,122 @@ describe('Submit handler', () => {
     })
 
     it('Default handleSubmitError', () => {
-        global.fetch = jest.fn(() => Promise.reject('some error'))
+        const fetch = mockFetch('some error')
 
         const promise = buildSubmitHandler({}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).rejects.toBe('some error')
     })
 
     it('Inject handleSubmitResponse', () => {
-        global.fetch = jest.fn(() => Promise.resolve())
+        const fetch = mockFetch({})
 
-        const handler = jest.fn((handlers, {resolve}) => resolve('foo'))
+        const handler = jest.fn(({resolve}) => resolve('foo'))
 
         const promise = buildSubmitHandler({}, {handleSubmitResponse: handler})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toBe('foo')
     })
 
     it('Handle continue and server errors', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             status: 150,
             statusText: 'some status',
-        }))
+        })
 
         const promise = buildSubmitHandler({}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).rejects.toBe('some status')
     })
 
     it('Inject handleSubmitRedirectResponse', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             status: 350,
             statusText: 'some status',
-        }))
+        })
 
         const handler = jest.fn(({resolve}) => resolve('foo'))
 
         const promise = buildSubmitHandler({}, {handleSubmitRedirectResponse: handler})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toBe('foo')
     })
 
     it('Default handleSubmitRedirectResponse', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             status: 350,
             statusText: 'some status',
-        }))
+        })
 
         const promise = buildSubmitHandler({}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toHaveProperty(FORM_ERROR)
     })
 
     it('Inject onSubmitRedirect', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             headers: {
                 get: k => k === 'location' && 'some location',
             },
-        }))
+        })
 
         const handler = jest.fn(({resolve}) => resolve('foo'))
 
         const promise = buildSubmitHandler({}, {onSubmitRedirect: handler})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toBe('foo')
     })
 
     it('Default onSubmitRedirect', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             headers: {
                 get: k => k === 'location' && 'some location',
             },
-        }))
-        delete global.document
-        global.document = {location: {assign: jest.fn() }}
+        })
+        const {location: {assign}} = mockDocument({location: {assign: jest.fn() }})
 
         const promise = buildSubmitHandler({}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).rejects.toMatch('location')
-            .then(() => expect(global.document.location.assign).toBeCalledWith('some location'))
+            .then(() => expect(assign).toBeCalledWith('some location'))
     })
 
     it('Inject onSubmitSuccess', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             ok: true,
             headers: {
                 get: k => k === 'content-type' && 'application/json',
             },
             json: () => Promise.resolve({foo: 'bar'}),
-        }))
+        })
 
         const handler = jest.fn(({resolve}, data) => resolve(data))
 
         const promise = buildSubmitHandler({}, {onSubmitSuccess: handler})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toEqual({foo: 'bar'})
     })
@@ -176,19 +214,19 @@ describe('Submit handler', () => {
                 foo: 'some value',
             },
         }
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             ok: true,
             headers: {
                 get: k => k === 'content-type' && 'application/json',
             },
             json: () => Promise.resolve(newData),
-        }))
+        })
         const updateData = jest.fn()
 
         const promise = buildSubmitHandler({updateData}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toHaveProperty(FORM_ERROR)
             .then(() => expect(updateData).toBeCalledWith(newData))
@@ -202,39 +240,39 @@ describe('Submit handler', () => {
                 foo: 'some value',
             },
         }
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             ok: true,
             headers: {
                 get: k => k === 'content-type' && 'application/json',
             },
             json: () => Promise.resolve(newData),
-        }))
+        })
         const updateData = jest.fn()
 
         const promise = buildSubmitHandler({updateData}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toBe(undefined)
             .then(() => expect(updateData).toBeCalledWith(newData))
     })
 
     it('Inject onSubmitFail', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             ok: false,
             headers: {
                 get: k => k === 'content-type' && 'application/json',
             },
             json: () => Promise.resolve({foo: 'bar'}),
-        }))
+        })
 
         const handler = jest.fn(({resolve}, data) => resolve(data))
 
         const promise = buildSubmitHandler({}, {onSubmitFail: handler})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toEqual({foo: 'bar'})
     })
@@ -250,72 +288,72 @@ describe('Submit handler', () => {
                 foo: 'some value',
             },
         }
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             ok: false,
             headers: {
                 get: k => k === 'content-type' && 'application/json',
             },
             json: () => Promise.resolve(newData),
-        }))
+        })
         const updateData = jest.fn()
 
         const promise = buildSubmitHandler({updateData}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toHaveProperty(FORM_ERROR)
             .then(() => expect(updateData).toBeCalledWith(newData))
     })
 
     it('Inject onSubmitHtmlResponse', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             ok: false,
             headers: {
                 get: k => k === 'content-type' && 'text/html; charset=utf8',
             },
             text: () => Promise.resolve('foo'),
-        }))
+        })
 
         const handler = jest.fn(({resolve}, response) => response.text().then(data => resolve(data)))
 
         const promise = buildSubmitHandler({}, {onSubmitHtmlResponse: handler})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).resolves.toBe('foo')
     })
 
     it('Default onSubmitHtmlResponse', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             ok: false,
             headers: {
                 get: k => k === 'content-type' && 'text/html; charset=utf8',
             },
             text: () => Promise.resolve('foo'),
-        }))
+        })
 
         const promise = buildSubmitHandler({}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).rejects.toMatch('HTML')
     })
 
     it('Reject unexpected content-type', () => {
-        global.fetch = jest.fn(() => Promise.resolve({
+        const fetch = mockFetch({
             ok: false,
             headers: {
                 get: k => k === 'content-type' && 'foo',
             },
-        }))
+        })
 
         const promise = buildSubmitHandler({}, {})({_: undefined})
 
         expect(promise).toBeInstanceOf(Promise)
-        expect(global.fetch).toBeCalled()
+        expect(fetch).toBeCalled()
 
         return expect(promise).rejects.toMatch('type')
     })

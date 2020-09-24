@@ -1,33 +1,11 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Field as FinalField } from 'react-final-form';
-import { FieldProps as FinalFieldProps, FieldRenderProps as FinalFieldRenderProps } from 'react-final-form';
+import { Field as FinalField, FieldProps as FinalFieldProps, FieldRenderProps as FinalFieldRenderProps } from 'react-final-form';
 import { buildFieldValidator } from './validate';
 import { LiformContext, LiformContextProp } from './form';
 import { SchemaProp } from './schema';
 import { isShallowEqual } from 'liform-util'
-
-export const liformizeName = (finalName) => {
-    return finalName
-        .replace(/\[/g, '.')
-        .replace(/\]/g, '')
-        .replace(/^_\.?/, '')
-}
-
-export const finalizeName = (liformName) => {
-    if (liformName === undefined || liformName === '') {
-        return '_'
-    }
-    return '_.' + liformName
-}
-
-export const htmlizeName = (finalName, rootName) => {
-    let i = 0
-    return (finalName.replace(/^_(\.|$)/, (m, d) => rootName ? rootName + d : '')
-        .replace(/[.[]/g, () => { i++; return i>1 ? '][' : '[' })
-        + ( i>0 ? ']' : '')
-    ).replace(/]]+/, ']')
-}
+import { finalizeName, htmlizeName, liformizeName } from './util';
 
 export const guessWidget = (fieldSchema, theme) => {
     fieldSchema = fieldSchema ?? true

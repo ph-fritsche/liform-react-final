@@ -1,94 +1,132 @@
 import PropTypes from 'prop-types'
 import { FORM_ERROR } from 'final-form'
+import { htmlizeName } from './util'
 
-const prepareRequestDefault = (values, liform) => { return {
-    method: 'POST',
-    headers: {
-        'content-type': 'application/json',
+export const defaultHandlers = {
+    prepareRequest (values, liform) {
+        let multipart = false
+        const form = new FormData()
+
+        function walk(val, path = ['_']) {
+            if (Array.isArray(val)) {
+                val.forEach((v, i) => walk(v, path.concat(i)))
+            } else if (typeof val === 'object' && Object.getPrototypeOf(val).constructor === Object) {
+                Object.keys(val).forEach(k => walk(val[k], path.concat(k)))
+            } else {
+                if (typeof val === 'object') {
+                    if (val instanceof Blob) {
+                        multipart = true
+                    }
+                }
+                const key = htmlizeName(path.join('.'), liform.rootName)
+                form.append(key, val)
+            }
+        }
+        walk(values)
+
+        return multipart
+            ? {
+                method: 'POST',
+                body: form,
+            }
+            : {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                },
+                body: JSON.stringify({ [liform.rootName]: values }),
+            }
     },
-    body: JSON.stringify({[liform.rootName]: values}),
-}}
 
-const handleSubmitErrorDefault = ({reject}, reason) => {
-    reject(reason)
-}
+    handleSubmitError ({reject}, reason) {
+        reject(reason)
+    },
 
-const handleSubmitResponseDefault = ({handleSubmitRedirectResponse, onSubmitHtmlResponse, onSubmitRedirect, onSubmitSuccess, onSubmitFail}, finalPromise, response) => {
-    if (response.status <= 199 || response.status >= 500) {
-        return finalPromise.reject(response.statusText)
-    }
+    handleSubmitResponse (finalPromise, response, liform, handlers) {
+        const {
+            handleSubmitRedirectResponse,
+            onSubmitHtmlResponse,
+            onSubmitRedirect,
+            onSubmitResult,
+            onSubmitSuccess = onSubmitResult,
+            onSubmitFail = onSubmitResult,
+        } = handlers
 
-    if (response.status >= 300 && response.status <= 399) {
-        return handleSubmitRedirectResponse(finalPromise, response)
-    }
+        if (response.status <= 199 || response.status >= 500) {
+            return finalPromise.reject(response.statusText)
+        }
 
-    const contentType = String(response.headers.get('content-type'))
-    const p = contentType.indexOf(';')
-    const responseType = contentType.substr(0, p >= 0 ? p : undefined)
+        if (response.status >= 300 && response.status <= 399) {
+            return handleSubmitRedirectResponse(finalPromise, response)
+        }
 
-    const location = response.headers.get('location')
+        const contentType = String(response.headers.get('content-type'))
+        const p = contentType.indexOf(';')
+        const responseType = contentType.substr(0, p >= 0 ? p : undefined)
 
-    if (location) {
-        onSubmitRedirect(finalPromise, location, response)
-    } else if (responseType === 'application/json') {
-        response.json().then(props => {
-            response.ok ? onSubmitSuccess(finalPromise, props, response) : onSubmitFail(finalPromise, props, response)
+        const location = response.headers.get('location')
+
+        if (location) {
+            onSubmitRedirect(finalPromise, location, response)
+        } else if (responseType === 'application/json') {
+            response.json().then(props => {
+                response.ok
+                    ? onSubmitSuccess(finalPromise, props, liform, response)
+                    : onSubmitFail(finalPromise, props, liform, response)
+            })
+        } else if (responseType === 'text/html') {
+            onSubmitHtmlResponse(finalPromise, response)
+        } else {
+            finalPromise.reject('Unexpected response type')
+        }
+    },
+
+    onSubmitHtmlResponse (finalPromise, response) {
+        response.text().then(html => {
+            delete window.ReactOnRails
+
+            const newDoc = window.document.open('text/html')
+            newDoc.addEventListener('DOMContentLoaded', () => {
+                /* istanbul ignore next */
+                window.ReactOnRails && window.ReactOnRails.reactOnRailsPageLoaded()
+            })
+            newDoc.write(html)
+            newDoc.close()
+
+            finalPromise.reject('Received new HTML')
         })
-    } else if (responseType === 'text/html') {
-        onSubmitHtmlResponse(finalPromise, response)
-    } else {
-        finalPromise.reject('Unexpected response type')
-    }
+    },
+
+    handleSubmitRedirectResponse ({resolve}) {
+        return resolve({ [FORM_ERROR]: 'The submit is redirected' })
+    },
+
+    onSubmitRedirect (finalPromise, location) {
+        document.location.assign(location)
+        finalPromise.reject('Received new location')
+    },
+
+    onSubmitResult (finalPromise, props, liform, response) {
+        liform.updateData(props)
+        finalPromise.resolve((response.ok && (!props.meta || !props.meta.errors))? undefined : { [FORM_ERROR]: 'The submit failed' })
+    },
 }
 
-const onSubmitHtmlResponseDefault = (finalPromise, response) => {
-    response.text().then(html => {
-        delete window.ReactOnRails
-
-        const newDoc = window.document.open('text/html')
-        newDoc.addEventListener('DOMContentLoaded', () => {
-            /* istanbul ignore next */
-            window.ReactOnRails && window.ReactOnRails.reactOnRailsPageLoaded()
-        })
-        newDoc.write(html)
-        newDoc.close()
-
-        finalPromise.reject('Received new HTML')
-    })
-}
-
-const handleSubmitRedirectResponseDefault = ({resolve}) => {
-    return resolve({ [FORM_ERROR]: 'The submit is redirected' })
-}
-
-const onSubmitRedirectDefault = (finalPromise, location) => {
-    document.location.assign(location)
-    finalPromise.reject('Received new location')
-}
-
-const onSubmitResult = (liform, finalPromise, props, response) => {
-    liform.updateData(props)
-    finalPromise.resolve((response.ok && (!props.meta || !props.meta.errors))? undefined : { [FORM_ERROR]: 'The submit failed' })
-}
-
-export const buildSubmitHandler = (liform, {action, prepareRequest, ...props}) => {
-    const responseCallbacks = {
-        handleSubmitRedirectResponse: props.handleSubmitRedirectResponse || handleSubmitRedirectResponseDefault,
-        onSubmitRedirect: props.onSubmitRedirect || onSubmitRedirectDefault,
-        onSubmitHtmlResponse: props.onSubmitHtmlResponse || onSubmitHtmlResponseDefault,
-        onSubmitSuccess: props.onSubmitSuccess || props.onSubmitResult || onSubmitResult.bind(undefined, liform),
-        onSubmitFail: props.onSubmitFail || props.onSubmitResult || onSubmitResult.bind(undefined, liform),
-    }
+export function buildSubmitHandler (liform, {action = '', ...handlers}) {
+    const {
+        prepareRequest,
+        handleSubmitResponse,
+        handleSubmitError,
+    } = {...defaultHandlers, ...handlers}
 
     return (values) => {
-        const liformValue = values && values._
+        const liformValue = values?._
+        const request = prepareRequest(liformValue, liform, defaultHandlers.prepareRequest)
+
         return new Promise((resolve, reject) => {
-            fetch(
-                action || '',
-                prepareRequest ? prepareRequest(liformValue, liform, prepareRequestDefault) : prepareRequestDefault(liformValue, liform),
-            ).then(
-                response => (props.handleSubmitResponse || handleSubmitResponseDefault)(responseCallbacks, {resolve, reject}, response),
-                reason => (props.handleSubmitError || handleSubmitErrorDefault)({resolve, reject}, reason),
+            fetch(action, request).then(
+                response => handleSubmitResponse({resolve, reject}, response, liform, {...defaultHandlers, ...handlers}),
+                reason => handleSubmitError({resolve, reject}, reason, action, request),
             )
         })
     }
@@ -102,6 +140,7 @@ export const buildSubmitHandlerProps = {
     handleSubmitRedirectResponse: PropTypes.func,
     onSubmitRedirect: PropTypes.func,
     onSubmitHtmlResponse: PropTypes.func,
+    onSubmitResult: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
     onSubmitFail: PropTypes.func,
 }
