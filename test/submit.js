@@ -1,5 +1,7 @@
-import { buildSubmitHandler } from '../src/submit'
+import React from 'react'
+import { buildSubmitHandler, useSubmitHandler } from '../src/submit'
 import { FORM_ERROR } from 'final-form'
+import { create } from 'react-test-renderer'
 
 let realDocument
 let realFetch
@@ -33,6 +35,49 @@ function mockFetch(...results) {
 }
 
 describe('Submit handler', () => {
+    it('useSubmitHandler hook provides submit handler', () => {
+        const builtResult = () => {}
+        const builtFn = jest.fn(() => builtResult)
+        const prepareRequestFn = () => {}
+        const liform = {}
+
+        let handler
+        create(React.createElement(() => {
+            handler = useSubmitHandler(liform, {
+                buildSubmitHandler: builtFn,
+                action: 'foo',
+                prepareRequest: prepareRequestFn,
+            })
+            return null
+        }))
+
+        expect(builtFn).toBeCalled()
+        expect(builtFn.mock.calls[0][0]).toBe(liform)
+        const handlerProps = builtFn.mock.calls[0][1]
+        expect(handlerProps).toHaveProperty('action', 'foo')
+        expect(handlerProps).toHaveProperty('prepareRequest', prepareRequestFn)
+
+        expect(handler).toBe(builtResult)
+    })
+
+    it('builtSubmitHandler filters non-function handler props', async () => {
+        const response = {}
+        const fetch = mockFetch(response)
+        const handleSubmitResponseFn = jest.fn(({resolve}, res) => resolve(res))
+
+        const promise = buildSubmitHandler({}, {prepareRequest: 'foo', handleSubmitResponse: handleSubmitResponseFn})({_: 'bar'})
+
+        expect(fetch).toBeCalled()
+        expect(typeof(fetch.mock.calls[0][1])).toBe('object')
+
+        expect(promise).toBeInstanceOf(Promise)
+
+        await promise
+
+        expect(handleSubmitResponseFn).toBeCalled()
+        expect(handleSubmitResponseFn.mock.calls[0][1]).toBe(response)
+    })
+
     it('Inject prepareRequest', () => {
         const fetch = mockFetch()
         const handler = jest.fn(() => ({}))

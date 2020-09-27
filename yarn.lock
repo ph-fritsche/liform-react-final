@@ -5857,10 +5857,10 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-liform-util@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/liform-util/-/liform-util-0.1.0.tgz#31465cac2d0001825b9d271eb5f4ce938cc2ec36"
-  integrity sha512-tzvP3W1JipmDwIMqedONM6qIM2UpLBMVjBaiQEVLnUB5DXIXMNXw/np0PO08laqPqZ57wJn6q7TWNHjeEPfL3w==
+liform-util@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/liform-util/-/liform-util-0.2.1.tgz#0f84a111b1d5825ff72909dc0128b7454ae051e6"
+  integrity sha512-rFI6zdJ1r5tmGiDdCeymE0JhmSgXkAb0vj4YHJd7mMyCXKfvwrlrMwnEdT8yXuo7kWpIIIM6sBhevhBs+0IvRA==
 
 lines-and-columns@^1.1.6:
   version "1.1.6"

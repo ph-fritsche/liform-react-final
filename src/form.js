@@ -2,7 +2,7 @@ import React, { useMemo, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import arrayMutators from 'final-form-arrays'
 import { Form as FinalForm, FormRenderProps as FinalFormRenderProps } from 'react-final-form';
-import { buildSubmitHandler, buildSubmitHandlerProps } from './submit';
+import { buildSubmitHandlerProps, useSubmitHandler } from './submit';
 import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from './validate';
 import { compileSchema, SchemaProp } from './schema';
 
@@ -88,29 +88,7 @@ export function Liform(props) {
         updateData,
     ])
 
-    const onSubmit = useMemo(() => (props.buildSubmitHandler || buildSubmitHandler)(liformApi, {
-        action: props.action,
-        prepareRequest: props.prepareRequest,
-        handleSubmitError: props.handleSubmitError,
-        handleSubmitResponse: props.handleSubmitResponse,
-        handleSubmitRedirectResponse: props.handleSubmitRedirectResponse,
-        onSubmitRedirect: props.onSubmitRedirect,
-        onSubmitHtmlResponse: props.onSubmitHtmlResponse,
-        onSubmitSuccess: props.onSubmitSuccess,
-        onSubmitFail: props.onSubmitFail,
-    }), [
-        props.buildSubmitHandler,
-        liformApi,
-        props.action,
-        props.prepareRequest,
-        props.handleSubmitError,
-        props.handleSubmitResponse,
-        props.handleSubmitRedirectResponse,
-        props.onSubmitRedirect,
-        props.onSubmitHtmlResponse,
-        props.onSubmitSuccess,
-        props.onSubmitFail,
-    ])
+    const onSubmit = useSubmitHandler(liformApi, props)
 
     const onValidate = useMemo(() => buildFlatValidatorHandler(buildFlatValidatorStack(
         buildFlatAjvValidate(props.ajv, liformApi.schema, props.ajvTranslator || translateAjv),

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
 import { FORM_ERROR } from 'final-form'
 import { htmlizeName } from './util'
+import { useMemo } from 'react'
+import { filterObject } from 'liform-util'
 
 export const defaultHandlers = {
     prepareRequest (values, liform) {
@@ -113,11 +115,12 @@ export const defaultHandlers = {
 }
 
 export function buildSubmitHandler (liform, {action = '', ...handlers}) {
+    const effectiveHandlers = { ...defaultHandlers, ...filterObject(handlers, v => typeof(v) === 'function') }
     const {
         prepareRequest,
         handleSubmitResponse,
         handleSubmitError,
-    } = {...defaultHandlers, ...handlers}
+    } = effectiveHandlers
 
     return (values) => {
         const liformValue = values?._
@@ -125,7 +128,7 @@ export function buildSubmitHandler (liform, {action = '', ...handlers}) {
 
         return new Promise((resolve, reject) => {
             fetch(action, request).then(
-                response => handleSubmitResponse({resolve, reject}, response, liform, {...defaultHandlers, ...handlers}),
+                response => handleSubmitResponse({ resolve, reject }, response, liform, effectiveHandlers),
                 reason => handleSubmitError({resolve, reject}, reason, action, request),
             )
         })
@@ -143,4 +146,44 @@ export const buildSubmitHandlerProps = {
     onSubmitResult: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
     onSubmitFail: PropTypes.func,
+}
+
+export function useSubmitHandler(liform, {
+    buildSubmitHandler: buildFn = buildSubmitHandler,
+    action,
+    prepareRequest,
+    handleSubmitError,
+    handleSubmitResponse,
+    handleSubmitRedirectResponse,
+    onSubmitRedirect,
+    onSubmitHtmlResponse,
+    onSubmitResult,
+    onSubmitSuccess,
+    onSubmitFail,
+} = {}) {
+    return useMemo(() => buildFn(liform, {
+        action,
+        prepareRequest,
+        handleSubmitError,
+        handleSubmitResponse,
+        handleSubmitRedirectResponse,
+        onSubmitRedirect,
+        onSubmitHtmlResponse,
+        onSubmitResult,
+        onSubmitSuccess,
+        onSubmitFail,
+    }), [
+        buildFn,
+        liform,
+        action,
+        prepareRequest,
+        handleSubmitError,
+        handleSubmitResponse,
+        handleSubmitRedirectResponse,
+        onSubmitRedirect,
+        onSubmitHtmlResponse,
+        onSubmitResult,
+        onSubmitSuccess,
+        onSubmitFail,
+    ])
 }
