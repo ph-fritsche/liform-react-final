@@ -7,12 +7,15 @@ export const Choice = (props) => {
     const {
         schema = true,
         input: {
+            name,
             onChange: onChangeProp,
             ...input
         },
         placeholder,
         meta,
     } = props
+
+    const inputName = name + (schema.type === 'array' ? '[]' : '')
 
     return schema.choiceExpanded
         ? (
@@ -23,7 +26,7 @@ export const Choice = (props) => {
                         <label key={i}>
                             <input
                                 type={schema.type === 'array' ? 'checkbox' : 'radio'}
-                                name={input.name + (schema.type === 'array' ? '[]' : '')}
+                                name={inputName}
                                 value={elValue}
                                 checked={schema.type === 'array' ? input.value.indexOf(elValue) >= 0 : input.value === elValue }
                                 onChange={e => onChangeProp(
@@ -45,6 +48,7 @@ export const Choice = (props) => {
             <Field className="liform-choice" schema={schema} meta={meta}>
                 <select {...input}
                     multiple={schema.type === 'array'}
+                    name={inputName}
                     onChange={e => onChangeProp(extractNativeSelectValue(e))}
                     onBlur={e => onChangeProp(extractNativeSelectValue(e))}
                 >
