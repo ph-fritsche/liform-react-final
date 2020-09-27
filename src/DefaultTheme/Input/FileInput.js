@@ -12,14 +12,17 @@ export const FileInput = props => {
         ...others
     } = props
 
+    const multiple = Boolean(schema.attr?.multiple)
+
     return <Input
         {...others}
         schema={schema}
         input={{
             ...input,
             type: 'file',
+            multiple,
             value: undefined,
-            onChange: e => onChange(schema.multiple ? e.target.files : e.target.files[0]),
+            onChange: e => onChange(multiple ? e.target.files : e.target.files[0]),
         }}
     />
 }
