@@ -17,32 +17,39 @@ const [, , getbyL, , ] = buildQueries(
 
 export function renderLifield(props) {
     let liformValue
-    const container = renderProps => {
+    const ContainerComponent = renderProps => {
         liformValue = renderProps.form.getState().values._
         return <form id="container">{renderProps.children}</form>
     }
-
-    const result = render((
+    const FormComponent = props => (
         <Liform
             theme={DefaultTheme}
             name="form"
-            render={{ container }}
+            render={{ container: ContainerComponent }}
             {...props}
         >
             { ({ liform }) => <Lifield schema={liform.schema} />}
         </Liform>
-    ), {
+    )
+
+    const result = render(FormComponent(props), {
         queries: {
             ...queries,
             getbyL,
         },
     })
 
+    const { container, rerender } = result
+    const form = container.querySelector('form#container')
+
     return {
-        result,
-        form: result.container.querySelector('form#container'),
+        ...result,
+        rerender: newProps => rerender(FormComponent(newProps)),
+        form,
+        element: form.firstChild,
+        elements: form.children,
         expectedFormValues: expectedFormValues(props.value, props.name || 'form'),
-        getActiveElement: () => result.container.ownerDocument.activeElement,
+        getActiveElement: () => container.ownerDocument.activeElement,
         getLiformValue: () => liformValue,
     }
 }
@@ -68,14 +75,25 @@ function expectedFormValues(value, rootName) {
     return expected
 }
 
-export function testLifield(props) {
-    const rendered = renderLifield(props)
+export function testLifield({
+    schema: {
+        title = 'foo field',
+        ...schemaRest
+    },
+    ...others
+} = {}) {
+    const rendered = renderLifield({
+        schema: {
+            title,
+            ...schemaRest,
+        },
+        ...others,
+    })
+    const { form, expectedFormValues, getbyL } = rendered
 
-    expect(rendered.form).toContainFormValues(rendered.expectedFormValues)
+    expect(form).toContainFormValues(expectedFormValues)
 
-    if (props.schema && props.schema.title) {
-        rendered.field = rendered.result.getbyL(props.schema.title)
-    }
+    rendered.input = getbyL(title)
 
     return rendered
 }

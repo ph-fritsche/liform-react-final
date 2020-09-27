@@ -1,29 +1,27 @@
-import { default as userEvent } from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event'
 import { testLifield } from './_field'
 
 it('Change file per file dialog', () => {
-    const { field, getLiformValue } = testLifield({
+    const { input, getLiformValue } = testLifield({
         schema: {
             widget: 'file',
-            title: 'foo',
         },
     })
 
     const file = new File(['foo'], 'foo.txt', { type: 'text/plain' })
 
-    expect(field).toHaveAttribute('type', 'file')
-    expect(field).not.toHaveAttribute('multiple')
+    expect(input).toHaveAttribute('type', 'file')
+    expect(input).not.toHaveAttribute('multiple')
 
-    userEvent.upload(field, file)
+    userEvent.upload(input, file)
 
     expect(getLiformValue()).toBe(file)
 })
 
 it('Change multiple file input per file dialog', () => {
-    const { field, getLiformValue } = testLifield({
+    const { input, getLiformValue } = testLifield({
         schema: {
             widget: 'file',
-            title: 'foo',
             attr: {
                 multiple: 'multiple',
             },
@@ -35,10 +33,10 @@ it('Change multiple file input per file dialog', () => {
         new File(['bar'], 'bar.txt', { type: 'text/plain' }),
     ]
 
-    expect(field).toHaveAttribute('type', 'file')
-    expect(field).toHaveAttribute('multiple')
+    expect(input).toHaveAttribute('type', 'file')
+    expect(input).toHaveAttribute('multiple')
 
-    userEvent.upload(field, files)
+    userEvent.upload(input, files)
 
     expect(Array.from(getLiformValue())).toEqual(files)
 })
