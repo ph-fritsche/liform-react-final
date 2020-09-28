@@ -22,7 +22,7 @@ export const FileInput = props => {
             type: 'file',
             multiple,
             value: undefined,
-            onChange: e => onChange(multiple ? e.target.files : e.target.files[0]),
+            onChange: e => onChange(multiple ? Array.from(e.target.files) : e.target.files[0]),
         }}
     />
 }

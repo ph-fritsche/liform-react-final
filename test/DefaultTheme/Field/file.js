@@ -38,5 +38,5 @@ it('Change multiple file input per file dialog', () => {
 
     userEvent.upload(input, files)
 
-    expect(Array.from(getLiformValue())).toEqual(files)
+    expect(getLiformValue()).toEqual(files)
 })
