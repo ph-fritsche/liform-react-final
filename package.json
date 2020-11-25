@@ -58,7 +58,7 @@
   "peerDependencies": {
     "final-form": "^4.20",
     "final-form-arrays": "^3.0",
-    "react": "^16.13",
+    "react": "^17",
     "react-final-form": "^6.5",
     "react-final-form-arrays": "^3.1"
   }
