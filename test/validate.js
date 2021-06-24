@@ -97,7 +97,7 @@ describe('Flat validator stack', () => {
         stack(values)
 
         for(const f of validators) {
-            expect(f).toBeCalledWith(values)
+            expect(f).toBeCalledWith(values, undefined)
         }
     })
 

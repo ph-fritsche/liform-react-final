@@ -92,7 +92,8 @@ export function Liform(props) {
 
     const onValidate = useMemo(() => buildFlatValidatorHandler(buildFlatValidatorStack(
         buildFlatAjvValidate(props.ajv, liformApi.schema, props.ajvTranslator || translateAjv),
-    ), liformApi), [props.ajv, props.ajvTranslator, liformApi])
+        ...[props.validate].filter(Boolean),
+    ), liformApi), [props.ajv, props.ajvTranslator, liformApi, props.validate])
 
     const finalFormProps = {
         debug: props.debug,
@@ -168,6 +169,7 @@ Liform.propTypes = {
 
     ajv: PropTypes.func,
     ajvTranslator: PropTypes.func,
+    validate: PropTypes.func,
 
     ...FinalForm.propTypes,
 }

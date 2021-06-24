@@ -143,4 +143,31 @@ describe('Liform', () => {
 
         expect(getLastProps(fieldState).dirty).toBe(false)
     })
+
+    it('use custom validator', () => {
+        const container = jest.fn(() => null)
+        const theme = { render: { container } }
+
+        const validator = jest.fn(() => ({
+            'foo.bar': 'baz',
+        }))
+
+        Renderer.create(<Liform theme={theme} validate={validator}/>)
+
+        expect(container).toBeCalled()
+
+        Renderer.act(() => {
+            getLastProps(container).form.registerField('someField', () => null, {})
+            getLastProps(container).form.change('someField', 'someValue')
+        })
+
+        expect(validator).toBeCalledWith(
+            {'someField': 'someValue', '_': undefined},
+            getLastProps(container).liform,
+        )
+
+        expect(getLastProps(container).liform.validationErrors).toEqual({
+            'foo.bar': ['baz'],
+        })
+    })
 })

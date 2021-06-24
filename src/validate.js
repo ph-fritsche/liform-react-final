@@ -51,11 +51,11 @@ export const flatAjvValidate = (ajv, schema, ajvTranslate, values) => {
 }
 
 export const buildFlatValidatorStack = (...validators) => {
-    return (values) => {
+    return (values, liform) => {
         const flatErrors = {}
 
         for (const validator of validators) {
-            const newErrors = validator(values)
+            const newErrors = validator(values, liform)
             for (const fieldName in newErrors) {
                 flatErrors[fieldName] = (flatErrors[fieldName] || []).concat(
                     Array.isArray(newErrors[fieldName]) ? newErrors[fieldName] : [newErrors[fieldName]],
@@ -69,7 +69,7 @@ export const buildFlatValidatorStack = (...validators) => {
 
 export const buildFlatValidatorHandler = (flatErrorValidator, liform) => {
     return (values) => {
-        const flatErrors = flatErrorValidator(values)
+        const flatErrors = flatErrorValidator(values, liform)
         liform.validationErrors = flatErrors
         return Object.keys(flatErrors).length > 0 ? { [FORM_ERROR]: 'The form has errors - see Liform.validationErrors' } : {}
     }
