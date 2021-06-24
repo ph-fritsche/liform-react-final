@@ -2,12 +2,13 @@
   "name": "liform-react-final",
   "version": "0.0.0",
   "description": "Generate forms from json-schema to use with React and Final Form",
-  "main": "./dist/index.js",
+  "main": "dist/node/index.js",
+  "module": "dist/index.js",
   "files": [
     "/dist"
   ],
   "scripts": {
-    "build": "babel src --out-dir dist",
+    "build": "tsc && tsc --outDir dist/node --target ES5",
     "dev": "esbuild public/liform.jsx --servedir=public --outdir=public/build --bundle",
     "lint": "eslint src test",
     "test": "jest"
@@ -37,6 +38,7 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "12.2.2",
+    "@types/react": "^17.0.11",
     "esbuild": "^0.12.9",
     "eslint": "^7.14.0",
     "final-form": "^4.20.1",
@@ -46,7 +48,8 @@
     "react-dom": "^17.0.1",
     "react-final-form": "^6.5.2",
     "react-final-form-arrays": "^3.1.3",
-    "react-test-renderer": "^17.0.1"
+    "react-test-renderer": "^17.0.1",
+    "typescript": "^4.3.4"
   },
   "dependencies": {
     "liform-util": "^0.2.1"
