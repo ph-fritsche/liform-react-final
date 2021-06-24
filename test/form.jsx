@@ -157,12 +157,12 @@ describe('Liform', () => {
         expect(container).toBeCalled()
 
         Renderer.act(() => {
-            getLastProps(container).form.registerField('someField', () => null, {})
-            getLastProps(container).form.change('someField', 'someValue')
+            getLastProps(container).form.registerField('_.someField', () => null, {})
+            getLastProps(container).form.change('_.someField', 'someValue')
         })
 
         expect(validator).toBeCalledWith(
-            {'someField': 'someValue', '_': undefined},
+            {'someField': 'someValue'},
             getLastProps(container).liform,
         )
 

@@ -28,11 +28,10 @@ You can provide a translation function to change representation of errors per `a
 
 You can add errors on top of the schema validation by injecting your own validator.
 ```jsx
-import { finalizeName } from 'liform-react-final'
 const myValidator = (values, liformApi) => {
     // inspect the values and return a flat error object
     return {
-        [finalizeName('my.object.property')]: 'some error',
+        'my.object.property': 'some error',
     }
 }
 <Liform {...liformProps} validate={myValidator}/>

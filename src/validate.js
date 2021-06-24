@@ -23,6 +23,7 @@ export const translateAjv = ({dataPath, keyword, params, message}) => {
     let fieldName = dataPath.substr(0, 1) === '.' ? dataPath.substr(1) : dataPath
 
     fieldName = fieldName.replace(/\[/g, '.').replace(/\]/g, '')
+        .replace(/^\./, '')
 
     if (keyword === 'required') {
         fieldName = (fieldName ? fieldName + '.' : '') + params.missingProperty
@@ -34,14 +35,14 @@ export const translateAjv = ({dataPath, keyword, params, message}) => {
 }
 
 export const flatAjvValidate = (ajv, schema, ajvTranslate, values) => {
-    if (ajv.validate(schema, values._)) {
+    if (ajv.validate(schema, values)) {
         return undefined
     }
 
     let flatErrors = {}
 
     ajv.errors.forEach(errorObject => {
-        const translated = ajvTranslate(errorObject, values._)
+        const translated = ajvTranslate(errorObject, values)
 
         flatErrors[translated.fieldName] = flatErrors[translated.fieldName] || []
         flatErrors[translated.fieldName].push(translated.message)
@@ -69,7 +70,7 @@ export const buildFlatValidatorStack = (...validators) => {
 
 export const buildFlatValidatorHandler = (flatErrorValidator, liform) => {
     return (values) => {
-        const flatErrors = flatErrorValidator(values, liform)
+        const flatErrors = flatErrorValidator(values?._, liform)
         liform.validationErrors = flatErrors
         return Object.keys(flatErrors).length > 0 ? { [FORM_ERROR]: 'The form has errors - see Liform.validationErrors' } : {}
     }

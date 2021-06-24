@@ -24,46 +24,46 @@ describe('Ajv', () => {
         let schema = {type: 'string'}
         let validator = buildFlatAjvValidate(undefined, schema)
 
-        expect(validator({_: 'foo'})).toEqual(undefined)
-        expect(validator({_: 123})).toEqual({'': ['Type']})
+        expect(validator('foo')).toEqual(undefined)
+        expect(validator(123)).toEqual({'': ['Type']})
 
         schema = {type: 'object', properties: {'foo': {type: 'string'}}}
         validator = buildFlatAjvValidate(undefined, schema)
 
-        expect(validator({_: {foo: 'bar'}})).toEqual(undefined)
-        expect(validator({_: {foo: 123}})).toEqual({'foo': ['Type']})
+        expect(validator({foo: 'bar'})).toEqual(undefined)
+        expect(validator({foo: 123})).toEqual({'foo': ['Type']})
 
         schema = {type: 'object', properties: {'foo': {type: 'object', properties: {'bar': {type: 'string'}}}}}
         validator = buildFlatAjvValidate(undefined, schema)
 
-        expect(validator({_: {foo: {bar: 'baz'}}})).toEqual(undefined)
-        expect(validator({_: {foo: {bar: 123}}})).toEqual({'foo.bar': ['Type']})
+        expect(validator({foo: {bar: 'baz'}})).toEqual(undefined)
+        expect(validator({foo: {bar: 123}})).toEqual({'foo.bar': ['Type']})
     })
 
     it('Validate type on array element', () => {
         let schema = {type: 'array', items: {type: 'string'}}
         let validator = buildFlatAjvValidate(undefined, schema)
 
-        // expect(validator({_: ['foo', 123]})).toEqual({'1': ['Type']})
+        expect(validator(['foo', 123])).toEqual({'1': ['Type']})
 
         schema = {type: 'object', properties: {'foo': {type: 'array', items: {type: 'string'}}}}
         validator = buildFlatAjvValidate(undefined, schema)
 
-        expect(validator({_: {foo: ['foo', 123]}})).toEqual({'foo.1': ['Type']})
+        expect(validator({foo: ['foo', 123]})).toEqual({'foo.1': ['Type']})
     })
 
     it('Validate required property', () => {
         let schema = {type: 'object', properties: {'foo': true}, required: ['foo']}
         let validator = buildFlatAjvValidate(undefined, schema)
 
-        expect(validator({_: {'foo': 'foo'}})).toEqual(undefined)
-        expect(validator({_: {'bar': 'bar'}})).toEqual({'foo': ['Required']})
+        expect(validator({'foo': 'foo'})).toEqual(undefined)
+        expect(validator({'bar': 'bar'})).toEqual({'foo': ['Required']})
 
         schema = {type: 'object', properties: {'foo': {type: 'object', properties: {'bar': true}, required: ['bar']}}}
         validator = buildFlatAjvValidate(undefined, schema)
 
-        expect(validator({_: {foo: {bar: 'bar'}}})).toEqual(undefined)
-        expect(validator({_: {foo: {baz: 'baz'}}})).toEqual({'foo.bar': ['Required']})
+        expect(validator({foo: {bar: 'bar'}})).toEqual(undefined)
+        expect(validator({foo: {baz: 'baz'}})).toEqual({'foo.bar': ['Required']})
     })
 
     it('Translate errors', () => {
@@ -71,7 +71,7 @@ describe('Ajv', () => {
         const translator = () => ({fieldName: 'my.corrected.path', message: 'My translated message'})
         const validator = buildFlatAjvValidate(undefined, schema, translator)
 
-        expect(validator({_: {'bar': 'baz'}})).toEqual({'my.corrected.path': ['My translated message']})
+        expect(validator({'bar': 'baz'})).toEqual({'my.corrected.path': ['My translated message']})
     })
 
     it('Provide own Ajv instance', () => {
@@ -79,8 +79,8 @@ describe('Ajv', () => {
         const schema = {format: 'foo'}
         const validator = buildFlatAjvValidate(customAjv, schema)
 
-        expect(validator({_: 'b'})).toEqual(undefined)
-        expect(validator({_: 'd'})).toEqual({'': ['Format']})
+        expect(validator('b')).toEqual(undefined)
+        expect(validator('d')).toEqual({'': ['Format']})
     })
 })
 
