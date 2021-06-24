@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Liform, { DefaultTheme } from './src'
+import Liform, { DefaultTheme } from '../src'
 
 Liform.theme = DefaultTheme
 
