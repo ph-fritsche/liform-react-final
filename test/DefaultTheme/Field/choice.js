@@ -19,7 +19,7 @@ it('Render and change select', () => {
         value: 'foo',
     })
 
-    expect(input.tagName).toEqual('SELECT')
+    expect(input).toHaveProperty('tagName', 'SELECT')
     expect(input).toHaveValue('foo')
     expect(element).toHaveTextContent('Some error.')
 
@@ -75,7 +75,7 @@ it('Render and change multiple select', () => {
         value: ['foo'],
     })
 
-    expect(input.tagName).toEqual('SELECT')
+    expect(input).toHaveProperty('tagName', 'SELECT')
     expect(input).toHaveValue(['foo'])
     expect(element).toHaveTextContent('Some error.')
 
@@ -110,11 +110,13 @@ it('Render and change multiple expanded', () => {
 
     const checkFoo = screen.getByLabelText('fooTitle')
     expect(checkFoo).toHaveAttribute('name', 'form[]')
+    // eslint-disable-next-line jest-dom/prefer-to-have-value -- Here we do want to test that the value attribute is set correctly
     expect(checkFoo).toHaveAttribute('value', 'foo')
     expect(checkFoo).toBeChecked()
 
     const checkBar = screen.getByLabelText('barTitle')
     expect(checkBar).toHaveAttribute('name', 'form[]')
+    // eslint-disable-next-line jest-dom/prefer-to-have-value -- Here we do want to test that the value attribute is set correctly
     expect(checkBar).toHaveAttribute('value', 'bar')
     expect(checkBar).not.toBeChecked()
 

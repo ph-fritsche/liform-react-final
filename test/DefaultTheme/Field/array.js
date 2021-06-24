@@ -70,7 +70,7 @@ it('Add and remove extra array elements', () => {
         },
     })
 
-    expect(screen.queryAllByRole('button', { name: /remove/i })).toHaveLength(0)
+    expect(screen.queryByRole('button', { name: /remove/i })).not.toBeInTheDocument()
 
     userEvent.click(screen.getByRole('button', { name: /add/i }))
 
@@ -95,11 +95,11 @@ it('Remove and add existing array elements', () => {
         },
     })
 
-    expect(screen.queryAllByRole('button', { name: /add/i })).toHaveLength(0)
+    expect(screen.queryByRole('button', { name: /add/i })).not.toBeInTheDocument()
 
     userEvent.click(screen.getAllByRole('button', { name: /remove/i })[1])
 
-    expect(screen.getAllByRole('textbox')).toHaveLength(1)
+    expect(screen.getByRole('textbox')).toBeInTheDocument()
     expect(input).toHaveFormValues({ 'form[0]': 'a' })
 
     userEvent.click(screen.getByRole('button', { name: /add/i }))

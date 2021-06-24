@@ -49,9 +49,9 @@ it('Render errors for unregistered field', () => {
         />,
     )
 
-    expect(rendered.getByText('This is bar.')).toBeTruthy()
-    expect(rendered.getByText('There is something wrong with baz.')).toBeTruthy()
-    expect(rendered.queryAllByText('There is something wrong with bar.')).toHaveLength(0)
+    expect(rendered.getByText('This is bar.')).toBeInTheDocument()
+    expect(rendered.getByText('There is something wrong with baz.')).toBeInTheDocument()
+    expect(rendered.queryByText('There is something wrong with bar.')).not.toBeInTheDocument()
 })
 
 it('Action section contains reset button', () => {
