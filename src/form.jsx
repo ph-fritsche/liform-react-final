@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import arrayMutators from 'final-form-arrays'
-import { Form as FinalForm, FormRenderProps as FinalFormRenderProps } from 'react-final-form';
+import { Form as FinalForm } from 'react-final-form';
 import { buildSubmitHandlerProps, useSubmitHandler } from './submit';
 import { buildFlatValidatorStack, buildFlatAjvValidate, buildFlatValidatorHandler, translateAjv } from './validate';
 import { compileSchema, SchemaProp } from './schema';
@@ -45,7 +45,7 @@ export const LiformContextProp = PropTypes.shape({
 })
 
 export const FormRenderProps = {
-    ...FinalFormRenderProps,
+    // TODO: extend FormRenderProps from FinalForm
     liform: LiformContextProp,
 }
 

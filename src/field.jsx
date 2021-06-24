@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Field as FinalField, FieldProps as FinalFieldProps, FieldRenderProps as FinalFieldRenderProps } from 'react-final-form';
+import { Field as FinalField } from 'react-final-form';
 import { buildFieldValidator } from './validate';
 import { LiformContext, LiformContextProp } from './form';
 import { SchemaProp } from './schema';
@@ -92,7 +92,7 @@ export const renderField = props => {
 }
 
 renderField.propTypes = {
-    ...FinalFieldProps,
+    // TODO: extend FieldProps from FinalForm
 
     liform: LiformContextProp,
     schema: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
@@ -157,7 +157,7 @@ LifieldChildren.propTypes = {
 }
 
 export const FieldRenderProps = {
-    ...FinalFieldRenderProps,
+    // TODO: extend FieldRenderProps from FinalForm
 
     schema: SchemaProp,
     name: PropTypes.string,
