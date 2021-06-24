@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { renderFinalField, finalizeName } from '../'
+import { renderFinalField, finalizeName } from '..'
 import { Field } from 'react-final-form'
 
 export const renderErrors = renderFinalField.bind(

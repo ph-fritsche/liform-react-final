@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Lifield } from '../'
+import { Lifield } from '..'
 import { LiformContextProp } from '../form';
 
 export const Container = props => (
