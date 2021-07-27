@@ -60,24 +60,6 @@ describe('Submit handler', () => {
         expect(handler).toBe(builtResult)
     })
 
-    it('builtSubmitHandler filters non-function handler props', async () => {
-        const response = {}
-        const fetch = mockFetch(response)
-        const handleSubmitResponseFn = jest.fn(({resolve}, res) => resolve(res))
-
-        const promise = buildSubmitHandler({}, {prepareRequest: 'foo', handleSubmitResponse: handleSubmitResponseFn})({_: 'bar'})
-
-        expect(fetch).toBeCalled()
-        expect(typeof(fetch.mock.calls[0][1])).toBe('object')
-
-        expect(promise).toBeInstanceOf(Promise)
-
-        await promise
-
-        expect(handleSubmitResponseFn).toBeCalled()
-        expect(handleSubmitResponseFn.mock.calls[0][1]).toBe(response)
-    })
-
     it('Inject prepareRequest', () => {
         const fetch = mockFetch()
         const handler = jest.fn(() => ({}))

@@ -1,20 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types'
+import React, { ComponentProps } from 'react'
 import { FieldArray as FinalFieldArray } from 'react-final-form-arrays'
 import { Lifield, finalizeName, liformizeName } from '../..'
-import { Errors } from '../shared';
-import { SchemaProp } from '../../schema';
-import { LiformContextProp } from '../../form';
+import { Errors } from '../shared'
+import { LifieldWidgetProps } from '../../types'
 
-export const ArrayWidget = props => {
-    const {
+export function ArrayWidget(
+    {
         liform,
         name,
-        schema = true,
+        schema: schemaProp = true,
         ...others
-    } = props
-
+    }: ComponentProps<typeof Lifield> & LifieldWidgetProps,
+): React.ReactElement {
     const finalName = finalizeName(name)
+    const schema = typeof schemaProp === 'object' ? schemaProp : {}
 
     return <FinalFieldArray name={finalName} render={({fields, meta}) => (
         <fieldset className="liform-field liform-array">
@@ -35,15 +34,9 @@ export const ArrayWidget = props => {
                     }
                 </div>
             )) }
-            { (schema.allowAdd || fields.length < (Array.isArray(meta.initial) ? meta.initial.length : 0))
-                && <button type="button" onClick={() => fields.push()}><span role="img" aria-label="add collection element">➕</span></button>
+            { (schema.allowAdd || (fields.length ?? 0) < (Array.isArray(meta.initial) ? meta.initial.length : 0))
+                && <button type="button" onClick={() => fields.push(undefined)}><span role="img" aria-label="add collection element">➕</span></button>
             }
         </fieldset>
     )}/>
-}
-
-ArrayWidget.propTypes = {
-    liform: LiformContextProp,
-    schema: SchemaProp,
-    name: PropTypes.string,
 }

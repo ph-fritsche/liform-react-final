@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Liform, DefaultTheme, Lifield } from '../../src'
+import rfdc from 'rfdc'
 
 const TestField = (name, render) => {
     const widget = { render }
@@ -13,14 +14,13 @@ const TestField = (name, render) => {
 it('Form section calls render.field with schema root', () => {
     const renderFn = jest.fn(() => <div data-testid="field"></div>)
     const schema = {foo: 'bar'}
+    const theme = rfdc()(DefaultTheme)
+    theme.render.field = renderFn
     render(
         <Liform
-            theme={DefaultTheme}
+            theme={theme}
             sections={{
                 form: DefaultTheme.sections.form,
-            }}
-            render={{
-                field: renderFn,
             }}
             schema={schema}
         />,

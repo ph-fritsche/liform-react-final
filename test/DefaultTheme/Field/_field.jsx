@@ -2,6 +2,7 @@ import React from 'react'
 import { render, queries } from '@testing-library/react'
 import { buildQueries, queryAllByLabelText, queryAllByText } from '@testing-library/react'
 import { DefaultTheme, Liform, Lifield, htmlizeName } from '../../../src'
+import rfdc from 'rfdc'
 
 const [, , getbyL, , ] = buildQueries(
     (container, text, options) => {
@@ -17,15 +18,15 @@ const [, , getbyL, , ] = buildQueries(
 
 export function renderLifield(props) {
     let liformValue
-    const ContainerComponent = renderProps => {
+    const theme = rfdc()(DefaultTheme)
+    theme.render.container = function ContainerComponent(renderProps) {
         liformValue = renderProps.form.getState().values._
         return <form id="container">{renderProps.children}</form>
     }
     const FormComponent = props => (
         <Liform
-            theme={DefaultTheme}
+            theme={theme}
             name="form"
-            render={{ container: ContainerComponent }}
             {...props}
         >
             { ({ liform }) => <Lifield schema={liform.schema} />}

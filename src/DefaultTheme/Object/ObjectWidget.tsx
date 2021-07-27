@@ -1,17 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Lifield, mapProperties } from '../..'
-import { Errors } from '../shared'
-import { LiformContextProp } from '../../form'
-import { SchemaProp } from '../../schema'
+import { Errors, objOrUndef } from '../shared'
+import { LifieldWidgetProps } from '../../types'
 
-export const ObjectWidget = props => {
-    const {
+export function ObjectWidget(
+    {
         liform,
         name,
-        schema = true,
+        schema: schemaProp = true,
         ...others
-    } = props
+    }: LifieldWidgetProps,
+): React.ReactElement {
+    const schema = objOrUndef(schemaProp) ?? {}
 
     return <fieldset className="liform-field liform-object">
         { schema.title && <legend>{ schema.title }</legend> }
@@ -20,14 +20,8 @@ export const ObjectWidget = props => {
             <Lifield key={key} {...others}
                 name={ (name || '') + ((name && String(name).slice(-1) !== ']') ? '.' : '') + key }
                 schema={ propSchema }
-                required={ Array.isArray(schema.required) && schema.required.indexOf(key) >= 0 }
+                required={ Array.isArray(schema.required) && schema.required.includes(String(key)) }
             />
         )) }
     </fieldset>
-}
-
-ObjectWidget.propTypes = {
-    liform: LiformContextProp,
-    name: PropTypes.string,
-    schema: SchemaProp,
 }

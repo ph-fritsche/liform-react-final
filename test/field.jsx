@@ -2,7 +2,7 @@ import React from 'react'
 import Renderer from 'react-test-renderer'
 import { renderField, guessWidget, Lifield, renderFinalField } from '../src/field'
 import { Field, Form } from 'react-final-form'
-import { LiformContext } from '../src/form'
+import { LiformContext } from '../src/form/LiformContext'
 
 describe('Guess widget', () => {
     const theme = {
@@ -22,21 +22,21 @@ describe('Guess widget', () => {
     }
 
     it('Per widget property', () => {
-        expect(guessWidget({widget: ['bar', 'foo']}, theme)).toBe('bar')
-        expect(guessWidget({widget: ['baz', 'foo']}, theme)).toBe('foo')
-        expect(guessWidget({widget: 'foo'}, theme)).toBe('foo')
+        expect(guessWidget({widget: ['bar', 'foo']}, theme)).toBe(theme.field.bar)
+        expect(guessWidget({widget: ['baz', 'foo']}, theme)).toBe(theme.field.foo)
+        expect(guessWidget({widget: 'foo'}, theme)).toBe(theme.field.foo)
     })
 
     it('Per schema', () => {
-        expect(guessWidget({type: 'string'}, theme)).toBe('string')
-        expect(guessWidget({format: 'someFormat'}, theme)).toBe('someFormat')
-        expect(guessWidget({enum: []}, theme)).toBe('choice')
-        expect(guessWidget({oneOf: {}}, theme)).toBe('oneOf')
+        expect(guessWidget({type: 'string'}, theme)).toBe(theme.field.string)
+        expect(guessWidget({format: 'someFormat'}, theme)).toBe(theme.field.someFormat)
+        expect(guessWidget({enum: []}, theme)).toBe(theme.field.choice)
+        expect(guessWidget({oneOf: {}}, theme)).toBe(theme.field.oneOf)
     })
 
     it('For fallback', () => {
-        expect(guessWidget({widget: 'myWidget'}, themeWithFallback)).toBe(null)
-        expect(guessWidget(undefined, themeWithFallback)).toBe(null)
+        expect(guessWidget({ widget: 'myWidget' }, themeWithFallback)).toBe(themeWithFallback.field[null])
+        expect(guessWidget(undefined, themeWithFallback)).toBe(themeWithFallback.field[null])
     })
 
     it('Throw error if no widget is found', () => {
@@ -277,42 +277,47 @@ describe('Extend render props from Final Form Field', () => {
 describe('Lifield component', () => {
     it('Render only on changed props', () => {
         const renderFunction = jest.fn(() => null)
+        const liform = {}
 
-        const node = Renderer.create(<Lifield foo="bar" render={renderFunction}/>)
+        const node = Renderer.create(<Lifield foo="bar" liform={liform} render={renderFunction}/>)
         Renderer.act(() => {
-            node.update(<Lifield foo="bar" render={renderFunction}/>)
+            node.update(<Lifield foo="bar" liform={liform} render={renderFunction}/>)
         })
         Renderer.act(() => {
-            node.update(<Lifield foo="baz" render={renderFunction}/>)
+            node.update(<Lifield foo="baz" liform={liform} render={renderFunction}/>)
         })
 
+        expect(renderFunction).nthCalledWith(1, {foo: 'bar', liform})
+        expect(renderFunction).nthCalledWith(2, {foo: 'baz', liform})
         expect(renderFunction).toBeCalledTimes(2)
-        expect(renderFunction).nthCalledWith(1, {foo: 'bar'})
-        expect(renderFunction).nthCalledWith(2, {foo: 'baz'})
     })
 
     it('If no render prop is given, use render.field from Liform', () => {
         const liform = {
-            render: {
-                field: jest.fn(() => null),
+            theme: {
+                render: {
+                    field: jest.fn(() => null),
+                },
             },
         }
 
         Renderer.create(<Lifield foo={1} liform={liform}/>)
 
-        expect(liform.render.field).toBeCalledWith({foo: 1, liform})
+        expect(liform.theme.render.field).toBeCalledWith({foo: 1, liform})
     })
 
     it('If no liform prop is given, get it from LiformContext', () => {
         const liform = {
-            render: {
-                field: jest.fn(() => null),
+            theme: {
+                render: {
+                    field: jest.fn(() => null),
+                },
             },
         }
 
         Renderer.create(<LiformContext.Provider value={liform}><Lifield foo={1}/></LiformContext.Provider>)
 
-        expect(liform.render.field).toBeCalledWith({foo: 1, liform})
+        expect(liform.theme.render.field).toBeCalledWith({foo: 1, liform})
     })
 })
 

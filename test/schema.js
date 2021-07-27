@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types'
-import { compileSchema, SchemaProp } from '../src/schema';
+import { compileSchema } from '../src/schema';
 
 describe('Compile schema', () => {
     const schema = {
@@ -22,7 +21,7 @@ describe('Compile schema', () => {
         required: ['prop'],
     }
 
-    const schemaCompiled = compileSchema(schema);
+    const schemaCompiled = compileSchema(schema, schema);
 
     test('Clone objects', () => {
         expect(schemaCompiled).toMatchObject({ properties: { prop: schema.properties.prop } })
@@ -40,37 +39,5 @@ describe('Compile schema', () => {
 
     test('Ignore prototype properties', () => {
         expect(schemaCompiled.properties.someProp).toEqual({ type: 'number' })
-    })
-})
-
-describe('SchemaProp', () => {
-    it.each([
-        [{title: false}],
-        [{description: []}],
-        [{items: ['foo']}],
-        [{additionalItems: 'foo'}],
-    ])('Returns error on invalid schema', (schema) => {
-        const realError = console.error
-        console.error = (e) => { throw new Error(e) }
-
-        expect(() => PropTypes.checkPropTypes({foo: SchemaProp}, {foo: schema}, 'foo', 'FooComponent')).toThrowError()
-
-        PropTypes.resetWarningCache()
-        console.error = realError
-    })
-
-    it.each([
-        [{title: 'foo'}],
-        [{description: 'foo'}],
-        [{items: [true, {type: 'string'}]}],
-        [{additionalItems: {type: 'number'}}],
-    ])('Accepts valid schema', (schema) => {
-        const realError = console.error
-        console.error = (e) => { throw new Error(e) }
-
-        expect(() => PropTypes.checkPropTypes({ foo: SchemaProp }, { foo: schema }, 'foo', 'FooComponent')).not.toThrowError()
-
-        PropTypes.resetWarningCache()
-        console.error = realError
     })
 })

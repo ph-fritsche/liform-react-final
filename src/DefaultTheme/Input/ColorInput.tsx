@@ -1,16 +1,16 @@
 import React from 'react';
-import { FieldRenderProps } from '../../field';
+import { LifieldRenderProps } from '../../types';
 import { Input } from './Input'
 
-export const ColorInput = props => {
-    const {
+export function ColorInput(
+    {
         input: {
             value,
             ...input
         },
         ...others
-    } = props
-
+    }: LifieldRenderProps,
+): React.ReactElement {
     return <Input
         {...others}
         input={{
@@ -20,5 +20,3 @@ export const ColorInput = props => {
         }}
     />
 }
-
-ColorInput.propTypes = FieldRenderProps

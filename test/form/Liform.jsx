@@ -1,54 +1,6 @@
 import React from 'react'
 import Renderer from 'react-test-renderer'
-import { compileChildren, Liform } from '../src/form'
-
-describe('Compile children', () => {
-    it('Ignore sections if children is function', () => {
-        const children = () => {}
-        expect(compileChildren({}, children)).toBe(children)
-    })
-
-    it('Replace sections', () => {
-        expect(compileChildren({
-            foo: <foo></foo>,
-            bar: <bar></bar>,
-        }, [
-            <foo key="a"><baz></baz></foo>,
-        ])).toEqual({
-            foo: <baz></baz>,
-            bar: <bar></bar>,
-        })
-
-        expect(compileChildren({
-            foo: <foo></foo>,
-            bar: <bar></bar>,
-        }, <foo><baz></baz></foo>)).toEqual({
-            foo: <baz></baz>,
-            bar: <bar></bar>,
-        })
-
-        expect(compileChildren({
-            foo: null,
-            bar: <bar></bar>,
-        }, <foo><baz></baz></foo>)).toEqual({
-            foo: <baz></baz>,
-            bar: <bar></bar>,
-        })
-    })
-
-    it('Add __rest__', () => {
-        expect(compileChildren({
-            foo: <foo></foo>,
-        }, [
-            <bar key="bar"></bar>,
-        ])).toEqual({
-            foo: <foo></foo>,
-            __rest__: [
-                <bar key="bar"></bar>,
-            ],
-        })
-    })
-})
+import { Liform } from '../../src/form/Liform'
 
 const getLastProps = (mockFn) => {
     expect(mockFn).toBeCalled()

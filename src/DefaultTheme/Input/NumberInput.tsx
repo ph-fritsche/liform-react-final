@@ -1,10 +1,11 @@
 import React from 'react';
 import { Field } from '../Field/Field';
-import { FieldRenderProps } from '../../field';
+import { LifieldRenderProps } from '../../types';
+import { objOrUndef } from '../shared';
 
-export const NumberInput = props => {
-    const {
-        schema = true,
+export function NumberInput(
+    {
+        schema: schemaProp = true,
         input: {
             value,
             onChange,
@@ -13,18 +14,19 @@ export const NumberInput = props => {
         },
         placeholder,
         meta,
-    } = props
+    }: LifieldRenderProps,
+): React.ReactElement {
+    const schema = objOrUndef(schemaProp) ?? {}
 
     input.defaultValue = value
 
-    const ref = React.createRef()
-    input.onChange = e => {
+    input.onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const v = Number(e.target.value)
-        if (e.target.value !== '' && v == e.target.value && (schema.type !== 'integer' || Number.isInteger(v))) {
+        if (e.target.value !== '' && v == e.target.valueAsNumber && (schema.type !== 'integer' || Number.isInteger(v))) {
             onChange(v)
         }
     }
-    input.onBlur = (e) => {
+    input.onBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
         let v
         if (e.target.value != '') {
             v = Number(e.target.value)
@@ -41,7 +43,7 @@ export const NumberInput = props => {
         }
         if (v !== value) {
             onChange(v)
-            ref.current.value = v
+            e.target.value = v === undefined ? '' : String(v)
         }
         onBlur(e)
     }
@@ -51,10 +53,8 @@ export const NumberInput = props => {
 
     return (
         <Field className="liform-number" schema={schema} meta={meta}>
-            <input {...input} type="number" ref={ref}/>
+            <input {...input} type="number"/>
             <span className="liform-number-unit">{schema.symbol}</span>
         </Field>
     )
 }
-
-NumberInput.propTypes = FieldRenderProps

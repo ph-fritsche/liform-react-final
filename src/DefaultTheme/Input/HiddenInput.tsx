@@ -1,14 +1,14 @@
 import React from 'react';
 import { Field } from '../Field/Field';
-import { FieldRenderProps } from '../../field';
+import { LifieldRenderProps } from '../../types';
 
-export const HiddenInput = props => {
-    const {
+export function HiddenInput(
+    {
         schema = true,
         input: {name, value, onChange},
         meta,
-    } = props
-
+    }: LifieldRenderProps,
+): React.ReactElement {
     const element = <input type="hidden" name={name} value={value} onChange={onChange}/>
 
     return meta.error
@@ -19,5 +19,3 @@ export const HiddenInput = props => {
         )
         : element
 }
-
-HiddenInput.propTypes = FieldRenderProps
