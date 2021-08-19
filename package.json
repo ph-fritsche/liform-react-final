@@ -8,6 +8,35 @@
   "files": [
     "/dist"
   ],
+  "exports": {
+    ".": {
+      "node": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/cjs/index.js"
+    },
+    "./dist/*": "./dist/*.js",
+    "./*": {
+      "node": "./dist/cjs/*.js",
+      "import": "./dist/esm/*.js",
+      "default": "./dist/cjs/*.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "dist/types/*": [
+        "./dist/types/*"
+      ],
+      "dist/cjs/*": [
+        "./dist/types/*.d.ts"
+      ],
+      "dist/esm/*": [
+        "./dist/types/*.d.ts"
+      ],
+      "*": [
+        "./dist/types/*.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "build": "scripts ts-build",
     "dev": "esbuild public/liform.jsx --servedir=public --outdir=public/build --bundle",
