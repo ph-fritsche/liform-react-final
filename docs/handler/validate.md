@@ -26,4 +26,13 @@ You can provide a translation function to change representation of errors per `a
 }/>
 ```
 
-
+You can add errors on top of the schema validation by injecting your own validator.
+```jsx
+const myValidator = (values, liformApi) => {
+    // inspect the values and return a flat error object
+    return {
+        'my.object.property': 'some error',
+    }
+}
+<Liform {...liformProps} validate={myValidator}/>
+```

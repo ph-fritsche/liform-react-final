@@ -1,18 +1,24 @@
 module.exports = {
-    "verbose": true,
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-        "src/**/*.{js,jsx}"
+    verbose: true,
+    collectCoverage: true,
+    collectCoverageFrom: [
+        'src/**/*.{js,jsx,ts,tsx}',
     ],
-    "coveragePathIgnorePatterns": [],
-    "testMatch": [
-        "<rootDir>/test/**/*.{js,jsx}",
+    coveragePathIgnorePatterns: [],
+    testMatch: [
+        '<rootDir>/test/**/*.{js,jsx,ts,tsx}',
     ],
-    "testPathIgnorePatterns": [
-        "/_.*(?<!.test.js)$",
+    testPathIgnorePatterns: [
+        '/_.*(?<!.test.js)$',
     ],
-    "transformIgnorePatterns": [],
-    "setupFilesAfterEnv": [
-        "<rootDir>/test/_setup.js",
+    transform: {
+        '\\.([tj]sx?)$': 'ts-jest',
+    },
+    transformIgnorePatterns: [
+        '/node_modules/',
     ],
+    setupFilesAfterEnv: [
+        '<rootDir>/test/_setup.js',
+    ],
+    testEnvironment: 'jsdom',
 }

@@ -1,2 +1,2 @@
 import '@testing-library/jest-dom'
-import 'liform-util/dist/testing'
+import 'liform-util/dist/cjs/testing'
